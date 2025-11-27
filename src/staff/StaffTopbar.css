@@ -1,0 +1,83 @@
+.staff-topbar {
+  width: 100%;
+  padding: 16px 22px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+/* Left Logo */
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar-logo-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ff88e8, #9b7bff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topbar-logo-img {
+  width: 34px;
+  height: 34px;
+}
+
+.topbar-text h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #ff4acb, #9a47ff);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.topbar-text span {
+  display: block;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Right Profile */
+.topbar-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(to right, #ffdef8, #e3d7ff);
+  padding: 8px 15px;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.profile-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f7f0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-circle img {
+  width: 26px;
+}
+
+.profile-text strong {
+  display: block;
+  font-size: 15px;
+}
+
+.profile-text span {
+  font-size: 13px;
+  color: #555;
+}

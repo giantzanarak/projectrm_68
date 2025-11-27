@@ -1,0 +1,130 @@
+.staff-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8f9ff;
+  font-family: "Prompt", sans-serif;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 290px;
+  background: linear-gradient(to bottom, #eef1ff, #f9ecff);
+  padding: 30px 20px;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 20px 20px 0;
+}
+
+/* Logo */
+.logo-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.logo-circle {
+  width: 92px;
+  height: 92px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #6a8bff, #a77bff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.logo-img {
+  width: 52px;
+  height: 52px;
+}
+
+.logo-text {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.logo-text h1 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: #333;
+}
+
+.logo-text span {
+  font-size: 14px;
+  color: #555;
+}
+
+
+/* Menu Title */
+.menu-title {
+  font-weight: 600;
+  color: #7a4dd9;
+  font-size: 18px;
+  margin-bottom: 18px;
+  padding-left: 6px;
+}
+
+.menu-title .emoji {
+  margin-right: 6px;
+}
+
+/* Menu List */
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Each Menu Item */
+.menu-item {
+  background: white;
+  padding: 14px 20px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  font-weight: 500;
+  color: #333;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: 0.2s ease;
+}
+
+.menu-item:hover {
+  background: #eef2ff;
+  transform: translateX(3px);
+}
+
+/* Active menu (NavLink) */
+.menu-item.active {
+  background: #2488ff;
+  color: white;
+  box-shadow: 0 4px 15px rgba(36, 136, 255, 0.3);
+}
+
+/* Logout */
+.logout-btn {
+  background: #ffd3d3;
+  border: none;
+  padding: 15px;
+  border-radius: 14px;
+  margin-top: auto;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  background: #ffbfbf;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 25px 35px;
+}

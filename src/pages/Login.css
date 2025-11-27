@@ -1,0 +1,129 @@
+/* PAGE BACKGROUND */
+.login-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(120deg, #d9e9ff, #ffe7ef, #fff7d5);
+  font-family: "Prompt", sans-serif;
+}
+
+/* CARD */
+.login-card {
+  width: 480px;
+  padding: 40px;
+  background: white;
+  border-radius: 28px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+/* LOGO */
+.logo-box {
+  width: 80px;
+  height: 80px;
+  margin: auto;
+  background: linear-gradient(135deg, #4f8bff, #a17bff);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo-img {
+  width: 40px;
+}
+
+/* TEXT */
+.title {
+  margin-top: 20px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* FORM */
+.form {
+  margin-top: 30px;
+  text-align: left;
+}
+label {
+  font-weight: 600;
+}
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  margin-top: 6px;
+  margin-bottom: 18px;
+  font-size: 15px;
+}
+
+/* PASSWORD BOX */
+.password-box {
+  position: relative;
+}
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.2s;
+}
+.eye-icon:hover {
+  opacity: 1;
+}
+
+/* REMEMBER */
+.remember-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: -8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* BUTTON */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: #6f79ff;
+  background: linear-gradient(135deg, #6f79ff, #a67aff);
+  border: none;
+  border-radius: 14px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.login-btn:hover {
+  opacity: 0.9;
+}
+
+/* DEMO BLOCK */
+.demo-block {
+  margin-top: 30px;
+}
+.demo-title {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.demo-row {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.demo {
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  width: 120px;
+}
+.demo.admin {
+  background: #d7eaff;
+}
+.demo.staff {
+  background: #ffd9df;
+}
