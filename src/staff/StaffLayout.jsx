@@ -1,3 +1,4 @@
+// src/staff/StaffLayout.jsx
 import { NavLink, Outlet } from "react-router-dom";
 import "./StaffLayout.css";
 
@@ -8,7 +9,7 @@ export default function StaffLayout() {
       {/* ===== SIDEBAR ===== */}
       <aside className="sidebar">
 
-        {/* Logo Section */}
+        {/* Logo + Title */}
         <div className="logo-wrapper">
           <div className="logo-circle">
             <img src="/pics/fabric-icon.png" className="logo-img" alt="logo" />
@@ -19,12 +20,10 @@ export default function StaffLayout() {
           </div>
         </div>
 
-        {/* Staff Menu Title */}
-        <div className="menu-title">
-          <span className="emoji">🌸</span> Staff Menu
-        </div>
+        {/* Staff Menu */}
+        <div className="menu-title">✨ Staff Menu</div>
 
-        {/* Menu Buttons */}
+        {/* Menu List */}
         <nav className="menu-list">
 
           <NavLink to="/staff/dashboard" className="menu-item">
@@ -38,6 +37,7 @@ export default function StaffLayout() {
           <NavLink to="/staff/neworder" className="menu-item">
             <span className="icon">🛒</span> New Order
           </NavLink>
+
 
           <NavLink to="/staff/checkorders" className="menu-item">
             <span className="icon">📦</span> Check Orders
@@ -53,11 +53,8 @@ export default function StaffLayout() {
 
         </nav>
 
-        {/* Logout */}
-        <button className="logout-btn">
-          👋 ออกจากระบบ
-        </button>
-
+        {/* Logout Button */}
+        <button className="logout-btn">👋 ออกจากระบบ</button>
       </aside>
 
       {/* ===== MAIN CONTENT ===== */}

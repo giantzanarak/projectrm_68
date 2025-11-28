@@ -1,55 +1,54 @@
+/* ===== Main Layout ===== */
 .staff-layout {
   display: flex;
+  background: #f8f8ff;
   min-height: 100vh;
-  background: #f8f9ff;
   font-family: "Prompt", sans-serif;
 }
 
 /* ===== Sidebar ===== */
 .sidebar {
-  width: 290px;
-  background: linear-gradient(to bottom, #eef1ff, #f9ecff);
-  padding: 30px 20px;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  border-radius: 0 20px 20px 0;
+  width: 270px;
+  background: linear-gradient(180deg, #f7e9ff, #e9eafe);
+  padding: 26px 20px;
+  border-right: 1px solid #eee;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
 }
 
-/* Logo */
+/* ===== Logo Section ===== */
 .logo-wrapper {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin-bottom: 35px;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
 .logo-circle {
-  width: 92px;
-  height: 92px;
-  border-radius: 25px;
-  background: linear-gradient(135deg, #6a8bff, #a77bff);
+  width: 55px;
+  height: 55px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff88e8, #9b7bff);
   display: flex;
-  align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  align-items: center;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
 .logo-img {
-  width: 52px;
-  height: 52px;
-}
-
-.logo-text {
-  text-align: center;
-  margin-top: 10px;
+  width: 36px;
+  height: 36px;
 }
 
 .logo-text h1 {
-  font-size: 18px;
-  font-weight: 700;
   margin: 0;
-  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #ff67de, #7b6dff);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .logo-text span {
@@ -57,74 +56,67 @@
   color: #555;
 }
 
-
-/* Menu Title */
+/* ===== Menu Title ===== */
 .menu-title {
-  font-weight: 600;
-  color: #7a4dd9;
   font-size: 18px;
-  margin-bottom: 18px;
-  padding-left: 6px;
+  font-weight: 700;
+  color: #5a2ea6;
+  margin-bottom: 16px;
 }
 
-.menu-title .emoji {
-  margin-right: 6px;
-}
-
-/* Menu List */
+/* ===== Menu Buttons ===== */
 .menu-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-/* Each Menu Item */
 .menu-item {
   background: white;
-  padding: 14px 20px;
+  padding: 14px 16px;
   border-radius: 14px;
+  font-size: 15px;
+  color: #333;
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 12px;
-  text-decoration: none;
-  font-weight: 500;
-  color: #333;
-  font-size: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  transition: 0.2s ease;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  transition: 0.2s;
 }
 
 .menu-item:hover {
-  background: #eef2ff;
-  transform: translateX(3px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
 
-/* Active menu (NavLink) */
 .menu-item.active {
-  background: #2488ff;
-  color: white;
-  box-shadow: 0 4px 15px rgba(36, 136, 255, 0.3);
+  background: linear-gradient(90deg, #3da0ff, #006aff);
+  color: #fff !important;
+  font-weight: 600;
 }
 
-/* Logout */
+/* ===== Logout Button ===== */
 .logout-btn {
-  background: #ffd3d3;
-  border: none;
-  padding: 15px;
+  margin-top: 30px;
+  width: 100%;
+  padding: 14px;
   border-radius: 14px;
-  margin-top: auto;
-  font-size: 18px;
-  font-weight: 500;
+  border: none;
+  background: #ffd4d8;
+  color: #333;
   cursor: pointer;
+  font-size: 15px;
   transition: 0.2s;
 }
 
 .logout-btn:hover {
-  background: #ffbfbf;
+  background: #ffb8c2;
 }
 
-/* Main content */
+/* ===== Main Content ===== */
 .main-content {
-  flex: 1;
-  padding: 25px 35px;
+  margin-left: 270px;
+  padding: 26px 32px;
+  width: calc(100% - 270px);
 }

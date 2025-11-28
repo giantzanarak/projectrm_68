@@ -1,33 +1,34 @@
+// src/staff/StaffTopbar.jsx
 import "./StaffTopbar.css";
+import logo from "../assets/fabric-logo.png";
+
+const profileImg =
+  "https://cdn-icons-png.flaticon.com/512/9131/9131529.png";
 
 export default function StaffTopbar() {
   return (
-    <div className="staff-topbar">
+    <div className="topbar-wrapper">
+      <div className="topbar">
 
-      {/* Left Logo */}
-      <div className="topbar-left">
-        <div className="topbar-logo-circle">
-          <img src="/pics/fabric-icon.png" className="topbar-logo-img" />
+        {/* LEFT */}
+        <div className="topbar-left">
+          <img src={logo} className="logo-img" />
+          <div>
+            <h2 className="logo-title">Thai Fabric Shop</h2>
+            <p className="logo-sub">ร้านผ้าทอพื้นเมือง</p>
+          </div>
         </div>
 
-        <div className="topbar-text">
-          <h2>Thai Fabric Shop</h2>
-          <span>ร้านผ้าทอพื้นเมือง</span>
+        {/* RIGHT */}
+        <div className="topbar-right">
+          <img src={profileImg} className="profile-img" />
+          <div className="profile-info">
+            <strong>Sales Staff</strong>
+            <p>พนักงานขาย</p>
+          </div>
         </div>
+
       </div>
-
-      {/* Right Staff Profile */}
-      <div className="topbar-profile">
-        <div className="profile-circle">
-          <img src="/pics/user.png" />
-        </div>
-
-        <div className="profile-text">
-          <strong>Sales Staff</strong>
-          <span>พนักงานขาย</span>
-        </div>
-      </div>
-
     </div>
   );
 }

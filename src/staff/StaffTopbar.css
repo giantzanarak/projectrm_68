@@ -1,83 +1,73 @@
-.staff-topbar {
+/* กล่องครอบทั้งหมดให้กว้างเท่ากับ content */
+.topbar-wrapper {
   width: 100%;
-  padding: 16px 22px;
-  background: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 0 0 15px 15px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  margin-bottom: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 10px;
 }
 
-/* Left Logo */
+/* ตัว Topbar */
+.topbar {
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* LEFT */
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
-.topbar-logo-circle {
-  width: 58px;
-  height: 58px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #ff88e8, #9b7bff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.logo-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
 }
 
-.topbar-logo-img {
-  width: 34px;
-  height: 34px;
-}
-
-.topbar-text h2 {
+/* shop name */
+.logo-title {
   margin: 0;
   font-size: 20px;
   font-weight: 700;
-  background: linear-gradient(90deg, #ff4acb, #9a47ff);
+  background: linear-gradient(90deg, #ff6ad6, #8a63ff);
   -webkit-background-clip: text;
   color: transparent;
 }
 
-.topbar-text span {
-  display: block;
-  font-size: 14px;
-  color: #555;
+.logo-sub {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
 }
 
-/* Right Profile */
-.topbar-profile {
+/* RIGHT */
+.topbar-right {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: linear-gradient(to right, #ffdef8, #e3d7ff);
-  padding: 8px 15px;
+  background: #ffe6ef;
+  padding: 10px 16px;
   border-radius: 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-.profile-circle {
+.profile-img {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #f7f0ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.profile-circle img {
-  width: 26px;
-}
-
-.profile-text strong {
-  display: block;
+.profile-info strong {
   font-size: 15px;
 }
 
-.profile-text span {
+.profile-info p {
+  margin: 0;
   font-size: 13px;
   color: #555;
 }

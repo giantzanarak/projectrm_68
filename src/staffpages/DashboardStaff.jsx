@@ -4,13 +4,13 @@ export default function DashboardStaff() {
   return (
     <div className="dashboard-wrapper">
 
-      {/* ===== Header ===== */}
+      {/* ======= Header ======= */}
       <div className="dash-header">
         <h2>🌸 Staff Dashboard</h2>
         <p className="welcome">ยินดีต้อนรับสู่ระบบขายหน้าร้าน ✨</p>
       </div>
 
-      {/* ===== Stats Cards ===== */}
+      {/* ======= Stats Cards ======= */}
       <div className="stats-grid">
 
         <div className="stats-card green">
@@ -33,32 +33,42 @@ export default function DashboardStaff() {
 
       </div>
 
-      {/* ===== Quick Actions ===== */}
-      <h3 className="section-title">⚡ Quick Actions / เมนูด่วน</h3>
+      {/* ======= Quick Actions ======= */}
+      <h3 className="section-title">⚡ เมนูด่วน / Quick Actions</h3>
 
       <div className="quick-actions">
-        <button className="btn blue">+ เพิ่มคำสั่งซื้อ</button>
-        <button className="btn pink">🔍 ค้นหาสินค้า</button>
-        <button className="btn green">📦 เช็คสต็อก</button>
-        <button className="btn yellow">📊 รายงานยอดขาย</button>
+        <button className="action blue">+ สร้างบิลใหม่</button>
+        <button className="action pink">🔍 ค้นหาสินค้า</button>
+        <button className="action green">📦 เช็คสต็อก</button>
+        <button className="action yellow">📊 รายงานยอดขาย</button>
       </div>
 
-      {/* ===== Popular Products ===== */}
-      <h3 className="section-title">🧵 สินค้ายอดนิยม</h3>
+      {/* ======= Best-Selling / Popular Sets ======= */}
+      <h3 className="section-title">🏆 สินค้าขายดี / ชุดยอดนิยม</h3>
 
       <div className="product-grid">
-        {[
-          { name: "ชุดไทยกะเหรี่ยง สีชมพู", qty: 8 },
-          { name: "ชุดไทยชนเผ่า สีฟ้า", qty: 6 },
-          { name: "ชุดไทยมอญ สีเขียว", qty: 5 },
-        ].map((item, i) => (
-          <div key={i} className="product-card">
-            <div className="product-img"></div>
-            <h4>{item.name}</h4>
-            <p>🛒 {item.qty} ชุด</p>
-            <button className="btn purple">ดูเพิ่ม</button>
-          </div>
-        ))}
+
+        <div className="product-card">
+          <div className="img-box"></div>
+          <h4>ชุดไทยกะเหรี่ยง สีชมพู</h4>
+          <p>🛒 8 ชุด</p>
+          <button className="view-btn">ดูเพิ่ม</button>
+        </div>
+
+        <div className="product-card">
+          <div className="img-box"></div>
+          <h4>ชุดไทยชนเผ่า สีฟ้า</h4>
+          <p>🛒 6 ชุด</p>
+          <button className="view-btn">ดูเพิ่ม</button>
+        </div>
+
+        <div className="product-card">
+          <div className="img-box"></div>
+          <h4>ชุดไทยมอง สีเขียว</h4>
+          <p>🛒 5 ชุด</p>
+          <button className="view-btn">ดูเพิ่ม</button>
+        </div>
+
       </div>
 
     </div>
