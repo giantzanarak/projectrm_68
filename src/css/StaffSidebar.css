@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: "Inter", sans-serif;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f8f9fb;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+  height: 70px;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.system-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.staff-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f1f3f6;
+  padding: 8px 14px;
+  border-radius: 12px;
+}
+
+/* ===== BODY WRAPPER ===== */
+.body-wrapper {
+  display: flex;
+  height: calc(100vh - 70px);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 250px;
+  background: #ffffff;
+  border-right: 1px solid #eaeaea;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;   /* ⭐ ดันปุ่มออกจากระบบลงล่างสุด */
+}
+
+/* ===== MENU ===== */
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 6px;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.menu-item:hover {
+  background: #eef4ff;
+}
+
+.menu-item.active {
+  background: #e3edff;
+  color: #225aff;
+  font-weight: 600;
+}
+
+/* ===== ICON SIZE ===== */
+.menu-item img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: 0.9;
+  transition: 0.2s ease;
+}
+
+.menu-item.active img {
+  opacity: 1;
+  filter: brightness(0) saturate(100%)
+          invert(36%) sepia(96%) saturate(3163%)
+          hue-rotate(220deg) brightness(92%) contrast(95%);
+}
+
+/* ===== LOGOUT BUTTON ===== */
+.logout-btn {
+  width: 100%;
+  border: none;
+  background: transparent;   /* ⭐ ไม่มีพื้นหลังแบบในรูป */
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: #dc2626;            /* ⭐ สีแดงตามภาพ */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #fee2e2;       /* ⭐ Hover แดงอ่อน */
+}
+
+/* ไอคอน logout */
+.logout-btn img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+
+  filter: invert(36%) sepia(96%) saturate(3000%)
+          hue-rotate(0deg) brightness(90%) contrast(90%);
+}
+
+/* ===== CONTENT ===== */
+.content-area {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
