@@ -1,0 +1,401 @@
+/* ---------------- GLOBAL ---------------- */
+.order-container {
+  width: 100%;
+  padding: 25px 30px;
+}
+
+.order-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+/* ---------------- NEW STEP BAR (FIGMA STYLE) ---------------- */
+.step-wrapper {
+  width: 100%;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 28px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 180px;
+}
+
+.step-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  color: white;
+}
+
+.step-circle.active {
+  background: #2563eb;
+}
+
+.icon {
+  font-size: 26px;
+}
+
+.step-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.step-text.active {
+  color: #2563eb;
+}
+
+.step-line {
+  flex: 1;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  margin: 0 10px;
+}
+
+.step-line.active {
+  background: #2563eb;
+}
+.step-icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+
+/* ---------------- MAIN LAYOUT ---------------- */
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 22px;
+}
+
+/* ---------------- LEFT BOX ---------------- */
+.box-left {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  border-radius: 14px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* ---------------- PRODUCT GRID ---------------- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.product-card {
+  position: relative;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: white;
+  overflow: hidden;
+  padding-bottom: 12px;
+}
+
+.product-img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.tag-id {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #111827;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.tag-stock {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #d1fae5;
+  color: #065f46;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.p-name {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 14px 4px;
+}
+
+.p-price {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 0 14px;
+  color: #2563eb;
+}
+
+.btn-add {
+  width: calc(100% - 28px);
+  margin: 10px 14px 0;
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------------- RIGHT CARD (SUMMARY) ---------------- */
+.summary-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  border-radius: 14px;
+}
+
+.summary-empty {
+  text-align: center;
+  color: #9ca3af;
+  padding: 20px 0;
+}
+
+/* SUMMARY ITEM */
+.s-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  background: #f9fafb;
+  margin-bottom: 12px;
+  border-radius: 12px;
+}
+
+.s-img {
+  width: 55px;
+  height: 55px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.s-info {
+  flex: 1;
+}
+
+.qty-box {
+  display: inline-flex;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.qty-box button {
+  width: 32px;
+  height: 32px;
+  background: white;
+  border: none;
+  cursor: pointer;
+}
+
+.qty-box span {
+  width: 36px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  border-left: 1px solid #d1d5db;
+  border-right: 1px solid #d1d5db;
+  font-weight: 600;
+}
+
+.s-price {
+  font-weight: 700;
+}
+
+/* TOTALS */
+.sum-line {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+}
+
+.sum-line.total span:last-child {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* BUTTON ROW */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-primary {
+  flex: 1;
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  flex: 1;
+  padding: 12px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------------- STEP 2 INPUT ---------------- */
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  margin-bottom: 12px;
+}
+
+/* ---------------- STEP 3 CUSTOMER SUMMARY ---------------- */
+.customer-summary {
+  background: #f3f4f6; /* A2 */
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+.customer-summary p {
+  font-size: 15px;
+  margin: 6px 0;
+}
+
+/* ---------------- STEP 3 PRODUCT SUMMARY ---------------- */
+.sum-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: #f3f4f6;
+  margin-bottom: 12px;
+  border-radius: 12px;
+}
+
+.sum-img {
+  width: 55px;
+  height: 55px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.sum-info {
+  flex: 1;
+  font-size: 14px;
+}
+
+.sum-price {
+  font-weight: 700;
+}
+
+/* ---------------- RECEIPT POPUP ---------------- */
+.receipt-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.receipt-box {
+  width: 380px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: monospace;
+}
+
+.r-title {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.r-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+}
+
+.r-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-print {
+  flex: 1;
+  background: #111827;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-close {
+  flex: 1;
+  background: #e5e7eb;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+/* ---------------- PRINT RECEIPT ---------------- */
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  #print-area, #print-area * {
+    visibility: visible !important;
+  }
+
+  #print-area {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+  }
+}

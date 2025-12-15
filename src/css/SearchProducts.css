@@ -1,0 +1,282 @@
+/* ================================
+        PAGE LAYOUT
+================================ */
+.search-page {
+  padding: 10px 0;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 22px;
+}
+
+/* ================================
+        STAT CARDS
+================================ */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.stat-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+
+.icon-emoji {
+  font-size: 26px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ================================
+        FILTER BAR
+================================ */
+.filter-bar-wrapper {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  font-size: 15px;
+}
+
+/* Custom dropdown */
+.custom-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.drop-left-icon,
+.drop-right-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.8;
+}
+
+.drop-left-icon { opacity: 0.7; }
+.drop-text { flex: 1; }
+.drop-right-icon { opacity: 0.5; }
+
+.dropdown-menu {
+  position: absolute;
+  top: 52px;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 6px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 20;
+}
+
+.dropdown-item {
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.result-count {
+  margin-top: 14px;
+  font-size: 15px;
+}
+
+/* ================================
+        PRODUCT GRID (FIXED)
+================================ */
+/* === บังคับให้มี 3 การ์ดต่อแถวเสมอ === */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* ⭐ บังคับ 3 คอลัมน์ */
+  gap: 24px;
+  width: 100%;
+}
+
+/* Card คงที่ 330px */
+.product-card {
+  width: 100%;                  /* ⭐ ขยายการ์ดให้เต็มช่องของ grid */
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  transition: 0.2s ease;
+}
+
+
+.product-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Image */
+.product-img-box { position: relative; }
+
+.product-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+/* Stock badge */
+.stock-tag {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.stock-tag.ปานกลาง {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.stock-tag.น้อย {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Content */
+.product-content {
+  padding: 18px;
+}
+
+.product-id {
+  background: #f1f5f9;
+  padding: 5px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.product-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.tag-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  background: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.info-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.info-value {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Select button */
+.select-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: #1d4ed8;
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.select-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* ระยะห่างระหว่าง icon กับข้อความ */
+}
+
+.select-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.select-btn:hover {
+  background: #1748c7;
+}

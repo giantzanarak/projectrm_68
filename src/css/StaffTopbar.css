@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: "Inter", sans-serif;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f8f9fb;
+}
+
+.topbar {
+  height: 70px;
+  width: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 2);
+}
+
+.left-side {
+  display: flex;
+  align-items: center;         /* ทำให้โลโก้กับข้อความสูงเท่ากัน */
+  gap: 14px;
+}
+
+.system-logo {
+  width: 80px;                 
+  height: 80px;
+  object-fit: contain;
+}
+
+/* กล่องข้อความ */
+.system-text-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;     /* จัดข้อความให้อยู่ตรงกลางเทียบโลโก้ */
+}
+
+.system-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222222;
+  line-height: 1.2;            /* ให้ตัวอักษรสวย ไม่ลอย */
+}
+.profile-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;      /* วงกลม */
+  object-fit: cover;       /* ให้รูปไม่บิด */
+  flex-shrink: 0;
+}
