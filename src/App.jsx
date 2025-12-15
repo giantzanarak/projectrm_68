@@ -2,16 +2,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 
 // Pages
-import Dashboard from "./pages/Dashboard";
-import Products from "./pages/Products";
-import Orders from "./pages/Orders";
+import Dashboard from "./superadmin/Dashboard";
+import Products from "./superadmin/Products";
+import Orders from "./superadmin/Orders";
 import Employees from "./pages/Employees";
 import Settings from "./pages/Settings";
-import Promotions from "./pages/Promotions";
-import FabricCalculator from "./pages/FabricCalculator";
-import CheckOrders from "./pages/CheckOrders";
-import Logs from "./pages/Logs";
-import NewOrder from "./pages/NewOrder";
+import Promotions from "./superadmin/Promotions";
+import FabricCalculator from "./superadmin/FabricCalculator";
+import CheckOrders from "./superadmin/CheckOrders";
+import Logs from "./superadmin/Logs";
+import NewOrder from "./superadmin/NewOrder";
 
 function App() {
   return (
