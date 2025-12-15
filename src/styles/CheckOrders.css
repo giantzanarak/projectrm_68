@@ -1,0 +1,462 @@
+/* ==========================
+   PAGE LAYOUT
+========================== */
+
+.check-orders-page {
+  padding: 24px 40px 32px;
+  background: #f5f7fb;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* หัวข้อหน้า */
+.check-orders-header {
+  margin-bottom: 18px;
+}
+
+.check-orders-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.check-orders-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ==========================
+   SUMMARY CARDS (เหมือนหน้า "จัดซื้อ")
+========================== */
+
+.check-summary-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.check-summary-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.check-summary-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.check-summary-icon-wrapper.purple {
+  background: #ede9fe;
+}
+
+.check-summary-icon-wrapper.success {
+  background: #dcfce7;
+}
+
+.check-summary-icon-wrapper.pending {
+  background: #fef9c3;
+}
+
+.check-summary-icon-wrapper.sales {
+  background: #e0f2fe;
+}
+
+.check-summary-icon {
+  font-size: 18px;
+}
+
+.check-summary-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.check-summary-value {
+  margin-left: auto;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ==========================
+   TABS (คำสั่งซื้อ / ซัพพลายเออร์)
+========================== */
+
+.check-orders-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.check-tab {
+  border-radius: 999px;
+  padding: 7px 16px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.check-tab.active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.check-tab:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+/* ==========================
+   FILTER BAR
+========================== */
+
+.check-filters-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 10px 16px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.check-search-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.check-search-icon {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.check-search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  width: 100%;
+}
+
+.check-filters-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.check-select {
+  min-width: 140px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: #f9fafb;
+  outline: none;
+}
+
+/* ==========================
+   ORDERS TABLE
+========================== */
+
+.check-orders-card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  padding: 16px 18px 18px;
+}
+
+.check-orders-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.check-orders-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.check-orders-count {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* table skeleton */
+.check-orders-table {
+  width: 100%;
+  font-size: 13px;
+}
+
+/* ให้ head & row ใช้ grid เหมือนกัน */
+.check-orders-table-head,
+.check-orders-table-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.4fr 1.6fr 1.3fr 1fr 1.2fr 1.1fr 1.1fr 1.1fr;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.check-orders-table-head {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.check-orders-table-row {
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+  color: #111827;
+}
+
+.check-orders-table-row:last-child {
+  border-bottom: none;
+}
+
+.check-orders-amount {
+  font-weight: 600;
+  color: #1d4ed8;
+}
+
+/* ==========================
+   STATUS PILL & ACTION BUTTON
+========================== */
+
+.check-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.check-status-pill.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.check-status-pill.pending {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.check-status-pill.cancel {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.check-detail-btn {
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #111827;
+}
+
+.check-detail-btn:hover {
+  background: #e5e7eb;
+}
+
+/* เมื่อไม่มีข้อมูล */
+.check-orders-empty {
+  padding: 14px 0;
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* ==========================
+   MODAL รายละเอียดคำสั่งซื้อ
+========================== */
+
+.order-detail-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
+.order-detail-modal {
+  width: 520px;
+  max-width: 90%;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.4);
+  padding: 20px 22px 18px;
+  position: relative;
+}
+
+/* header */
+.order-detail-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.order-detail-modal-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.order-detail-close-icon {
+  border: none;
+  background: #f3f4f6;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+/* body */
+.order-detail-modal-body {
+  font-size: 13px;
+  color: #374151;
+}
+
+.order-detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.order-detail-row > div {
+  flex: 1;
+}
+
+.od-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.od-value {
+  font-size: 13px;
+  color: #111827;
+}
+
+/* chip สำหรับวิธีชำระ */
+.od-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-size: 12px;
+}
+
+/* divider + total */
+.order-detail-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 10px 0;
+}
+
+.order-detail-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.order-detail-total-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* footer actions */
+.order-detail-modal-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.order-detail-close-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #f9fafb;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.order-detail-close-btn:hover {
+  background: #e5e7eb;
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 1200px) {
+  .check-summary-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .check-orders-table-head,
+  .check-orders-table-row {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .check-orders-page {
+    padding: 16px 16px 24px;
+  }
+
+  .check-filters-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .check-filters-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

@@ -1,0 +1,97 @@
+.sidebar {
+  height: 100vh;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.sidebar-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+}
+
+.menu li {
+  margin-bottom: 10px;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #333;
+  font-size: 15px;
+}
+
+/* ICON */
+.icon {
+  font-size: 18px;
+}
+
+/* ACTIVE MAIN MENU */
+.active a {
+  background: #e8efff;
+  color: #2b57ff;
+}
+
+/* PARENT DROPDOWN */
+.parent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 10px;
+  color: #333;
+}
+
+.chevron {
+  margin-left: auto;
+  transition: 0.2s;
+}
+
+.chevron.rotate {
+  transform: rotate(180deg);
+}
+
+/* SUBMENU */
+.submenu {
+  padding-left: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.submenu a {
+  color: #555;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.sub-active {
+  color: #2b57ff;
+  font-weight: 600;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+  width: 100%;
+  padding: 12px;
+  background: #e57373;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  margin-top: 20px;
+}

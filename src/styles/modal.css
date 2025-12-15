@@ -1,0 +1,82 @@
+/* BACKDROP */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* MODAL BOX */
+.modal-box {
+  background: white;
+  width: 650px;          /* ← ขยายขนาดให้เท่ากับ modal รายละเอียด */
+  max-width: 90%;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  animation: fadeIn 0.25s ease;
+}
+
+/* TITLE */
+.modal-box h2 {
+  margin-bottom: 16px;
+}
+
+/* FORM CONTENT */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* INPUT */
+.modal-body input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* FOOTER BUTTONS */
+.modal-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-btn,
+.save-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #eee;
+}
+
+.save-btn {
+  background: #4A72FF;
+  color: white;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
