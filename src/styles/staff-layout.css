@@ -1,0 +1,94 @@
+/* พื้นหลังรวม ๆ ให้เหมือนหน้า dashboard ใหญ่ */
+.staff-shell {
+  min-height: 100vh;
+  background: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+}
+
+/* แถบบน */
+.staff-header {
+  padding: 24px 40px 8px;
+}
+
+.staff-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.staff-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* main: ซ้ายเมนู ขวา content */
+.staff-body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  padding: 0 40px 24px;
+}
+
+/* เมนูฝั่งซ้าย */
+.staff-menu {
+  align-self: flex-start;
+}
+
+.staff-menu ul {
+  list-style: none;
+  padding: 16px;
+  margin: 0;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+}
+
+.staff-menu li {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.staff-menu li:last-child {
+  margin-bottom: 0;
+}
+
+.staff-menu a {
+  text-decoration: none;
+  color: #111827;
+  padding: 8px 10px;
+  border-radius: 10px;
+  display: block;
+}
+
+.staff-menu li.active a {
+  background: #e0edff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+/* ส่วน content ขวา – ให้ card ของ DashboardStaff แสดงเต็มสวย ๆ */
+.staff-content {
+  background: transparent;
+}
+
+/* footer ปุ่มออกจากระบบ */
+.staff-footer {
+  margin-top: auto;
+  padding: 10px 40px 18px;
+}
+
+.staff-logout-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 999px;
+  border: none;
+  background: #f87171;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+.staff-logout-btn:hover {
+  opacity: 0.9;
+}

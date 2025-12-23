@@ -1,0 +1,85 @@
+/* เต็มจอ + กลางจอ */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+}
+
+/* กล่องฟอร์ม */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px 24px 20px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
+/* หัวเรื่อง */
+.login-title-main {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.login-sub-main {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 18px;
+}
+
+/* ฟอร์ม */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.login-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #374151;
+  gap: 4px;
+}
+
+.login-input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.15);
+}
+
+/* ปุ่ม */
+.login-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 12px;
+  border: none;
+  background: #4f46e5;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  opacity: 0.95;
+}
+
+/* hint ด้านล่าง */
+.login-hint {
+  font-size: 13px;
+  color: #4b5563;
+  margin-top: 4px;
+}

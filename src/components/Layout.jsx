@@ -1,30 +1,47 @@
 // src/components/Layout.jsx
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
 import "../styles/layout.css";
+import { useAuth } from "../context/AuthContext";
 
 export default function Layout() {
+  const { user } = useAuth();
+
+  const roleLabel =
+    user?.role === "staff"
+      ? "พนักงาน"
+      : user?.role === "superadmin"
+      ? "ผู้ดูแลระบบ"
+      : "";
+
   return (
-    <div className="layout-wrapper">
-      
-      {/* NAVBAR ด้านบน (เต็มความกว้าง) */}
-      <Navbar />
+    <div className="app-layout">
+      {/* ===== NAV/TOPBAR ด้านบนเต็มความกว้าง ===== */}
+      <header className="app-topbar">
+        <div className="topbar-left">
+          <h1 className="app-title">ระบบจัดการร้านผ้าพื้นเมือง</h1>
+          {roleLabel && (
+            <span className="app-subtitle">
+              {roleLabel} : {user?.username}
+            </span>
+          )}
+        </div>
 
-      <div className="layout-body">
-
-        {/* SIDEBAR ด้านซ้าย */}
-        <aside className="layout-sidebar">
-          <Sidebar />
-        </aside>
-
-        {/* MAIN CONTENT */}
-        <main className="layout-content">
-          <div className="layout-content-inner">
-            <Outlet />
+        <div className="topbar-right">
+          {user && <span className="topbar-user">สวัสดี, {user.username}</span>}
+          <div className="topbar-avatar">
+            {user?.username?.[0]?.toUpperCase() || "U"}
           </div>
-        </main>
+        </div>
+      </header>
 
+      {/* ===== BODY ด้านล่าง แบ่ง Sidebar ซ้าย / Content ขวา ===== */}
+      <div className="app-body">
+        <Sidebar />
+
+        <main className="app-main">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

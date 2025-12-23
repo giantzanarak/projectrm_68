@@ -1,53 +1,101 @@
-/* WRAPPER */
-.layout-wrapper {
-  width: 100%;
-  height: 100vh;
+/* ============ โครงหลักทั้งหน้า ============ */
+.app-layout {
+  display: flex;
+  flex-direction: column;   /* TOPBAR อยู่ด้านบน */
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+
+/* ============ TOPBAR ============ */
+.app-topbar {
+  height: 64px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+  box-sizing: border-box;
+}
+
+.topbar-left {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
-/* NAVBAR อยู่บนสุด */
-.layout-wrapper nav {
-  flex-shrink: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 70px;
-  z-index: 1000;
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
+.app-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
 }
 
-/* BODY = sidebar + main */
-.layout-body {
+.app-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.topbar-right {
   display: flex;
-  width: 100%;
-  margin-top: 70px; /* กันไม่ให้ content ไปทับ navbar */
+  align-items: center;
+  gap: 10px;
 }
 
-/* SIDEBAR ด้านซ้าย */
-.layout-sidebar {
-  width: 260px;
-  min-height: calc(100vh - 70px);
-  background: #ffffff;
-  border-right: 1px solid #e5e7eb;
-  position: fixed;
-  left: 0;
-  top: 70px;
-  z-index: 999;
+.topbar-user {
+  font-size: 13px;
+  color: #4b5563;
 }
 
-/* CONTENT ด้านขวา */
-.layout-content {
-  margin-left: 260px;
-  width: calc(100% - 260px);
-  padding: 30px 0;
+.topbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #111827;
+  color: #ffffff;
   display: flex;
+  align-items: center;
   justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.layout-content-inner {
-  width: 1200px;
-  padding: 0 20px;
+/* ============ ส่วนล่าง: Sidebar + Content ============ */
+.app-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;           /* กันไม่ให้ overflow แปลก ๆ */
+}
+
+/* .sidebar ใช้ไฟล์ sidebar.css ที่มีอยู่แล้ว
+   แต่อย่าลืมให้มี width ตายตัว (ถ้ายังไม่มีให้เพิ่มด้านล่างนี้) */
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+/* เนื้อหาด้านขวา */
+.app-main {
+  flex: 1;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* สำหรับหน้าจอเล็ก (ถ้าดูใน iPad / มือถือ) */
+@media (max-width: 900px) {
+  .app-body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .app-main {
+    padding: 16px;
+  }
 }
