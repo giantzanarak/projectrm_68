@@ -2,7 +2,9 @@
   width: 100%;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 .promo-header {
   display: flex;
   justify-content: space-between;
@@ -36,7 +38,9 @@
   background: #3b63e6;
 }
 
-/* SUMMARY CARDS */
+/* =========================
+   SUMMARY CARDS
+========================= */
 .promo-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -62,7 +66,9 @@
   margin-top: 6px;
 }
 
-/* SEARCH BAR */
+/* =========================
+   SEARCH BAR
+========================= */
 .promo-search {
   display: flex;
   align-items: center;
@@ -86,148 +92,133 @@
   font-size: 15px;
 }
 
-/* GRID */
-.promo-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 22px;
+/* =========================
+   TABLE VIEW (แทน card เดิม)
+========================= */
+.promo-table-wrapper {
+  margin-top: 4px;
 }
 
-/* PROMOTION CARD */
-.promo-card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 22px;
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  border: 1px solid transparent;
-  transition: 0.2s;
-}
-
-.promo-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-}
-
-/* กรณีใกล้หมดอายุ */
-.promo-card.soon-expire {
-  border-color: #f97316;
-  box-shadow: 0 4px 14px rgba(248, 160, 72, 0.35);
-}
-
-.promo-left {
-  display: flex;
-  gap: 14px;
-}
-
-.promo-icon {
-  width: 46px;
-  height: 46px;
+.promo-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
   border-radius: 12px;
-  background: #eef2ff;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.promo-table thead th {
+  background: #f9fafb;
+  padding: 14px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.promo-table tbody td {
+  padding: 14px;
+  font-size: 14px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* ชื่อโปร + รายละเอียดในคอลัมน์เดียว */
+.promo-name-cell {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  color: #4A72FF;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.promo-name {
-  font-size: 18px;
+.promo-name-main {
   font-weight: 600;
-  margin-bottom: 4px;
+  color: #111827;
 }
 
-.promo-desc {
-  font-size: 14px;
-  color: #6b7280;
-  margin-bottom: 10px;
-}
-
-.promo-label {
-  font-size: 14px;
+.promo-name-desc {
+  font-size: 13px;
   color: #6b7280;
 }
 
-.promo-date {
-  font-size: 14px;
+/* ส่วนลด (%) */
+.promo-discount-cell {
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* ช่วงเวลา */
+.promo-date-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
   color: #374151;
 }
 
-/* RIGHT SIDE */
-.promo-right {
-  text-align: right;
-  min-width: 150px;
+.promo-date-arrow {
+  color: #9ca3af;
 }
 
-.promo-status {
-  padding: 5px 12px;
+/* สถานะ */
+.promo-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
 }
 
-.promo-status.active {
+.status-active {
   background: #e6fbe7;
   color: #118c36;
 }
 
-.promo-status.inactive {
+.status-inactive {
   background: #ffe0e0;
   color: #d32f2f;
 }
 
-/* สีพิเศษสำหรับใกล้หมดอายุ */
-.promo-status.soon {
-  background: #fff7ed;
-  color: #ea580c;
+/* ถ้าใกล้หมดอายุ */
+.status-soon {
+  box-shadow: 0 0 0 1px #f97316;
 }
 
-.promo-discount {
-  font-size: 26px;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 10px 0;
-}
-
+/* การจัดการ */
 .promo-actions {
   display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-
-.edit-btn,
-.delete-btn {
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
-.edit-btn {
-  background: #f3f4f6;
+.promo-icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 2px;
 }
 
-.delete-btn {
-  background: #ffe4e4;
-  color: #d32f2f;
+.promo-icon-btn.edit {
+  color: #2563eb;
 }
 
-/* EMPTY STATE */
-.promo-empty {
-  grid-column: 1 / -1;
+.promo-icon-btn.delete {
+  color: #dc2626;
+}
+
+/* แถว empty */
+.promo-empty-cell {
   text-align: center;
-  padding: 30px 0;
+  padding: 24px;
   color: #6b7280;
+  font-size: 14px;
 }
 
-/* PAGINATION */
+/* =========================
+   PAGINATION
+========================= */
 .promo-pagination {
   display: flex;
   justify-content: center;
@@ -260,7 +251,9 @@
   color: #4b5563;
 }
 
-/* MODAL ภายในหน้าโปรโมชั่น */
+/* =========================
+   MODAL ภายในหน้าโปรโมชั่น
+========================= */
 .promo-modal-box {
   max-width: 580px;
 }
@@ -297,4 +290,25 @@
   justify-content: flex-end;
   gap: 10px;
   margin-top: 18px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 960px) {
+  .promo-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .promo-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .promo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
 }

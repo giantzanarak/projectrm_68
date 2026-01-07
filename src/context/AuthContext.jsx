@@ -1,44 +1,35 @@
 // src/context/AuthContext.jsx
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  // ดึง user จาก localStorage ตอนเปิดเว็บ
-  const [user, setUser] = useState(() => {
-    try {
-      const stored = localStorage.getItem("user");
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  });
+  // ✅ hooks อยู่ใน function component เท่านั้น
+  const [user, setUser] = useState(null);
 
-  // sync user -> localStorage ทุกครั้งที่เปลี่ยน
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("role", user.role);
-    } else {
-      localStorage.removeItem("user");
-      localStorage.removeItem("role");
-    }
-  }, [user]);
-
-  // 🔹 ฟังก์ชัน login ที่ Login.jsx จะเรียก
   const login = (userData) => {
-    setUser(userData); // userData = { username, role }
+    setUser(userData);
   };
 
   const logout = () => {
     setUser(null);
   };
 
+  const value = { user, login, logout };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+// ✅ custom hook ใช้ใน component อื่น
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    // ถ้าเรียกนอก <AuthProvider> จะเตือนชัด ๆ
+    throw new Error("useAuth ต้องถูกใช้ภายใน <AuthProvider> เท่านั้น");
+  }
+  return ctx;
+}

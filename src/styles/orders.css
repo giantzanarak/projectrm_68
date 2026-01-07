@@ -2,6 +2,15 @@
   width: 100%;
 }
 
+/* ==========================
+   HEADER
+========================== */
+.orders-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
 .page-title {
   font-size: 26px;
   font-weight: 700;
@@ -13,8 +22,9 @@
   margin-bottom: 25px;
 }
 
-
-/* SUMMARY */
+/* ==========================
+   SUMMARY CARDS
+========================== */
 .orders-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -44,27 +54,35 @@
 }
 
 .purple { background: #6d5dfc; }
-.green { background: #2ecc71; }
+.green  { background: #2ecc71; }
 .yellow { background: #f4c542; }
-.blue { background: #3b82f6; }
+.blue   { background: #3b82f6; }
 
 .sum-title {
   font-size: 14px;
   color: #666;
 }
 
-/* TABS */
+/* ==========================
+   TOOLBAR (Tabs + Add button)
+========================== */
+.orders-toolbar {
+  margin-top: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+/* Tabs */
 .orders-tabs {
-  margin-top: 20px;
   display: inline-flex;
   gap: 8px;
-  background: #e5edff;               
+  background: #e5edff;
   padding: 4px;
   border-radius: 999px;
 }
 
-/* แท็บปกติ */
 .orders-tabs .tab {
   border: none;
   outline: none;
@@ -79,13 +97,11 @@
     box-shadow 0.15s ease, transform 0.05s ease;
 }
 
-/* hover แท็บที่ไม่ได้ active */
 .orders-tabs .tab:hover:not(.active) {
   background: rgba(255, 255, 255, 0.8);
   color: #1f2937;
 }
 
-/* แท็บที่ถูกเลือก (active) – ให้เด่นชัด */
 .orders-tabs .tab.active {
   background: #2563eb;
   color: #ffffff;
@@ -93,29 +109,39 @@
   transform: translateY(-1px);
 }
 
-
-/* FILTER ROW */
-.orders-filter-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+/* ปุ่มสร้างใบสั่งซื้อ – ปุ่มเล็กด้านขวา */
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2563eb;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+  white-space: nowrap;
+  width: auto !important;
 }
 
-.search-input {
-  flex: 1;
-  padding: 12px 15px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+.btn-add:hover {
+  background: #1d4ed8;
 }
 
-.filter {
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+/* ==========================
+   TABLE – ใช้ได้ทั้ง Orders & Suppliers
+========================== */
+.orders-table-section {
+  width: 100%;
 }
 
+.orders-table {
+  width: 100%;
+}
 
-/* TABLE */
 .orders-table table {
   width: 100%;
   border-collapse: collapse;
@@ -140,6 +166,11 @@
 
 .blue-text { color: #2563eb; }
 
+/* ==========================
+   สถานะการรับของ
+========================== */
+
+/* legacy .status (ใช้กับหน้าอื่นได้) */
 .status {
   display: inline-flex;
   align-items: center;
@@ -150,70 +181,117 @@
   font-weight: 600;
 }
 
-/* อนุมัติแล้ว / สำเร็จ  = เขียวชัด */
 .status.success {
-  background-color: #dcfce7;   /* เขียวอ่อน */
-  color: #15803d;              /* เขียวเข้ม */
+  background-color: #dcfce7;
+  color: #15803d;
 }
 
-/* รออนุมัติ / รอดำเนินการ = เหลือง */
 .status.pending {
-  background-color: #fef3c7;   /* เหลืองอ่อน */
-  color: #b45309;              /* เหลืองเข้ม/น้ำตาล */
+  background-color: #fef3c7;
+  color: #b45309;
 }
 
-/* ยกเลิก / ข้อผิดพลาด = แดง */
 .status.cancel {
-  background-color: #fee2e2;   /* แดงอ่อน */
-  color: #b91c1c;              /* แดงเข้ม */
+  background-color: #fee2e2;
+  color: #b91c1c;
 }
 
-.btn-view {
-  background: #eef2ff;
-  color: #3b5bfd;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-
-/* SUPPLIERS GRID */
-.supplier-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-  margin-top: 15px;
-}
-
-.supplier-card {
-  background: white;
-  padding: 18px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-.sup-row {
-  display: flex;
+/* pill ใหม่ในตารางคำสั่งซื้อ */
+.status-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.sup-icon {
-  font-size: 22px;
-  color: #3b82f6;
-}
-
-.rating {
-  margin-top: 8px;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: 600;
-  color: #f2b400;
+}
+
+.status-success {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.status-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+/* ข้อความแสดงจำนวนที่รับแล้ว */
+.status-note {
+  display: block;
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* ปุ่มจัดการ */
+.orders-actions {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
-/* ===== Modal add/edit ===== */
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 2px;
+}
+
+.icon-btn.edit {
+  color: #2563eb;
+}
+
+.icon-btn.delete {
+  color: #dc2626;
+}
+
+.icon-btn.receive {
+  color: #16a34a;
+}
+
+/* ==========================
+   SUPPLIERS TABLE (แทน card เดิม)
+========================== */
+
+.suppliers-table-wrapper {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ใช้โครงสร้าง .orders-table table เดียวกัน */
+.suppliers-table table th,
+.suppliers-table table td {
+  font-size: 14px;
+}
+
+.supplier-cell-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sup-icon-table {
+  font-size: 18px;
+  color: #2563eb;
+}
+
+.rating-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff7e6;
+  color: #c27803;
+  font-size: 13px;
+}
+
+/* ==========================
+   MODALS (เพิ่ม/แก้ + รับสินค้า)
+========================== */
 .modal-bg {
   position: fixed;
   inset: 0;
@@ -225,248 +303,120 @@
 }
 
 .modal-box {
-  width: 420px;
+  width: 520px;
+  max-width: 95%;
   background: #fff;
-  padding: 25px;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 22px 24px 20px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(15,23,42,0.45);
 }
 
-.modal-box h2 {
-  margin-bottom: 15px;
+.receive-modal {
+  width: 460px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 10px;
+}
+
+.modal-sub {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 14px;
 }
 
 .modal-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.modal-form label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 4px;
 }
 
 .modal-form input,
 .modal-form select {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 11px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+  outline: none;
 }
 
+.modal-form input:focus,
+.modal-form select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37,99,235,0.15);
+}
+
+/* 2 คอลัมน์สำหรับ modal รับสินค้า */
+.modal-form.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px 16px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-hint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ปุ่มล่างของ modal */
 .modal-buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 15px;
+  gap: 10px;
+  margin-top: 18px;
 }
 
-.btn-cancel {
-  background: #eee;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-}
-
+.btn-cancel,
 .btn-save {
-  background: #2563eb;
-  color: white;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-}
-
-/* icon buttons */
-.icon-btn {
-  border: none;
-  background: transparent;
-  margin-right: 6px;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-.icon-btn.edit {
-  color: #2563eb;
-}
-
-.icon-btn.delete {
-  color: #dc2626;
-}
-
-/* add button */
-.btn-add {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #2563eb;
-  color: white;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: none;
-}
-.table-header-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 14px;
-}
-
-.orders-table-section {
-  width: 100%;
-}
-/* ใช้ในตรวจสอบคำสั่งซื้อ */
-.status.cancel {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-/* ปุ่มดูรายละเอียดในตาราง */
-.btn-detail {
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  color: #111827;
-}
-
-.btn-detail:hover {
-  background: #e5e7eb;
-}
-
-/* ==========================
-   MODAL รายละเอียดคำสั่งซื้อ
-========================== */
-
-.order-detail-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 60;
-}
-
-.order-detail-modal {
-  width: 520px;
-  max-width: 90%;
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.4);
-  padding: 20px 22px 18px;
-  position: relative;
-}
-
-/* header */
-.order-detail-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.order-detail-modal-header h2 {
-  font-size: 16px;
-  font-weight: 700;
-  color: #111827;
-  margin: 0;
-}
-
-.order-detail-close-icon {
-  border: none;
-  background: #f3f4f6;
-  width: 26px;
-  height: 26px;
-  border-radius: 999px;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  color: #6b7280;
-}
-
-/* body */
-.order-detail-modal-body {
-  font-size: 13px;
-  color: #374151;
-}
-
-.order-detail-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 8px;
-}
-
-.order-detail-row > div {
-  flex: 1;
-}
-
-.od-label {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 2px;
-}
-
-.od-value {
-  font-size: 13px;
-  color: #111827;
-}
-
-/* chip วิธีชำระ */
-.od-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #f3f4f6;
-  font-size: 12px;
-}
-
-/* divider + total */
-.order-detail-divider {
-  border: none;
-  border-top: 1px solid #e5e7eb;
-  margin: 10px 0;
-}
-
-.order-detail-total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  color: #111827;
-  margin-bottom: 4px;
-}
-
-.order-detail-total-amount {
-  font-size: 18px;
-  font-weight: 700;
-  color: #2563eb;
-}
-
-/* footer actions */
-.order-detail-modal-actions {
-  margin-top: 10px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.order-detail-close-btn {
-  border: none;
   border-radius: 999px;
   padding: 7px 16px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  background: #f9fafb;
-  color: #374151;
-  border: 1px solid #e5e7eb;
+  border: none;
 }
 
-.order-detail-close-btn:hover {
+.btn-cancel {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.btn-cancel:hover {
   background: #e5e7eb;
 }
-/* ==========================
-   LOGS – Search + Filters row
-========================== */
 
+.btn-save {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn-save:hover {
+  background: #1d4ed8;
+}
+
+/* ==========================
+   LOGs – ของหน้าอื่น (คงไว้)
+========================== */
 .logs-filters-row {
   display: flex;
   justify-content: space-between;
@@ -476,7 +426,6 @@
   margin-bottom: 18px;
 }
 
-/* ฝั่งซ้าย: ช่องค้นหา + ข้อความ "พบ xx รายการ" */
 .logs-search-wrapper {
   flex: 1;
   display: flex;
@@ -520,13 +469,11 @@
   color: #111827;
 }
 
-/* ฝั่งขวา: กลุ่มฟิลเตอร์ 2 อัน เรียงแนวนอน */
 .logs-filter-group {
   display: flex;
   gap: 10px;
 }
 
-/* กล่อง select + icon filter */
 .logs-filter-select {
   position: relative;
   display: flex;
@@ -545,16 +492,12 @@
   font-size: 13px;
   color: #111827;
   width: auto;
-
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-
-  /* เผื่อช่องว่างด้านขวาหน่อย จะไม่ทับกับลูกศรที่เราวาดเอง */
   padding-right: 18px;
 }
 
-/* icon filter ด้านซ้าย */
 .logs-filter-icon {
   position: absolute;
   left: 10px;
@@ -562,7 +505,6 @@
   color: #6b7280;
 }
 
-/* ลูกศรลงด้านขวา */
 .logs-filter-select::after {
   content: "▾";
   position: absolute;
@@ -571,7 +513,9 @@
   color: #6b7280;
 }
 
-/* มือถือ / หน้าจอแคบ: ให้ฟิลเตอร์ลงบรรทัดใหม่ */
+/* ==========================
+   Responsive
+========================== */
 @media (max-width: 960px) {
   .logs-filters-row {
     flex-direction: column;
@@ -584,5 +528,21 @@
 
   .logs-filter-select {
     flex: 1;
+  }
+
+  .orders-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .orders-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .orders-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }

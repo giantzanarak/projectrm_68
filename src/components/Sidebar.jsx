@@ -49,7 +49,7 @@ export default function Sidebar() {
           <li className={isActive("/") || isActive("/dashboard") ? "active" : ""}>
             <Link to="/">
               <FiGrid className="icon" />
-              หน้าแรก
+              แดชบอร์ด
             </Link>
           </li>
 

@@ -1,5 +1,5 @@
 // src/pages/Products.jsx
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { FiSearch, FiFilter, FiBox, FiArchive, FiLayers } from "react-icons/fi";
 
 import ProductCard from "../components/ProductCard";
@@ -7,28 +7,154 @@ import AddProductModal from "../components/modals/AddProductModal";
 import EditProductModal from "../components/modals/EditProductModal";
 import ProductDetailModal from "../components/modals/ProductDetailModal";
 
-/* API */
-import {
-  fetchProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-} from "../api/productsApi";
-
-import { fetchFabrics } from "../api/fabricApi"; // ดึงจากตาราง Fabric
-import { fetchStocks } from "../api/stocksApi";   // ดึงจากตาราง Stock
-
 /* STYLES */
 import "../styles/products.css";
 import "../styles/modal.css";
+
+/* ================= MOCK DATA (ไม่พึ่ง backend) ================= */
+
+const MOCK_PRODUCTS = [
+  {
+    id: "P001",
+    name: "ชุดไทยจักรพรรดิ ผ้าไหมแท้",
+    type: "ชุดสำเร็จรูป",
+    pattern: "ลายดอกประจำยาม",
+    price: 4500,
+    stock: 5,
+    image:
+      "https://i.pinimg.com/1200x/b7/6c/1b/b76c1b9fbab0528a0993c8c1e04910b7.jpg",
+  },
+  {
+    id: "P002",
+    name: "ชุดไทยบรมพิมาน สีครามทอง",
+    type: "ชุดสำเร็จรูป",
+    pattern: "ลายกนกใบเทศ",
+    price: 5200,
+    stock: 3,
+    image:
+      "https://i.pinimg.com/736x/ad/1a/32/ad1a32e535731d7a55d1c30ace6460b4.jpg",
+  },
+  {
+    id: "P003",
+    name: "ชุดไทยอมรินทร์ ผ้าไหมทอยกลาย",
+    type: "ชุดสำเร็จรูป",
+    pattern: "ลายโบราณ",
+    price: 4800,
+    stock: 4,
+    image:
+      "https://i.pinimg.com/1200x/f1/e9/6d/f1e96db21aa7fe21a6674eb3c86c06fa.jpg",
+  },
+  {
+    id: "P004",
+    name: "ผ้าซิ่นมัดหมี่ลายขอเจ้าฟ้า",
+    type: "ผ้าซิ่นสำเร็จรูป",
+    pattern: "มัดหมี่",
+    price: 3500,
+    stock: 8,
+    image:
+      "https://i.pinimg.com/736x/f5/a0/a6/f5a0a6c40303547575ce07fe9b67145e.jpg",
+  },
+  {
+    id: "P005",
+    name: "ผ้าฝ้ายทอมือย้อมคราม",
+    type: "ผ้าพับเมตร",
+    pattern: "ลายทาง",
+    price: 650,
+    stock: 20,
+    image:
+      "https://i.pinimg.com/736x/5e/6d/ea/5e6dea1fb63f9ea50f53e9f01d918993.jpg",
+  },
+  {
+    id: "P006",
+    name: "ผ้าไหมแท้ลายดอกพิกุล",
+    type: "ผ้าพับเมตร",
+    pattern: "ลายดอก",
+    price: 1200,
+    stock: 12,
+    image:
+      "https://i.pinimg.com/736x/1c/7b/1e/1c7b1e5f42ddfa5b4d116d1d2372a8e2.jpg",
+  },
+];
+
+const MOCK_FABRICS = [
+  {
+    id: "F001",
+    name: "ผ้าไหมมัดหมี่ลายโบราณ",
+    width_cm: 100,
+    weight_gm: 120,
+    thickness_mm: 0.35,
+    status: "พร้อมใช้",
+  },
+  {
+    id: "F002",
+    name: "ผ้าฝ้ายทอมือย้อมคราม",
+    width_cm: 90,
+    weight_gm: 180,
+    thickness_mm: 0.45,
+    status: "พร้อมใช้",
+  },
+  {
+    id: "F003",
+    name: "ผ้าไหมยกดอกทอง",
+    width_cm: 100,
+    weight_gm: 150,
+    thickness_mm: 0.4,
+    status: "ต้องตรวจสอบ",
+  },
+  {
+    id: "F004",
+    name: "ผ้าขิดลายดอกแก้ว",
+    width_cm: 80,
+    weight_gm: 200,
+    thickness_mm: 0.5,
+    status: "พร้อมใช้",
+  },
+];
+
+const MOCK_STOCKS = [
+  {
+    id: "S001",
+    name: "เสื้อแขวนไม้",
+    category: "อุปกรณ์หน้าร้าน",
+    quantity: 50,
+    location: "คลังหลัก - ชั้น A1",
+    status: "เพียงพอ",
+  },
+  {
+    id: "S002",
+    name: "ถุงกระดาษลายร้าน (ใหญ่)",
+    category: "บรรจุภัณฑ์",
+    quantity: 25,
+    location: "คลังหลัก - ชั้น B2",
+    status: "ใกล้หมด",
+  },
+  {
+    id: "S003",
+    name: "ถุงกระดาษลายร้าน (เล็ก)",
+    category: "บรรจุภัณฑ์",
+    quantity: 0,
+    location: "คลังหลัก - ชั้น B3",
+    status: "หมด",
+  },
+  {
+    id: "S004",
+    name: "ริบบิ้นผูกของขวัญ สีทอง",
+    category: "อุปกรณ์แพ็กของ",
+    quantity: 12,
+    location: "คลังย่อยหน้าร้าน",
+    status: "ใกล้หมด",
+  },
+];
+
+/* ================= COMPONENT ================= */
 
 export default function Products() {
   // ---------- TAB ----------
   const [activeTab, setActiveTab] = useState("products");
 
-  // ---------- PRODUCTS (ตาราง products) ----------
-  const [products, setProducts] = useState([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
+  // ---------- PRODUCTS (ใช้ mock) ----------
+  const [products, setProducts] = useState(MOCK_PRODUCTS);
+  const [loadingProducts] = useState(false);
 
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -37,155 +163,33 @@ export default function Products() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ---------- FABRIC (ตาราง Fabric) ----------
-  const [fabrics, setFabrics] = useState([]);
-  const [loadingFabrics, setLoadingFabrics] = useState(true);
+  // ---------- FABRIC (mock) ----------
+  const [fabrics] = useState(MOCK_FABRICS);
+  const [loadingFabrics] = useState(false);
 
-  // ---------- STOCK (ตาราง Stock) ----------
-  const [stocks, setStocks] = useState([]);
-  const [loadingStocks, setLoadingStocks] = useState(true);
+  // ---------- STOCK (mock) ----------
+  const [stocks] = useState(MOCK_STOCKS);
+  const [loadingStocks] = useState(false);
 
-  // โหลดข้อมูลครั้งแรก
-  useEffect(() => {
-    loadProducts();
-    loadFabrics();
-    loadStocks();
-  }, []);
-
-  // ---------------- PRODUCTS ----------------
-  const loadProducts = async () => {
-    try {
-      setLoadingProducts(true);
-      const data = await fetchProducts();
-      setProducts(data || []);
-    } catch (err) {
-      console.error("โหลดข้อมูล products ผิดพลาด:", err);
-      alert("โหลดข้อมูลผลิตภัณฑ์ไม่สำเร็จ");
-    } finally {
-      setLoadingProducts(false);
-    }
+  // ---------- CRUD PRODUCTS (แก้เฉพาะ state ไม่ยิง API) ----------
+  const handleAddProduct = (newProduct) => {
+    // ถ้าไม่มี id ให้ generate จากเวลา
+    const id = newProduct.id || `P${Date.now()}`;
+    const created = { ...newProduct, id };
+    setProducts((prev) => [...prev, created]);
+    setShowAdd(false);
   };
 
-  // ---------------- FABRICS ----------------
-  const loadFabrics = async () => {
-    try {
-      setLoadingFabrics(true);
-      const data = await fetchFabrics(); // raw จาก PHP
-
-      // 👇 แมป field ให้ตรงกับที่ JSX ใช้
-      const mapped = (data || []).map((row) => ({
-        id: row.id || row.idFabric || row.fabric_id,
-        name: row.name || row.fabric_name || row.details || "-",
-        type: row.type || row.category || row.fabric_type || "-",
-        width_cm:
-          row.width_cm ||
-          row.width ||
-          row.fabric_width_cm ||
-          row.fabric_width ||
-          "-",
-        status:
-          row.status ||
-          (row.active === 0 || row.active === "0"
-            ? "ไม่พร้อมใช้"
-            : "พร้อมใช้"),
-      }));
-
-      setFabrics(mapped);
-    } catch (err) {
-      console.error("โหลดข้อมูล Fabric ผิดพลาด:", err);
-      alert("โหลดข้อมูลสต็อกผ้าไม่สำเร็จ");
-    } finally {
-      setLoadingFabrics(false);
-    }
+  const handleEditProduct = (updatedProduct) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+    setShowEdit(false);
   };
 
-  // ---------------- STOCKS ----------------
-  const loadStocks = async () => {
-    try {
-      setLoadingStocks(true);
-      const data = await fetchStocks(); // raw จาก PHP
-      console.log("stocks from API:", data);
-
-      const mapped = (data || []).map((row) => {
-        // แปลงจำนวนให้เป็นตัวเลขก่อน
-        const qty = Number(
-          row.quantity ||
-            row.qty ||
-            row.amount ||
-            row.remain_qty ||
-            0
-        );
-        const minQty = Number(row.min_qty || row.minimum || 0);
-
-        let status = row.status;
-        if (!status) {
-          if (qty <= 0) status = "หมด";
-          else if (qty <= minQty && minQty > 0) status = "ใกล้หมด";
-          else status = "เพียงพอ";
-        }
-
-        return {
-          id: row.id || row.idStock || row.stock_id,
-          name:
-            row.name ||
-            row.product_name ||
-            row.item_name ||
-            `Stock #${row.id || row.idStock}`,
-          category: row.category || row.type || row.stock_type || "-",
-          quantity: qty,
-          location: row.location || row.warehouse || row.position || "-",
-          status,
-        };
-      });
-
-      setStocks(mapped);
-    } catch (err) {
-      console.error("โหลดข้อมูล Stock ผิดพลาด:", err);
-      alert("โหลดข้อมูลคลังสินค้าไม่สำเร็จ");
-    } finally {
-      setLoadingStocks(false);
-    }
-  };
-
-  // ---------- CRUD PRODUCTS ----------
-  const handleAddProduct = async (newProduct) => {
-    try {
-      const res = await createProduct(newProduct);
-      const created = {
-        ...newProduct,
-        id: res.id ? res.id.toString() : newProduct.id,
-      };
-      setProducts((prev) => [...prev, created]);
-      setShowAdd(false);
-    } catch (err) {
-      console.error("เพิ่มผลิตภัณฑ์ผิดพลาด:", err);
-      alert("เพิ่มผลิตภัณฑ์ไม่สำเร็จ");
-    }
-  };
-
-  const handleEditProduct = async (updatedProduct) => {
-    try {
-      await updateProduct(updatedProduct);
-      setProducts((prev) =>
-        prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
-      );
-      setShowEdit(false);
-    } catch (err) {
-      console.error("แก้ไขผลิตภัณฑ์ผิดพลาด:", err);
-      alert("แก้ไขผลิตภัณฑ์ไม่สำเร็จ");
-    }
-  };
-
-  const handleDeleteProduct = async (id) => {
+  const handleDeleteProduct = (id) => {
     if (!window.confirm("ต้องการลบผลิตภัณฑ์นี้หรือไม่?")) return;
-
-    try {
-      await deleteProduct(id);
-      setProducts((prev) => prev.filter((p) => p.id !== id));
-    } catch (err) {
-      console.error("ลบผลิตภัณฑ์ผิดพลาด:", err);
-      alert("ลบผลิตภัณฑ์ไม่สำเร็จ");
-    }
+    setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
   // ---------- Filter แท็บผลิตภัณฑ์สำเร็จรูป ----------
@@ -343,56 +347,56 @@ export default function Products() {
         </>
       )}
 
-            {/* ========== TAB 2 : สต็อกผ้า (Fabric) ========== */}
-{activeTab === "fabrics" && (
-  <div className="fabric-stock-section">
-    {loadingFabrics ? (
-      <div className="loading-text">กำลังโหลดข้อมูลสต็อกผ้า...</div>
-    ) : (
-      <div className="fabric-table-wrapper">
-        <table className="fabric-table">
-          <thead>
-            <tr>
-              <th>รหัสผ้า</th>
-              <th>ชื่อผ้า</th>
-              <th>ความกว้าง (ซม.)</th>
-              <th>น้ำหนัก (g/m²)</th>
-              <th>ความหนา (มม.)</th>
-              <th>สถานะ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {fabrics.map((f) => (
-              <tr key={f.id}>
-                <td>{f.id}</td>
-                <td>{f.name}</td>
-                <td>{f.width_cm}</td>
-                <td>{f.weight_gm}</td>
-                <td>{f.thickness_mm}</td>
-                <td>{f.status}</td>
-              </tr>
-            ))}
+      {/* ========== TAB 2 : สต็อกผ้า (Fabric) ========== */}
+      {activeTab === "fabrics" && (
+        <div className="fabric-stock-section">
+          {loadingFabrics ? (
+            <div className="loading-text">กำลังโหลดข้อมูลสต็อกผ้า...</div>
+          ) : (
+            <div className="fabric-table-wrapper">
+              <table className="fabric-table">
+                <thead>
+                  <tr>
+                    <th>รหัสผ้า</th>
+                    <th>ชื่อผ้า</th>
+                    <th>ความกว้าง (ซม.)</th>
+                    <th>น้ำหนัก (g/m²)</th>
+                    <th>ความหนา (มม.)</th>
+                    <th>สถานะ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fabrics.map((f) => (
+                    <tr key={f.id}>
+                      <td>{f.id}</td>
+                      <td>{f.name}</td>
+                      <td>{f.width_cm}</td>
+                      <td>{f.weight_gm}</td>
+                      <td>{f.thickness_mm}</td>
+                      <td>{f.status}</td>
+                    </tr>
+                  ))}
 
-            {fabrics.length === 0 && (
-              <tr>
-                <td colSpan={6} style={{ textAlign: "center" }}>
-                  ยังไม่มีข้อมูลผ้าในคลัง (Fabric)
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    )}
-  </div>
-)}
+                  {fabrics.length === 0 && (
+                    <tr>
+                      <td colSpan={6} style={{ textAlign: "center" }}>
+                        ยังไม่มีข้อมูลผ้าในคลัง (Fabric)
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ========== TAB 3 : คลังสินค้า (Stock) ========== */}
       {activeTab === "stock" && (
         <div className="warehouse-section">
           <div className="warehouse-hint">
-            มุมมองคลังสินค้าแสดงข้อมูลจากตาราง <b>Stock</b> ใช้ดูว่ารายการไหนใกล้หมด
-            และควรจัดซื้อเพิ่ม
+            มุมมองคลังสินค้าแสดงข้อมูลจากรายการอุปกรณ์และบรรจุภัณฑ์
+            ใช้ดูว่ารายการไหนใกล้หมดและควรจัดซื้อเพิ่ม
           </div>
 
           {loadingStocks ? (
@@ -437,7 +441,7 @@ export default function Products() {
                   {stocks.length === 0 && (
                     <tr>
                       <td colSpan={6} style={{ textAlign: "center" }}>
-                        ยังไม่มีข้อมูลในตาราง Stock
+                        ยังไม่มีข้อมูลในรายการสต็อก
                       </td>
                     </tr>
                   )}
