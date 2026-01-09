@@ -1,3 +1,4 @@
+// src/pages/CheckOrders.jsx
 import React, { useState } from "react";
 import "../css/CheckOrders.css";
 
@@ -67,13 +68,10 @@ function StatCard({ icon, label, value, bg }) {
   );
 }
 
-
 // ---------------- MAIN PAGE ----------------
 export default function CheckOrders() {
-  const [statusFilter, setStatusFilter] = useState("ทุกสถานะ");
   const [paymentFilter, setPaymentFilter] = useState("ทุกวิธีชำระ");
   const [query, setQuery] = useState("");
-  const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showPayMenu, setShowPayMenu] = useState(false);
 
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -85,45 +83,59 @@ export default function CheckOrders() {
       o.customer.includes(query) ||
       o.phone.includes(query);
 
-    const matchStatus =
-      statusFilter === "ทุกสถานะ" || o.status === statusFilter;
-
     const matchPayment =
       paymentFilter === "ทุกวิธีชำระ" || o.payMethod === paymentFilter;
 
-    return matchQuery && matchStatus && matchPayment;
+    return matchQuery && matchPayment;
   });
 
   return (
     <div className="checkorders-page">
-
       {/* ===== HEADER ===== */}
       <h2 className="co-title">ตรวจสอบคำสั่งซื้อ</h2>
       <p className="co-subtitle">จัดการคำสั่งซื้อทั้งหมดของร้าน</p>
 
       {/* ===== STAT CARDS ===== */}
       <div className="co-stat-grid">
-        <StatCard icon="/pics/box.png" label="คำสั่งซื้อทั้งหมด" 
-                    value={mockOrders.length} bg="#f1f5f9" />
+        <StatCard
+          icon="/pics/box.png"
+          label="คำสั่งซื้อทั้งหมด"
+          value={mockOrders.length}
+          bg="#f1f5f9"
+        />
 
-        <StatCard icon="/pics/success.png" label="สำเร็จ" 
-                    value={mockOrders.filter(o => o.status === 'สำเร็จ').length} 
-                    bg="#dcfce7" />
+        <StatCard
+          icon="/pics/success.png"
+          label="สำเร็จ"
+          value={mockOrders.filter((o) => o.status === "สำเร็จ").length}
+          bg="#dcfce7"
+        />
 
-        <StatCard icon="/pics/time.png" label="รอดำเนินการ" 
-                    value={mockOrders.filter(o => o.status === 'รอดำเนินการ').length} 
-                    bg="#fef9c3" />
+        <StatCard
+          icon="/pics/time.png"
+          label="รอดำเนินการ"
+          value={
+            mockOrders.filter((o) => o.status === "รอดำเนินการ").length
+          }
+          bg="#fef9c3"
+        />
 
-        <StatCard icon="/pics/money2.png" label="ยอดขายรวม" 
-                    value={"฿" + mockOrders.reduce((sum, o) => sum + o.total, 0).toLocaleString()} 
-                    bg="#e0f2fe" />
+        <StatCard
+          icon="/pics/money2.png"
+          label="ยอดขายรวม"
+          value={
+            "฿" +
+            mockOrders
+              .reduce((sum, o) => sum + o.total, 0)
+              .toLocaleString()
+          }
+          bg="#e0f2fe"
+        />
       </div>
 
-
-      {/* ===== FILTER BAR ===== */}
+      {/* ===== FILTER BAR (เหลือแค่วิธีชำระ) ===== */}
       <div className="co-filter-bar-wrapper">
         <div className="co-filter-bar">
-
           {/* Search */}
           <input
             type="text"
@@ -133,41 +145,11 @@ export default function CheckOrders() {
             onChange={(e) => setQuery(e.target.value)}
           />
 
-          {/* Filter: Status */}
-          <div
-            className="co-dropdown"
-            onClick={() => {
-              setShowStatusMenu(!showStatusMenu);
-              setShowPayMenu(false);
-            }}
-          >
-            <span>{statusFilter}</span>
-            <span>⌄</span>
-
-            {showStatusMenu && (
-              <div className="co-dropdown-menu">
-                {["ทุกสถานะ", "สำเร็จ", "รอดำเนินการ", "ยกเลิก"].map((item) => (
-                  <div
-                    key={item}
-                    className="co-dropdown-item"
-                    onClick={() => {
-                      setStatusFilter(item);
-                      setShowStatusMenu(false);
-                    }}
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Filter: Payment */}
           <div
             className="co-dropdown"
             onClick={() => {
               setShowPayMenu(!showPayMenu);
-              setShowStatusMenu(false);
             }}
           >
             <span>{paymentFilter}</span>
@@ -175,27 +157,31 @@ export default function CheckOrders() {
 
             {showPayMenu && (
               <div className="co-dropdown-menu">
-                {["ทุกวิธีชำระ", "เงินสด", "บัตรเครดิต", "โอนเงิน"].map((item) => (
-                  <div
-                    key={item}
-                    className="co-dropdown-item"
-                    onClick={() => {
-                      setPaymentFilter(item);
-                      setShowPayMenu(false);
-                    }}
-                  >
-                    {item}
-                  </div>
-                ))}
+                {["ทุกวิธีชำระ", "เงินสด", "บัตรเครดิต", "โอนเงิน"].map(
+                  (item) => (
+                    <div
+                      key={item}
+                      className="co-dropdown-item"
+                      onClick={() => {
+                        setPaymentFilter(item);
+                        setShowPayMenu(false);
+                      }}
+                    >
+                      {item}
+                    </div>
+                  )
+                )}
               </div>
             )}
           </div>
         </div>
 
-        <p className="co-result-count">พบ <b>{filteredOrders.length}</b> รายการ</p>
+        <p className="co-result-count">
+          พบ <b>{filteredOrders.length}</b> รายการ
+        </p>
       </div>
 
-      {/* ===== ORDER TABLE ===== */}
+      {/* ===== ORDER TABLE (ตัดคอลัมน์สถานะออก) ===== */}
       <table className="co-table">
         <thead>
           <tr>
@@ -206,7 +192,6 @@ export default function CheckOrders() {
             <th>จำนวนสินค้า</th>
             <th>ยอดรวม</th>
             <th>การชำระ</th>
-            <th>สถานะ</th>
             <th>การจัดการ</th>
           </tr>
         </thead>
@@ -222,11 +207,6 @@ export default function CheckOrders() {
               <td>฿{o.total.toLocaleString()}</td>
               <td>{o.payMethod}</td>
               <td>
-                <span className={`co-status-badge ${o.status}`}>
-                  {o.status}
-                </span>
-              </td>
-              <td>
                 <button
                   className="co-detail-btn"
                   onClick={() => setSelectedOrder(o)}
@@ -239,19 +219,36 @@ export default function CheckOrders() {
         </tbody>
       </table>
 
-      {/* ===== DETAIL MODAL ===== */}
+      {/* ===== DETAIL MODAL (เอาบรรทัดสถานะออก) ===== */}
       {selectedOrder && (
-        <div className="co-modal-overlay" onClick={() => setSelectedOrder(null)}>
+        <div
+          className="co-modal-overlay"
+          onClick={() => setSelectedOrder(null)}
+        >
           <div className="co-modal" onClick={(e) => e.stopPropagation()}>
             <h3>รายละเอียดคำสั่งซื้อ</h3>
-            <p><b>เลขที่คำสั่งซื้อ:</b> {selectedOrder.id}</p>
-            <p><b>วันที่-เวลา:</b> {selectedOrder.datetime}</p>
-            <p><b>ลูกค้า:</b> {selectedOrder.customer}</p>
-            <p><b>เบอร์โทร:</b> {selectedOrder.phone}</p>
-            <p><b>จำนวนสินค้า:</b> {selectedOrder.items}</p>
-            <p><b>ยอดรวม:</b> ฿{selectedOrder.total.toLocaleString()}</p>
-            <p><b>การชำระ:</b> {selectedOrder.payMethod}</p>
-            <p><b>สถานะ:</b> {selectedOrder.status}</p>
+            <p>
+              <b>เลขที่คำสั่งซื้อ:</b> {selectedOrder.id}
+            </p>
+            <p>
+              <b>วันที่-เวลา:</b> {selectedOrder.datetime}
+            </p>
+            <p>
+              <b>ลูกค้า:</b> {selectedOrder.customer}
+            </p>
+            <p>
+              <b>เบอร์โทร:</b> {selectedOrder.phone}
+            </p>
+            <p>
+              <b>จำนวนสินค้า:</b> {selectedOrder.items}
+            </p>
+            <p>
+              <b>ยอดรวม:</b>{" "}
+              ฿{selectedOrder.total.toLocaleString()}
+            </p>
+            <p>
+              <b>การชำระ:</b> {selectedOrder.payMethod}
+            </p>
 
             <button
               className="co-close-btn"
@@ -262,7 +259,6 @@ export default function CheckOrders() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

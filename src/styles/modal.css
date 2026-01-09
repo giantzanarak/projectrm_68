@@ -1,82 +1,248 @@
-/* BACKDROP */
-.modal-backdrop {
+/* พื้นหลังทึบ ๆ ด้านหลัง modal */
+.modal-bg {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* กล่อง modal พื้นฐาน */
+.modal-box {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 22px 24px 20px;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.5);
+  max-width: 95vw;
+  box-sizing: border-box;
+}
+
+/* ใช้กับ Add / Edit (ขนาดกลาง) */
+.modal-box:not(.detail-modal) {
+  width: 520px;
+}
+
+/* ปุ่มปิดมุมขวาบน */
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+/* ===== modal รายละเอียดสินค้า ===== */
+
+.detail-modal {
+  position: relative;
+  width: 820px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* layout ซ้ายรูป ขวาข้อมูล */
+.detail-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* รูปสินค้า */
+.detail-image-wrap {
+  position: relative;
+  width: 260px;
+  min-width: 260px;
+  height: 360px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.detail-image {
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  object-fit: cover;
+  display: block;
 }
 
-/* MODAL BOX */
-.modal-box {
-  background: white;
-  width: 650px;          /* ← ขยายขนาดให้เท่ากับ modal รายละเอียด */
-  max-width: 90%;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
-  animation: fadeIn 0.25s ease;
+.detail-chip-id {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #111827;
+  color: #f9fafb;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-/* TITLE */
-.modal-box h2 {
-  margin-bottom: 16px;
+/* ข้อมูลด้านขวา */
+.detail-info {
+  flex: 1;
 }
 
-/* FORM CONTENT */
-.modal-body {
+.detail-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 6px;
+}
+
+.detail-sub {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 14px;
+}
+
+/* grid ข้อมูล 2 คอลัมน์ */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  margin-bottom: 12px;
+}
+
+.detail-field {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
 }
 
-/* INPUT */
-.modal-body input {
+.detail-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+}
+
+.detail-value.price {
+  color: #2563eb;
+}
+
+.detail-note {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* ====== ส่วนที่ใช้กับ modal อื่น (Add / Edit) ====== */
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 10px;
+}
+
+.modal-sub {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 14px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.modal-form label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 4px;
+}
+
+.modal-form input,
+.modal-form select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 9px 11px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+  outline: none;
 }
 
-/* FOOTER BUTTONS */
-.modal-footer {
-  margin-top: 16px;
+.modal-form input:focus,
+.modal-form select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
+}
+
+/* 2 คอลัมน์ (ใช้กับ modal รับของได้ด้วย) */
+.modal-form.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-buttons {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  margin-top: 18px;
 }
 
-.cancel-btn,
-.save-btn {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
+.btn-cancel,
+.btn-save {
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+  border: none;
 }
 
-.cancel-btn {
-  background: #eee;
+.btn-cancel {
+  background: #f3f4f6;
+  color: #374151;
 }
 
-.save-btn {
-  background: #4A72FF;
-  color: white;
+.btn-cancel:hover {
+  background: #e5e7eb;
 }
 
-/* ANIMATION */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+.btn-save {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn-save:hover {
+  background: #1d4ed8;
+}
+
+/* ===== responsive ===== */
+
+@media (max-width: 900px) {
+  .detail-modal {
+    width: 95vw;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .detail-layout {
+    flex-direction: column;
+  }
+
+  .detail-image-wrap {
+    width: 100%;
+    height: 280px;
   }
 }

@@ -1,79 +1,78 @@
-import { FiX } from "react-icons/fi";
-import "./ProductDetailModal.css";
+// src/components/modals/ProductDetailModal.jsx
+import React from "react";
+import "../../styles/modal.css";
 
 export default function ProductDetailModal({ product, onClose }) {
   if (!product) return null;
 
   return (
-    <div className="pd-modal-bg">
-      <div className="pd-modal-box">
+    <div className="modal-bg" onClick={onClose}>
+      <div
+        className="modal-box detail-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className="modal-close" onClick={onClose}>
+          ×
+        </button>
 
-        {/* HEADER */}
-        <div className="pd-modal-header">
-          <h2>รายละเอียดสินค้า</h2>
-          <button className="pd-close-btn" onClick={onClose}>
-            <FiX />
-          </button>
-        </div>
-
-        {/* IMAGE */}
-        <div className="pd-image-section">
-          <img src={product.image} alt={product.name} />
-        </div>
-
-        {/* INFO */}
-        <div className="pd-info">
-
-          <div className="pd-row">
-            <label>รหัสสินค้า</label>
-            <p>{product.id}</p>
+        <div className="detail-layout">
+          {/* รูปสินค้า */}
+          <div className="detail-image-wrap">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="detail-image"
+            />
+            <span className="detail-chip-id">{product.id}</span>
           </div>
 
-          <div className="pd-row">
-            <label>ชื่อสินค้า</label>
-            <p>{product.name}</p>
+          {/* ข้อมูลสินค้า */}
+          <div className="detail-info">
+            <h2 className="detail-title">{product.name}</h2>
+            <p className="detail-sub">
+              ดูรายละเอียดสินค้าและสต็อกเพื่อช่วยตัดสินใจจัดซื้อและขายหน้าร้าน
+            </p>
+
+            <div className="detail-grid">
+              <div className="detail-field">
+                <span className="detail-label">รหัสสินค้า</span>
+                <span className="detail-value">{product.id}</span>
+              </div>
+
+              <div className="detail-field">
+                <span className="detail-label">ประเภท</span>
+                <span className="detail-value">{product.type}</span>
+              </div>
+
+              <div className="detail-field">
+                <span className="detail-label">ลวดลาย</span>
+                <span className="detail-value">{product.pattern}</span>
+              </div>
+
+              <div className="detail-field">
+                <span className="detail-label">สต็อกคงเหลือ</span>
+                <span className="detail-value">{product.stock} ชิ้น</span>
+              </div>
+
+              <div className="detail-field">
+                <span className="detail-label">ราคาต่อชิ้น</span>
+                <span className="detail-value price">
+                  ฿{Number(product.price || 0).toLocaleString()}
+                </span>
+              </div>
+
+              <div className="detail-field">
+                <span className="detail-label">มูลค่าสต็อกโดยประมาณ</span>
+                <span className="detail-value">
+                  ฿{(Number(product.price || 0) * Number(product.stock || 0)).toLocaleString()}
+                </span>
+              </div>
+            </div>
+
+            <p className="detail-note">
+              สามารถแก้ไขข้อมูลสินค้าได้จากปุ่ม <strong>แก้ไข</strong> ในหน้าหลักของผลิตภัณฑ์
+            </p>
           </div>
-
-          <div className="pd-row">
-            <label>ประเภท</label>
-            <p>{product.type}</p>
-          </div>
-
-          <div className="pd-row">
-            <label>ลวดลาย</label>
-            <p>{product.pattern}</p>
-          </div>
-
-          <div className="pd-row">
-            <label>ความกว้าง</label>
-            <p>{product.width}</p>
-          </div>
-
-          <div className="pd-row">
-            <label>คงเหลือ</label>
-            <p>{product.stock} เมตร</p>
-          </div>
-
-          <div className="pd-row">
-            <label>ราคาม้วน</label>
-            <p>฿{product.price}</p>
-          </div>
-
-          <div className="pd-row">
-            <label>คลัง</label>
-            <p>{product.location}</p>
-          </div>
-
-          <div className="pd-row">
-            <label>สถานะสต็อก</label>
-            <p>{product.status}</p>
-          </div>
-
-        </div>
-
-        {/* BUTTON */}
-        <div className="pd-footer">
-          <button className="pd-close-footer" onClick={onClose}>ปิด</button>
         </div>
       </div>
     </div>

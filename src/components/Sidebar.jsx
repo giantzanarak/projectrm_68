@@ -28,7 +28,6 @@ export default function Sidebar() {
     navigate("/login", { replace: true });
   };
 
-  // ยังไม่ล็อกอิน
   if (role === "guest") {
     return (
       <aside className="sidebar">
@@ -45,7 +44,7 @@ export default function Sidebar() {
     <aside className="sidebar">
       <div className="sidebar-top">
         <ul className="menu">
-          {/* ✅ หน้าแรก — admin + staff */}
+          {/* หน้าแรก */}
           <li className={isActive("/") || isActive("/dashboard") ? "active" : ""}>
             <Link to="/">
               <FiGrid className="icon" />
@@ -53,7 +52,7 @@ export default function Sidebar() {
             </Link>
           </li>
 
-          {/* ✅ เมนูเฉพาะ superadmin เท่านั้น */}
+          {/* เมนู superadmin */}
           {role === "superadmin" && (
             <>
               <li className={isActive("/products") ? "active" : ""}>
@@ -93,7 +92,7 @@ export default function Sidebar() {
             </>
           )}
 
-          {/* ✅ เมนูที่ admin + staff ใช้ร่วมกัน (5 หน้า) */}
+          {/* เมนู staff+admin */}
           <li className={isActive("/staff/neworder") ? "active" : ""}>
             <Link to="/staff/neworder">
               <FiShoppingCart className="icon" />
@@ -118,15 +117,16 @@ export default function Sidebar() {
           <li className={isActive("/staff/sales-report") ? "active" : ""}>
             <Link to="/staff/sales-report">
               <FiFileText className="icon" />
-              รายงานยอดขาย
+              xxxxxxxx
             </Link>
           </li>
         </ul>
-      </div>
 
-      <button className="logout-btn" onClick={handleLogout}>
-        ออกจากระบบ
-      </button>
+        {/* 🔻 ปุ่มออกจากระบบจะมาติดกับรายงานยอดขายเลย */}
+        <button className="logout-btn" onClick={handleLogout}>
+          ออกจากระบบ
+        </button>
+      </div>
     </aside>
   );
 }

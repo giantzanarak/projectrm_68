@@ -201,8 +201,8 @@ export default function Orders() {
 
       {/* SUMMARY */}
       <div className="orders-summary-grid">
-        <div className="summary-card">
-          <span className="icon-box purple">
+        <div className="orders-card">
+          <span className="orders-icon purple">
             <FiCalendar />
           </span>
           <div>
@@ -211,24 +211,24 @@ export default function Orders() {
           </div>
         </div>
 
-        <div className="summary-card">
-          <span className="icon-box green">✔</span>
+        <div className="orders-card">
+          <span className="orders-icon green">✔</span>
           <div>
             <p className="sum-title">รับครบแล้ว</p>
             <h2>{receivedCount}</h2>
           </div>
         </div>
 
-        <div className="summary-card">
-          <span className="icon-box yellow">⏱</span>
+        <div className="orders-card">
+          <span className="orders-icon yellow">⏱</span>
           <div>
             <p className="sum-title">รอสินค้า</p>
             <h2>{waitingCount}</h2>
           </div>
         </div>
 
-        <div className="summary-card">
-          <span className="icon-box blue">$</span>
+        <div className="orders-card">
+          <span className="orders-icon blue">$</span>
           <div>
             <p className="sum-title">มูลค่ารวม</p>
             <h2>฿{totalValue.toLocaleString()}</h2>
@@ -336,7 +336,7 @@ export default function Orders() {
         </div>
       )}
 
-      {/* TAB: ซัพพลายเออร์ – แสดงเป็น “ตาราง” */}
+      {/* TAB: ซัพพลายเออร์ */}
       {tab === "suppliers" && (
         <div className="suppliers-table-wrapper">
           <div className="orders-table suppliers-table">
@@ -477,8 +477,6 @@ export default function Orders() {
                 />
               </div>
             </div>
-
-           
 
             <div className="modal-buttons">
               <button className="btn-cancel" onClick={closeReceiveModal}>

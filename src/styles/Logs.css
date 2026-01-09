@@ -1,0 +1,257 @@
+/* =========================
+   LOGS PAGE – LAYOUT BASE
+========================= */
+
+.logs-page {
+  /* ปล่อยให้ orders-page จัด padding/main layout */
+}
+
+/* =========================
+   SUMMARY CARDS ด้านบน
+========================= */
+
+.logs-page .orders-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 220px); /* การ์ดไม่กว้างเกินไป */
+  gap: 16px;
+  align-items: stretch;
+  justify-content: flex-start; /* ไม่ต้องกินเต็มจอ */
+  margin-bottom: 24px;
+}
+
+.logs-page .summary-card {
+  min-height: 130px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logs-page .summary-card .icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.logs-page .sum-title {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.logs-page .summary-card h2 {
+  font-size: 26px;
+  margin-top: 4px;
+  font-weight: 700;
+}
+
+/* สี icon ตามสถานะ (ใช้ร่วมกับ orders.css ได้) */
+.logs-page .icon-box.purple {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+.logs-page .icon-box.green {
+  background: #e6fbe7;
+  color: #16a34a;
+}
+.logs-page .icon-box.yellow {
+  background: #fef3c7;
+  color: #d97706;
+}
+.logs-page .icon-box.red {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .logs-page .orders-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 768px) {
+  .logs-page .orders-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   SEARCH + FILTER ROW
+========================= */
+
+.logs-filters-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.logs-search-wrapper {
+  flex: 1;
+}
+
+.logs-search-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 8px 14px;
+  border: 1px solid #e5e7eb;
+}
+
+.logs-search-icon {
+  font-size: 18px;
+  color: #9ca3af;
+}
+
+.logs-search-input input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+}
+
+.logs-result-count {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* FILTER SELECTS */
+
+.logs-filter-group {
+  display: flex;
+  gap: 10px;
+}
+
+.logs-filter-select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 6px 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.logs-filter-icon {
+  font-size: 16px;
+  color: #9ca3af;
+}
+
+.logs-filter-select select {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+}
+
+/* มือถือ */
+@media (max-width: 768px) {
+  .logs-filters-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .logs-filter-group {
+    justify-content: flex-start;
+  }
+}
+
+/* =========================
+   TABLE SECTION
+========================= */
+
+.logs-table-section {
+  margin-top: 10px;
+}
+
+.logs-table-card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  padding: 18px 20px 10px;
+}
+
+.logs-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.logs-table-header .table-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+/* ใช้กับ wrapper table เดิม */
+.logs-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.logs-table thead tr {
+  background: #f9fafb;
+}
+
+.logs-table th,
+.logs-table td {
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.logs-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.logs-table tbody tr:hover {
+  background: #eef2ff;
+}
+
+/* pill แสดงบทบาท / โมดูล */
+
+.role-pill,
+.module-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.role-pill {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.module-pill {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* เซลล์รายละเอียด */
+.log-detail-cell {
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* แถวว่าง */
+.logs-empty {
+  text-align: center;
+  padding: 20px 0;
+  color: #9ca3af;
+  font-size: 14px;
+}

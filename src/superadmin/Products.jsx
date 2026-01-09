@@ -171,9 +171,8 @@ export default function Products() {
   const [stocks] = useState(MOCK_STOCKS);
   const [loadingStocks] = useState(false);
 
-  // ---------- CRUD PRODUCTS (แก้เฉพาะ state ไม่ยิง API) ----------
+  // ---------- CRUD PRODUCTS ----------
   const handleAddProduct = (newProduct) => {
-    // ถ้าไม่มี id ให้ generate จากเวลา
     const id = newProduct.id || `P${Date.now()}`;
     const created = { ...newProduct, id };
     setProducts((prev) => [...prev, created]);
@@ -192,7 +191,7 @@ export default function Products() {
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // ---------- Filter แท็บผลิตภัณฑ์สำเร็จรูป ----------
+  // ---------- Filter ----------
   const filteredProducts = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     if (!term) return products;
@@ -206,7 +205,7 @@ export default function Products() {
     });
   }, [products, searchTerm]);
 
-  // ---------- Summary (ใช้จาก products) ----------
+  // ---------- Summary ----------
   const totalStock = products.reduce(
     (sum, p) => sum + Number(p.stock || 0),
     0
@@ -238,37 +237,47 @@ export default function Products() {
         )}
       </div>
 
-      {/* SUMMARY CARDS (รวมจาก products) */}
+      {/* SUMMARY CARDS – ใช้คลาสใหม่ prod-summary-card */}
       <div className="products-summary-grid">
-        <div className="summary-card">
-          <span className="icon-box purple">📦</span>
-          <div>
-            <p className="sum-title">ผลิตภัณฑ์ทั้งหมด</p>
-            <h2>{products.length}</h2>
+        <div className="prod-summary-card">
+          <div className="prod-summary-icon purple">
+            <span>📦</span>
+          </div>
+          <div className="prod-summary-text">
+            <p className="prod-summary-title">ผลิตภัณฑ์ทั้งหมด</p>
+            <h2 className="prod-summary-value">{products.length}</h2>
           </div>
         </div>
 
-        <div className="summary-card">
-          <span className="icon-box green">📊</span>
-          <div>
-            <p className="sum-title">สต็อกรวม (ชิ้น)</p>
-            <h2>{totalStock}</h2>
+        <div className="prod-summary-card">
+          <div className="prod-summary-icon green">
+            <span>📊</span>
+          </div>
+          <div className="prod-summary-text">
+            <p className="prod-summary-title">สต็อกรวม (ชิ้น)</p>
+            <h2 className="prod-summary-value">{totalStock}</h2>
           </div>
         </div>
 
-        <div className="summary-card">
-          <span className="icon-box blue">💰</span>
-          <div>
-            <p className="sum-title">มูลค่าสต็อกสินค้า</p>
-            <h2>฿{totalValue.toLocaleString()}</h2>
+        <div className="prod-summary-card">
+          <div className="prod-summary-icon blue">
+            <span>💰</span>
+          </div>
+          <div className="prod-summary-text">
+            <p className="prod-summary-title">มูลค่าสต็อกสินค้า</p>
+            <h2 className="prod-summary-value">
+              ฿{totalValue.toLocaleString()}
+            </h2>
           </div>
         </div>
 
-        <div className="summary-card">
-          <span className="icon-box yellow">⚠️</span>
-          <div>
-            <p className="sum-title">สินค้าใกล้หมด</p>
-            <h2>{lowStockCount}</h2>
+        <div className="prod-summary-card">
+          <div className="prod-summary-icon yellow">
+            <span>⚠️</span>
+          </div>
+          <div className="prod-summary-text">
+            <p className="prod-summary-title">สินค้าใกล้หมด</p>
+            <h2 className="prod-summary-value">{lowStockCount}</h2>
           </div>
         </div>
       </div>
