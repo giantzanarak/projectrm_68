@@ -254,8 +254,32 @@
 /* =========================
    MODAL ภายในหน้าโปรโมชั่น
 ========================= */
+
+/* พื้นหลังเทาโปร่ง ลอยทับทั้งหน้า */
+.promo-modal-overlay {
+  position: fixed;
+  inset: 0;  /* top:0; right:0; bottom:0; left:0; */
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;      /* ⭐ กลางแนวตั้ง */
+  justify-content: center;  /* ⭐ กลางแนวนอน */
+  z-index: 50;
+}
+
+/* กล่องฟอร์ม */
+.promo-modal-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px 28px;
+  width: 580px;
+  max-width: 90vw;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+}
+
+/* ถ้าเธออยากใช้ class เดิมร่วมด้วยก็ได้ */
 .promo-modal-box {
-  max-width: 580px;
+  /* class นี้จะใช้ร่วมกับ .promo-modal-card */
+  width: 100%;
 }
 
 .promo-modal-grid {
@@ -311,4 +335,27 @@
     align-items: flex-start;
     gap: 8px;
   }
+}
+
+/* =========================
+   MODAL – ลอยกลางหน้าจอ
+========================= */
+
+.promo-modal-overlay {
+  position: fixed;
+  inset: 0; /* top/right/bottom/left = 0 */
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.promo-modal-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px 28px;
+  width: 580px;
+  max-width: 90vw;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
 }

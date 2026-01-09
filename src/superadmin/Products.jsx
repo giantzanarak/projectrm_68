@@ -1,7 +1,7 @@
 // src/pages/Products.jsx
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { FiSearch, FiFilter, FiBox, FiArchive, FiLayers } from "react-icons/fi";
-
+import { GetProducts } from "../components/api/admin"
 import ProductCard from "../components/ProductCard";
 import AddProductModal from "../components/modals/AddProductModal";
 import EditProductModal from "../components/modals/EditProductModal";
@@ -12,6 +12,8 @@ import "../styles/products.css";
 import "../styles/modal.css";
 
 /* ================= MOCK DATA (ไม่พึ่ง backend) ================= */
+
+
 
 const MOCK_PRODUCTS = [
   {
@@ -151,9 +153,9 @@ const MOCK_STOCKS = [
 export default function Products() {
   // ---------- TAB ----------
   const [activeTab, setActiveTab] = useState("products");
-
+  const [products, setproducts] = useState([])
   // ---------- PRODUCTS (ใช้ mock) ----------
-  const [products, setProducts] = useState(MOCK_PRODUCTS);
+  // const [products, setProducts] = useState(MOCK_PRODUCTS);
   const [loadingProducts] = useState(false);
 
   const [showAdd, setShowAdd] = useState(false);
@@ -218,6 +220,22 @@ export default function Products() {
     (p) => Number(p.stock || 0) < 10
   ).length;
 
+
+
+  useEffect(() => {
+    async function fecthdata() {
+      try {
+        const res = await GetProducts();
+        console.log(res)
+        setproducts(res)
+      } catch (err) {
+        console.log(err)
+      }
+
+    }
+    fecthdata()
+  }, [])
+
   // =========================== RENDER ===========================
   return (
     <div className="products-wrapper">
@@ -226,7 +244,7 @@ export default function Products() {
         <div>
           <h2 className="prod-title">จัดการผลิตภัณฑ์และคลังสินค้า</h2>
           <span className="prod-sub">
-            แยกดูสินค้าสำเร็จรูป สต็อกผ้า และคลังสินค้า เพื่อช่วยวางแผนจัดซื้อ
+
           </span>
         </div>
 
@@ -288,7 +306,7 @@ export default function Products() {
           className={activeTab === "products" ? "active" : ""}
           onClick={() => setActiveTab("products")}
         >
-          <FiBox /> ผลิตภัณฑ์สำเร็จรูป
+          <FiBox /> ผลิตภัณฑ์
         </button>
         <button
           className={activeTab === "fabrics" ? "active" : ""}
@@ -305,7 +323,13 @@ export default function Products() {
       </div>
 
       {/* ========== TAB 1 : ผลิตภัณฑ์สำเร็จรูป ========== */}
-      {activeTab === "products" && (
+
+      {/* {products.map((item) => (
+        <div key={item.id ?? item.product_id}>
+          {item.name}
+        </div>
+      ))} */}
+      {activeTab === "product s" && (
         <>
           <div className="filter-bar">
             <div className="search-box">
@@ -404,8 +428,7 @@ export default function Products() {
       {activeTab === "stock" && (
         <div className="warehouse-section">
           <div className="warehouse-hint">
-            มุมมองคลังสินค้าแสดงข้อมูลจากรายการอุปกรณ์และบรรจุภัณฑ์
-            ใช้ดูว่ารายการไหนใกล้หมดและควรจัดซื้อเพิ่ม
+
           </div>
 
           {loadingStocks ? (
@@ -433,13 +456,12 @@ export default function Products() {
                       <td>{s.location}</td>
                       <td>
                         <span
-                          className={`wh-status ${
-                            s.status === "หมด"
-                              ? "wh-danger"
-                              : s.status === "ใกล้หมด"
+                          className={`wh-status ${s.status === "หมด"
+                            ? "wh-danger"
+                            : s.status === "ใกล้หมด"
                               ? "wh-warning"
                               : "wh-ok"
-                          }`}
+                            }`}
                         >
                           {s.status}
                         </span>

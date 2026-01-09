@@ -2,10 +2,13 @@
    WRAPPER
 ========================== */
 .orders-page {
-  width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 24px 32px 32px;
+  /* จัดให้อยู่กลาง content area */
+  max-width: 1150px;       /* หรือ 1200 ตามใจชอบ */
+  margin: 0 auto;          /* ⭐ ล็อกให้อยู่กลาง */
+
+  /* padding ซ้าย-ขวาเท่ากัน */
+  padding: 32px 32px 40px 32px;
+  /* ถ้ามี margin-left / margin-right เดิมอยู่ ให้ลบออก */
 }
 
 /* ==========================
@@ -449,100 +452,66 @@
 /* ==========================
    LOGs FILTER (ถ้าใช้ร่วม)
 ========================== */
+/* ===== แถวค้นหา + ฟิลเตอร์ (Logs) ===== */
 .logs-filters-row {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-end;
   gap: 16px;
   margin-top: 16px;
-  margin-bottom: 18px;
 }
 
+/* ฝั่งค้นหา */
 .logs-search-wrapper {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 .logs-search-input {
-  position: relative;
-  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;          /* 👈 สูงเท่ากับ dropdown */
   border-radius: 999px;
   border: 1px solid #e5e7eb;
-  padding: 8px 14px 8px 36px;
+  background: #fff;
 }
 
 .logs-search-input input {
-  width: 100%;
+  flex: 1;
   border: none;
   outline: none;
-  background: transparent;
-  font-size: 13px;
-  color: #111827;
+  font-size: 14px;
 }
 
-.logs-search-input input::placeholder {
-  color: #9ca3af;
-}
-
-.logs-search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  color: #9ca3af;
-}
-
-.logs-result-count {
-  font-size: 13px;
-  font-weight: 500;
-  color: #111827;
-}
-
+/* ฝั่งฟิลเตอร์โมดูล */
 .logs-filter-group {
   display: flex;
-  gap: 10px;
+  align-items: center;
 }
 
 .logs-filter-select {
-  position: relative;
   display: flex;
   align-items: center;
-  background: #ffffff;
-  border-radius: 12px;
+  gap: 8px;
+  padding: 12px 18px;          /* 👈 ให้เท่ากับ .logs-search-input */
+  border-radius: 999px;
   border: 1px solid #e5e7eb;
-  padding: 6px 32px 6px 30px;
-  font-size: 13px;
+  background: #fff;
 }
 
 .logs-filter-select select {
   border: none;
-  outline: none;
   background: transparent;
-  font-size: 13px;
-  color: #111827;
-  width: auto;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding-right: 18px;
-}
-
-.logs-filter-icon {
-  position: absolute;
-  left: 10px;
   font-size: 14px;
-  color: #6b7280;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
 }
 
-.logs-filter-select::after {
-  content: "▾";
-  position: absolute;
-  right: 10px;
-  font-size: 11px;
-  color: #6b7280;
+.logs-search-icon,
+.logs-filter-icon {
+  font-size: 18px;
+  color: #9ca3af;
 }
 
 /* ==========================

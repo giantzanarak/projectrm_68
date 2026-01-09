@@ -1,31 +1,49 @@
 // src/context/AuthContext.jsx
-import React, { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
-// hook ไว้ใช้ใน component อื่น ๆ
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error("useAuth ต้องใช้ภายใน <AuthProvider> เท่านั้น");
-  }
-  return ctx;
-}
-
-// ✅ ต้องเป็นฟังก์ชัน component ที่รับ children
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  // โหลด user จาก localStorage ถ้ามี
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
 
-  const login = (userData) => setUser(userData);
-  const logout = () => setUser(null);
+  const login = (userData) => {
+    setUser(userData);
+
+    try {
+      localStorage.setItem("user", JSON.stringify(userData));
+      if (userData?.role) {
+        localStorage.setItem("role", userData.role);
+      } else {
+        localStorage.removeItem("role");
+      }
+    } catch {
+      // เผื่อ localStorage พังเฉย ๆ ก็ไม่ต้องทำอะไรเพิ่ม
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    try {
+      localStorage.removeItem("user");
+      localStorage.removeItem("role");
+    } catch {}
+  };
 
   const value = { user, login, logout };
 
   return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   );
 }
 
-export default AuthContext;
+export function useAuth() {
+  return useContext(AuthContext);
+}

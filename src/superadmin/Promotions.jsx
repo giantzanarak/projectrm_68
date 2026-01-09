@@ -360,92 +360,98 @@ export default function Promotions() {
 
       {/* MODAL ADD / EDIT */}
       {modalOpen && (
-        <div className="modal-backdrop">
-          <div className="modal-box promo-modal-box">
-            <h2 className="modal-title">
-              {editingPromo ? "แก้ไขโปรโมชั่น" : "เพิ่มโปรโมชั่นใหม่"}
-            </h2>
+  <div
+    className="promo-modal-overlay"
+    onClick={closeModal}          // คลิกพื้นหลัง = ปิด
+  >
+    <div
+      className="promo-modal-card promo-modal-box"
+      onClick={(e) => e.stopPropagation()}  // กันคลิกในกล่องแล้วปิด
+    >
+      <h2 className="modal-title">
+        {editingPromo ? "แก้ไขโปรโมชั่น" : "เพิ่มโปรโมชั่นใหม่"}
+      </h2>
 
-            <div className="promo-modal-grid">
-              <div className="field">
-                <label>ชื่อโปรโมชั่น</label>
-                <input
-                  name="title"
-                  value={form.title}
-                  onChange={handleFormChange}
-                  placeholder="เช่น ลดรับปีใหม่"
-                />
-              </div>
-
-              <div className="field full">
-                <label>รายละเอียด</label>
-                <input
-                  name="desc"
-                  value={form.desc}
-                  onChange={handleFormChange}
-                  placeholder="คำอธิบายสั้น ๆ"
-                />
-              </div>
-
-              <div className="field">
-                <label>ส่วนลด (%)</label>
-                <input
-                  type="number"
-                  name="discount"
-                  value={form.discount}
-                  onChange={handleFormChange}
-                  min="0"
-                  max="100"
-                />
-              </div>
-
-              <div className="field">
-                <label>สถานะ</label>
-                <select
-                  name="status"
-                  value={form.status}
-                  onChange={handleFormChange}
-                >
-                  {STATUS_OPTIONS.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="field">
-                <label>วันที่เริ่ม</label>
-                <input
-                  type="date"
-                  name="start"
-                  value={form.start}
-                  onChange={handleFormChange}
-                />
-              </div>
-
-              <div className="field">
-                <label>วันที่สิ้นสุด</label>
-                <input
-                  type="date"
-                  name="end"
-                  value={form.end}
-                  onChange={handleFormChange}
-                />
-              </div>
-            </div>
-
-            <div className="modal-footer promo-modal-footer">
-              <button className="cancel-btn" onClick={closeModal}>
-                ยกเลิก
-              </button>
-              <button className="save-btn" onClick={handleSave}>
-                บันทึก
-              </button>
-            </div>
-          </div>
+      <div className="promo-modal-grid">
+        <div className="field">
+          <label>ชื่อโปรโมชั่น</label>
+          <input
+            name="title"
+            value={form.title}
+            onChange={handleFormChange}
+            placeholder="เช่น ลดรับปีใหม่"
+          />
         </div>
-      )}
+
+        <div className="field full">
+          <label>รายละเอียด</label>
+          <input
+            name="desc"
+            value={form.desc}
+            onChange={handleFormChange}
+            placeholder="คำอธิบายสั้น ๆ"
+          />
+        </div>
+
+        <div className="field">
+          <label>ส่วนลด (%)</label>
+          <input
+            type="number"
+            name="discount"
+            value={form.discount}
+            onChange={handleFormChange}
+            min="0"
+            max="100"
+          />
+        </div>
+
+        <div className="field">
+          <label>สถานะ</label>
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleFormChange}
+          >
+            {STATUS_OPTIONS.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="field">
+          <label>วันที่เริ่ม</label>
+          <input
+            type="date"
+            name="start"
+            value={form.start}
+            onChange={handleFormChange}
+          />
+        </div>
+
+        <div className="field">
+          <label>วันที่สิ้นสุด</label>
+          <input
+            type="date"
+            name="end"
+            value={form.end}
+            onChange={handleFormChange}
+          />
+        </div>
+      </div>
+
+      <div className="modal-footer promo-modal-footer">
+        <button className="cancel-btn" onClick={closeModal}>
+          ยกเลิก
+        </button>
+        <button className="save-btn" onClick={handleSave}>
+          บันทึก
+        </button>
+      </div>
     </div>
+  </div>
+)}
+</div>
   );
 }
