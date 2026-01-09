@@ -35,6 +35,7 @@ export async function GetStock(id) {
     const response = await axios.get(
       `${api}/stock/${id}`,
     //   { email, password },
+    
       {
         headers: {
           "Content-Type": `application/json`, // ส่ง Token ผ่าน Header
