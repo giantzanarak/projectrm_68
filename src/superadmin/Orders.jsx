@@ -1,5 +1,5 @@
 // src/pages/Orders.jsx
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   FiCalendar,
   FiUser,
@@ -10,7 +10,12 @@ import {
   FiCheckCircle,
 } from "react-icons/fi";
 
+// ใช้ CSS ของ Dashboard ร่วมกัน เพื่อให้ layout / header / cards เหมือนกันเป๊ะ
+import "../styles/dashboard.css";
 import "../styles/orders.css";
+
+const ORDER_PAGE_SIZE = 10;
+const SUPPLIER_PAGE_SIZE = 10;
 
 export default function Orders() {
   const [tab, setTab] = useState("orders");
@@ -49,6 +54,12 @@ export default function Orders() {
   ]);
 
   // -----------------------------
+  // PAGINATION STATE
+  // -----------------------------
+  const [orderPage, setOrderPage] = useState(1);
+  const [supplierPage, setSupplierPage] = useState(1);
+
+  // -----------------------------
   // MODAL STATE
   // -----------------------------
   const [showModal, setShowModal] = useState(false);
@@ -69,9 +80,9 @@ export default function Orders() {
     receivedQty: 0,
   });
 
-  // -----------------------------
+  // =============================
   // MAIN FORM
-  // -----------------------------
+  // =============================
   const updateForm = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -92,6 +103,9 @@ export default function Orders() {
     } else {
       setOrders((prev) => [...prev, payload]);
     }
+
+    // ใส่ใหม่ให้กลับไปหน้าแรก
+    setOrderPage(1);
     closeMainModal();
   };
 
@@ -111,7 +125,11 @@ export default function Orders() {
   };
 
   const deleteOrder = (id) => {
-    setOrders((prev) => prev.filter((o) => o.id !== id));
+    const next = orders.filter((o) => o.id !== id);
+    setOrders(next);
+
+    const totalPages = Math.max(1, Math.ceil(next.length / ORDER_PAGE_SIZE));
+    setOrderPage((p) => Math.min(p, totalPages));
   };
 
   const openAddModal = () => {
@@ -134,9 +152,9 @@ export default function Orders() {
     setEditing(null);
   };
 
-  // -----------------------------
+  // =============================
   // RECEIVE MODAL
-  // -----------------------------
+  // =============================
   const openReceiveModal = (order) => {
     setReceiveTarget(order);
     setReceiveQty(
@@ -169,9 +187,9 @@ export default function Orders() {
     closeReceiveModal();
   };
 
-  // -----------------------------
+  // =============================
   // SUMMARY
-  // -----------------------------
+  // =============================
   const totalOrders = orders.length;
   const receivedCount = orders.filter(
     (o) => o.receiveStatus === "รับครบแล้ว"
@@ -184,59 +202,90 @@ export default function Orders() {
     0
   );
 
-  // -----------------------------
+  // =============================
+  // PAGINATION DATA
+  // =============================
+  const orderTotalPages = Math.max(
+    1,
+    Math.ceil(orders.length / ORDER_PAGE_SIZE)
+  );
+
+  const pagedOrders = useMemo(() => {
+    const start = (orderPage - 1) * ORDER_PAGE_SIZE;
+    return orders.slice(start, start + ORDER_PAGE_SIZE);
+  }, [orders, orderPage]);
+
+  const supplierTotalPages = Math.max(
+    1,
+    Math.ceil(suppliers.length / SUPPLIER_PAGE_SIZE)
+  );
+
+  const pagedSuppliers = useMemo(() => {
+    const start = (supplierPage - 1) * SUPPLIER_PAGE_SIZE;
+    return suppliers.slice(start, start + SUPPLIER_PAGE_SIZE);
+  }, [suppliers, supplierPage]);
+
+  const goOrderPrev = () => setOrderPage((p) => Math.max(1, p - 1));
+  const goOrderNext = () => setOrderPage((p) => Math.min(orderTotalPages, p + 1));
+
+  const goSupplierPrev = () => setSupplierPage((p) => Math.max(1, p - 1));
+  const goSupplierNext = () =>
+    setSupplierPage((p) => Math.min(supplierTotalPages, p + 1));
+
+  // =============================
   // RENDER
-  // -----------------------------
+  // =============================
   return (
-    <div className="orders-page">
-      {/* HEADER */}
-      <div className="orders-header-row">
+    // ใช้ dashboard-page + orders-page (orders-page เก็บสไตล์เฉพาะหน้านี้)
+    <div className="dashboard-page orders-page">
+      {/* HEADER ใช้ชุด class ของ Dashboard */}
+      <div className="dashboard-header">
         <div>
-          <h1 className="page-title">จัดซื้อ</h1>
-          <p className="page-subtitle">
+          <h1 className="dash-title">จัดซื้อ</h1>
+          <p className="dash-sub">
             จัดการคำสั่งซื้อวัตถุดิบและซัพพลายเออร์
           </p>
         </div>
       </div>
 
-      {/* SUMMARY */}
-      <div className="orders-summary-grid">
-        <div className="orders-card">
-          <span className="orders-icon purple">
+      {/* SUMMARY – ใช้ dash-summary-grid / dash-card เหมือน Dashboard */}
+      <div className="dash-summary-grid">
+        <div className="dash-card">
+          <span className="dash-icon purple">
             <FiCalendar />
           </span>
           <div>
-            <p className="sum-title">ใบสั่งซื้อทั้งหมด</p>
-            <h2>{totalOrders}</h2>
+            <p className="dash-card-title">ใบสั่งซื้อทั้งหมด</p>
+            <p className="dash-number">{totalOrders}</p>
           </div>
         </div>
 
-        <div className="orders-card">
-          <span className="orders-icon green">✔</span>
+        <div className="dash-card">
+          <span className="dash-icon green">✔</span>
           <div>
-            <p className="sum-title">รับครบแล้ว</p>
-            <h2>{receivedCount}</h2>
+            <p className="dash-card-title">รับครบแล้ว</p>
+            <p className="dash-number">{receivedCount}</p>
           </div>
         </div>
 
-        <div className="orders-card">
-          <span className="orders-icon yellow">⏱</span>
+        <div className="dash-card">
+          <span className="dash-icon yellow">⏱</span>
           <div>
-            <p className="sum-title">รอสินค้า</p>
-            <h2>{waitingCount}</h2>
+            <p className="dash-card-title">รอสินค้า</p>
+            <p className="dash-number">{waitingCount}</p>
           </div>
         </div>
 
-        <div className="orders-card">
-          <span className="orders-icon blue">$</span>
+        <div className="dash-card">
+          <span className="dash-icon blue">$</span>
           <div>
-            <p className="sum-title">มูลค่ารวม</p>
-            <h2>฿{totalValue.toLocaleString()}</h2>
+            <p className="dash-card-title">มูลค่ารวม</p>
+            <p className="dash-number">฿{totalValue.toLocaleString()}</p>
           </div>
         </div>
       </div>
 
-      {/* TOOLBAR (Tabs + Add button) */}
+      {/* TOOLBAR */}
       <div className="orders-toolbar">
         <div className="orders-tabs">
           <button
@@ -279,7 +328,7 @@ export default function Orders() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((o) => (
+                {pagedOrders.map((o) => (
                   <tr key={o.id}>
                     <td>{o.id}</td>
                     <td>{o.date}</td>
@@ -333,6 +382,29 @@ export default function Orders() {
               </tbody>
             </table>
           </div>
+
+          {/* pagination orders */}
+          {orderTotalPages > 1 && (
+            <div className="orders-pagination">
+              <button
+                className="page-btn"
+                onClick={goOrderPrev}
+                disabled={orderPage === 1}
+              >
+                ก่อนหน้า
+              </button>
+              <span className="page-info">
+                หน้า {orderPage} / {orderTotalPages}
+              </span>
+              <button
+                className="page-btn"
+                onClick={goOrderNext}
+                disabled={orderPage === orderTotalPages}
+              >
+                ถัดไป
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -351,9 +423,11 @@ export default function Orders() {
                 </tr>
               </thead>
               <tbody>
-                {suppliers.map((s, index) => (
+                {pagedSuppliers.map((s, index) => (
                   <tr key={s.id}>
-                    <td>{index + 1}</td>
+                    <td>
+                      {(supplierPage - 1) * SUPPLIER_PAGE_SIZE + index + 1}
+                    </td>
                     <td>
                       <div className="supplier-cell-name">
                         <FiUser className="sup-icon-table" />
@@ -372,6 +446,29 @@ export default function Orders() {
               </tbody>
             </table>
           </div>
+
+          {/* pagination suppliers */}
+          {supplierTotalPages > 1 && (
+            <div className="suppliers-pagination">
+              <button
+                className="page-btn"
+                onClick={goSupplierPrev}
+                disabled={supplierPage === 1}
+              >
+                ก่อนหน้า
+              </button>
+              <span className="page-info">
+                หน้า {supplierPage} / {supplierTotalPages}
+              </span>
+              <button
+                className="page-btn"
+                onClick={goSupplierNext}
+                disabled={supplierPage === supplierTotalPages}
+              >
+                ถัดไป
+              </button>
+            </div>
+          )}
         </div>
       )}
 

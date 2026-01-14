@@ -1,119 +1,54 @@
 // src/pages/Products.jsx
 import { useState, useMemo, useEffect } from "react";
-import { FiSearch, FiFilter, FiBox, FiArchive, FiLayers } from "react-icons/fi";
-import { GetProducts } from "../components/api/admin"
+import { FiSearch, FiFilter, FiBox, FiArchive } from "react-icons/fi";
+
+import { GetProducts } from "../components/api/admin";
 import ProductCard from "../components/ProductCard";
 import AddProductModal from "../components/modals/AddProductModal";
 import EditProductModal from "../components/modals/EditProductModal";
 import ProductDetailModal from "../components/modals/ProductDetailModal";
 
-/* STYLES */
 import "../styles/products.css";
 import "../styles/modal.css";
 
-/* ================= MOCK DATA (ไม่พึ่ง backend) ================= */
+const STOCK_PAGE_SIZE = 10;
 
-
-
-const MOCK_PRODUCTS = [
-  {
-    id: "P001",
-    name: "ชุดไทยจักรพรรดิ ผ้าไหมแท้",
-    type: "ชุดสำเร็จรูป",
-    pattern: "ลายดอกประจำยาม",
-    price: 4500,
-    stock: 5,
-    image:
-      "https://i.pinimg.com/1200x/b7/6c/1b/b76c1b9fbab0528a0993c8c1e04910b7.jpg",
-  },
-  {
-    id: "P002",
-    name: "ชุดไทยบรมพิมาน สีครามทอง",
-    type: "ชุดสำเร็จรูป",
-    pattern: "ลายกนกใบเทศ",
-    price: 5200,
-    stock: 3,
-    image:
-      "https://i.pinimg.com/736x/ad/1a/32/ad1a32e535731d7a55d1c30ace6460b4.jpg",
-  },
-  {
-    id: "P003",
-    name: "ชุดไทยอมรินทร์ ผ้าไหมทอยกลาย",
-    type: "ชุดสำเร็จรูป",
-    pattern: "ลายโบราณ",
-    price: 4800,
-    stock: 4,
-    image:
-      "https://i.pinimg.com/1200x/f1/e9/6d/f1e96db21aa7fe21a6674eb3c86c06fa.jpg",
-  },
-  {
-    id: "P004",
-    name: "ผ้าซิ่นมัดหมี่ลายขอเจ้าฟ้า",
-    type: "ผ้าซิ่นสำเร็จรูป",
-    pattern: "มัดหมี่",
-    price: 3500,
-    stock: 8,
-    image:
-      "https://i.pinimg.com/736x/f5/a0/a6/f5a0a6c40303547575ce07fe9b67145e.jpg",
-  },
-  {
-    id: "P005",
-    name: "ผ้าฝ้ายทอมือย้อมคราม",
-    type: "ผ้าพับเมตร",
-    pattern: "ลายทาง",
-    price: 650,
-    stock: 20,
-    image:
-      "https://i.pinimg.com/736x/5e/6d/ea/5e6dea1fb63f9ea50f53e9f01d918993.jpg",
-  },
-  {
-    id: "P006",
-    name: "ผ้าไหมแท้ลายดอกพิกุล",
-    type: "ผ้าพับเมตร",
-    pattern: "ลายดอก",
-    price: 1200,
-    stock: 12,
-    image:
-      "https://i.pinimg.com/736x/1c/7b/1e/1c7b1e5f42ddfa5b4d116d1d2372a8e2.jpg",
-  },
-];
-
-const MOCK_FABRICS = [
+// ==== ข้อมูล mock สำหรับคลังสินค้า (รวมผ้า + อุปกรณ์) ====
+const INITIAL_STOCKS = [
+  // ผ้า (Fabric)
   {
     id: "F001",
     name: "ผ้าไหมมัดหมี่ลายโบราณ",
-    width_cm: 100,
-    weight_gm: 120,
-    thickness_mm: 0.35,
+    category: "ผ้า (Fabric)",
+    quantity: 20,
+    location: "คลังผ้า - ชั้น F1",
     status: "พร้อมใช้",
   },
   {
     id: "F002",
     name: "ผ้าฝ้ายทอมือย้อมคราม",
-    width_cm: 90,
-    weight_gm: 180,
-    thickness_mm: 0.45,
+    category: "ผ้า (Fabric)",
+    quantity: 15,
+    location: "คลังผ้า - ชั้น F2",
     status: "พร้อมใช้",
   },
   {
     id: "F003",
     name: "ผ้าไหมยกดอกทอง",
-    width_cm: 100,
-    weight_gm: 150,
-    thickness_mm: 0.4,
+    category: "ผ้า (Fabric)",
+    quantity: 8,
+    location: "คลังผ้า - ชั้น F3",
     status: "ต้องตรวจสอบ",
   },
   {
     id: "F004",
     name: "ผ้าขิดลายดอกแก้ว",
-    width_cm: 80,
-    weight_gm: 200,
-    thickness_mm: 0.5,
+    category: "ผ้า (Fabric)",
+    quantity: 12,
+    location: "คลังผ้า - ชั้น F4",
     status: "พร้อมใช้",
   },
-];
-
-const MOCK_STOCKS = [
+  // อุปกรณ์ / บรรจุภัณฑ์ ฯลฯ
   {
     id: "S001",
     name: "เสื้อแขวนไม้",
@@ -148,15 +83,21 @@ const MOCK_STOCKS = [
   },
 ];
 
-/* ================= COMPONENT ================= */
+const STOCK_STATUS_OPTIONS = [
+  "เพียงพอ",
+  "ใกล้หมด",
+  "หมด",
+  "พร้อมใช้",
+  "ต้องตรวจสอบ",
+];
 
 export default function Products() {
   // ---------- TAB ----------
   const [activeTab, setActiveTab] = useState("products");
-  const [products, setproducts] = useState([])
-  // ---------- PRODUCTS (ใช้ mock) ----------
-  // const [products, setProducts] = useState(MOCK_PRODUCTS);
-  const [loadingProducts] = useState(false);
+
+  // ---------- PRODUCTS ----------
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
 
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -165,13 +106,31 @@ export default function Products() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ---------- FABRIC (mock) ----------
-  const [fabrics] = useState(MOCK_FABRICS);
-  const [loadingFabrics] = useState(false);
-
-  // ---------- STOCK (mock) ----------
-  const [stocks] = useState(MOCK_STOCKS);
+  // ---------- STOCK ----------
+  const [stocks, setStocks] = useState(INITIAL_STOCKS);
   const [loadingStocks] = useState(false);
+  const [showStockAdd, setShowStockAdd] = useState(false);
+  const [showStockEdit, setShowStockEdit] = useState(false);
+  const [selectedStock, setSelectedStock] = useState(null);
+
+  const [stockSearch, setStockSearch] = useState("");
+  const [stockStatusFilter, setStockStatusFilter] = useState("ทั้งหมด");
+  const [stockPage, setStockPage] = useState(1);
+
+  // ---------- LOAD PRODUCTS FROM API ----------
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await GetProducts();
+        setProducts(res || []);
+      } catch (err) {
+        console.error("GetProducts error:", err);
+      } finally {
+        setLoadingProducts(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   // ---------- CRUD PRODUCTS ----------
   const handleAddProduct = (newProduct) => {
@@ -193,10 +152,11 @@ export default function Products() {
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // ---------- Filter ----------
+  // ---------- FILTER PRODUCTS ----------
   const filteredProducts = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     if (!term) return products;
+
     return products.filter((p) => {
       const name = (p.name || "").toLowerCase();
       const type = (p.type || "").toLowerCase();
@@ -207,34 +167,101 @@ export default function Products() {
     });
   }, [products, searchTerm]);
 
-  // ---------- Summary ----------
+  // ---------- SUMMARY (ใช้ข้อมูลจาก products) ----------
   const totalStock = products.reduce(
     (sum, p) => sum + Number(p.stock || 0),
     0
   );
+
   const totalValue = products.reduce(
     (sum, p) => sum + Number(p.stock || 0) * Number(p.price || 0),
     0
   );
+
   const lowStockCount = products.filter(
     (p) => Number(p.stock || 0) < 10
   ).length;
 
+  // ---------- CRUD STOCK ----------
+  const handleAddStock = (data) => {
+    const id = (data.id || "").trim() || `S${Date.now()}`;
+    const newItem = {
+      id,
+      name: data.name || "",
+      category: data.category || "",
+      quantity: Number(data.quantity || 0),
+      location: data.location || "",
+      status: data.status || "เพียงพอ",
+    };
+    setStocks((prev) => [...prev, newItem]);
+    setShowStockAdd(false);
+  };
 
+  const handleEditStock = (data) => {
+    setStocks((prev) =>
+      prev.map((s) =>
+        s.id === data.id
+          ? {
+              ...s,
+              name: data.name || "",
+              category: data.category || "",
+              quantity: Number(data.quantity || 0),
+              location: data.location || "",
+              status: data.status || "เพียงพอ",
+            }
+          : s
+      )
+    );
+    setShowStockEdit(false);
+    setSelectedStock(null);
+  };
 
-  useEffect(() => {
-    async function fecthdata() {
-      try {
-        const res = await GetProducts();
-        console.log(res)
-        setproducts(res)
-      } catch (err) {
-        console.log(err)
-      }
+  const handleDeleteStock = (id) => {
+    if (!window.confirm("ต้องการลบรายการคลังสินค้านี้หรือไม่?")) return;
+    setStocks((prev) => prev.filter((s) => s.id !== id));
+  };
 
-    }
-    fecthdata()
-  }, [])
+  // ---------- FILTER + PAGINATION STOCK ----------
+  const filteredStocks = useMemo(() => {
+    const term = stockSearch.trim().toLowerCase();
+
+    return stocks.filter((s) => {
+      const matchTerm =
+        !term ||
+        s.id.toLowerCase().includes(term) ||
+        (s.name || "").toLowerCase().includes(term) ||
+        (s.category || "").toLowerCase().includes(term) ||
+        (s.location || "").toLowerCase().includes(term);
+
+      const matchStatus =
+        stockStatusFilter === "ทั้งหมด" || s.status === stockStatusFilter;
+
+      return matchTerm && matchStatus;
+    });
+  }, [stocks, stockSearch, stockStatusFilter]);
+
+  const stockTotalPages = Math.max(
+    1,
+    Math.ceil(filteredStocks.length / STOCK_PAGE_SIZE)
+  );
+
+  const pagedStocks = useMemo(() => {
+    const startIndex = (stockPage - 1) * STOCK_PAGE_SIZE;
+    return filteredStocks.slice(startIndex, startIndex + STOCK_PAGE_SIZE);
+  }, [filteredStocks, stockPage]);
+
+  const handlePrevStockPage = () =>
+    setStockPage((p) => Math.max(1, p - 1));
+
+  const handleNextStockPage = () =>
+    setStockPage((p) => Math.min(stockTotalPages, p + 1));
+
+  const getStatusClass = (status) => {
+    if (status === "หมด") return "wh-danger";
+    if (status === "ใกล้หมด") return "wh-warning";
+    if (status === "ต้องตรวจสอบ") return "wh-check";
+    return "wh-ok"; // เพียงพอ / พร้อมใช้
+  };
 
   // =========================== RENDER ===========================
   return (
@@ -244,18 +271,29 @@ export default function Products() {
         <div>
           <h2 className="prod-title">จัดการผลิตภัณฑ์และคลังสินค้า</h2>
           <span className="prod-sub">
-
+            ดูภาพรวมสินค้า สต็อก และรายการในคลังของร้านผ้าทอพื้นเมือง
           </span>
         </div>
 
         {activeTab === "products" && (
-          <button className="add-product-btn" onClick={() => setShowAdd(true)}>
+          <button
+            className="add-product-btn"
+            onClick={() => setShowAdd(true)}
+          >
             + เพิ่มผลิตภัณฑ์
+          </button>
+        )}
+        {activeTab === "stock" && (
+          <button
+            className="add-stock-btn"
+            onClick={() => setShowStockAdd(true)}
+          >
+            + เพิ่มรายการคลัง
           </button>
         )}
       </div>
 
-      {/* SUMMARY CARDS – ใช้คลาสใหม่ prod-summary-card */}
+      {/* SUMMARY CARDS */}
       <div className="products-summary-grid">
         <div className="prod-summary-card">
           <div className="prod-summary-icon purple">
@@ -309,27 +347,15 @@ export default function Products() {
           <FiBox /> ผลิตภัณฑ์
         </button>
         <button
-          className={activeTab === "fabrics" ? "active" : ""}
-          onClick={() => setActiveTab("fabrics")}
-        >
-          <FiLayers /> สต็อกผ้า (Fabric)
-        </button>
-        <button
           className={activeTab === "stock" ? "active" : ""}
           onClick={() => setActiveTab("stock")}
         >
-          <FiArchive /> คลังสินค้า (Stock)
+          <FiArchive /> รวมสต็อก (Fabric + Stock)
         </button>
       </div>
 
-      {/* ========== TAB 1 : ผลิตภัณฑ์สำเร็จรูป ========== */}
-
-      {/* {products.map((item) => (
-        <div key={item.id ?? item.product_id}>
-          {item.name}
-        </div>
-      ))} */}
-      {activeTab === "product s" && (
+      {/* ========== TAB : ผลิตภัณฑ์สำเร็จรูป ========== */}
+      {activeTab === "products" && (
         <>
           <div className="filter-bar">
             <div className="search-box">
@@ -353,7 +379,9 @@ export default function Products() {
           </div>
 
           {loadingProducts ? (
-            <div className="loading-text">กำลังโหลดข้อมูลผลิตภัณฑ์...</div>
+            <div className="loading-text">
+              กำลังโหลดข้อมูลผลิตภัณฑ์...
+            </div>
           ) : (
             <div className="products-grid">
               {filteredProducts.map((p) => (
@@ -373,117 +401,152 @@ export default function Products() {
               ))}
 
               {filteredProducts.length === 0 && (
-                <div className="empty-state">ยังไม่มีข้อมูลผลิตภัณฑ์</div>
+                <div className="empty-state">
+                  ยังไม่มีข้อมูลผลิตภัณฑ์
+                </div>
               )}
             </div>
           )}
         </>
       )}
 
-      {/* ========== TAB 2 : สต็อกผ้า (Fabric) ========== */}
-      {activeTab === "fabrics" && (
-        <div className="fabric-stock-section">
-          {loadingFabrics ? (
-            <div className="loading-text">กำลังโหลดข้อมูลสต็อกผ้า...</div>
-          ) : (
-            <div className="fabric-table-wrapper">
-              <table className="fabric-table">
-                <thead>
-                  <tr>
-                    <th>รหัสผ้า</th>
-                    <th>ชื่อผ้า</th>
-                    <th>ความกว้าง (ซม.)</th>
-                    <th>น้ำหนัก (g/m²)</th>
-                    <th>ความหนา (มม.)</th>
-                    <th>สถานะ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {fabrics.map((f) => (
-                    <tr key={f.id}>
-                      <td>{f.id}</td>
-                      <td>{f.name}</td>
-                      <td>{f.width_cm}</td>
-                      <td>{f.weight_gm}</td>
-                      <td>{f.thickness_mm}</td>
-                      <td>{f.status}</td>
-                    </tr>
-                  ))}
-
-                  {fabrics.length === 0 && (
-                    <tr>
-                      <td colSpan={6} style={{ textAlign: "center" }}>
-                        ยังไม่มีข้อมูลผ้าในคลัง (Fabric)
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ========== TAB 3 : คลังสินค้า (Stock) ========== */}
+      {/* ========== TAB : รวมคลังสินค้า (ผ้า + อุปกรณ์) ========== */}
       {activeTab === "stock" && (
         <div className="warehouse-section">
-          <div className="warehouse-hint">
+          <div className="stock-header">
+            <div className="stock-search-box">
+              <FiSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="ค้นหารายการในคลัง (รหัส, ชื่อ, ประเภท, ตำแหน่งเก็บ)"
+                value={stockSearch}
+                onChange={(e) => {
+                  setStockSearch(e.target.value);
+                  setStockPage(1);
+                }}
+              />
+            </div>
 
+            <div className="stock-header-right">
+              <select
+                className="stock-filter-select"
+                value={stockStatusFilter}
+                onChange={(e) => {
+                  setStockStatusFilter(e.target.value);
+                  setStockPage(1);
+                }}
+              >
+                <option value="ทั้งหมด">สถานะทั้งหมด</option>
+                {STOCK_STATUS_OPTIONS.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+             
+            </div>
           </div>
 
           {loadingStocks ? (
-            <div className="loading-text">กำลังโหลดข้อมูลคลังสินค้า...</div>
-          ) : (
-            <div className="warehouse-table-wrapper">
-              <table className="warehouse-table">
-                <thead>
-                  <tr>
-                    <th>รหัสสต็อก</th>
-                    <th>ชื่อรายการ</th>
-                    <th>ประเภท</th>
-                    <th>จำนวนคงเหลือ</th>
-                    <th>ตำแหน่งเก็บ</th>
-                    <th>สถานะ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stocks.map((s) => (
-                    <tr key={s.id}>
-                      <td>{s.id}</td>
-                      <td>{s.name}</td>
-                      <td>{s.category}</td>
-                      <td>{s.quantity}</td>
-                      <td>{s.location}</td>
-                      <td>
-                        <span
-                          className={`wh-status ${s.status === "หมด"
-                            ? "wh-danger"
-                            : s.status === "ใกล้หมด"
-                              ? "wh-warning"
-                              : "wh-ok"
-                            }`}
-                        >
-                          {s.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {stocks.length === 0 && (
-                    <tr>
-                      <td colSpan={6} style={{ textAlign: "center" }}>
-                        ยังไม่มีข้อมูลในรายการสต็อก
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+            <div className="loading-text">
+              กำลังโหลดข้อมูลคลังสินค้า...
             </div>
+          ) : (
+            <>
+              <div className="warehouse-table-wrapper">
+                <table className="warehouse-table">
+                  <thead>
+                    <tr>
+                      <th>รหัสสต็อก</th>
+                      <th>ชื่อรายการ</th>
+                      <th>ประเภท</th>
+                      <th>จำนวนคงเหลือ</th>
+                      <th>ตำแหน่งเก็บ</th>
+                      <th>สถานะ</th>
+                      <th>การจัดการ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pagedStocks.map((s) => (
+                      <tr key={s.id}>
+                        <td>{s.id}</td>
+                        <td>{s.name}</td>
+                        <td>{s.category}</td>
+                        <td>{s.quantity}</td>
+                        <td>{s.location}</td>
+                        <td>
+                          <span
+                            className={`wh-status ${getStatusClass(
+                              s.status
+                            )}`}
+                          >
+                            {s.status}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="stock-actions">
+                            <button
+                              className="stock-action-btn edit"
+                              onClick={() => {
+                                setSelectedStock(s);
+                                setShowStockEdit(true);
+                              }}
+                            >
+                              แก้ไข
+                            </button>
+                            <button
+                              className="stock-action-btn delete"
+                              onClick={() => handleDeleteStock(s.id)}
+                            >
+                              ลบ
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+
+                    {pagedStocks.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={7}
+                          style={{ textAlign: "center", padding: "18px" }}
+                        >
+                          ยังไม่มีข้อมูลในรายการสต็อก
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* PAGINATION */}
+              {stockTotalPages > 1 && (
+                <div className="warehouse-pagination">
+                  <button
+                    className="wh-page-btn"
+                    onClick={handlePrevStockPage}
+                    disabled={stockPage === 1}
+                  >
+                    ก่อนหน้า
+                  </button>
+                  <span className="wh-page-info">
+                    หน้า {stockPage} / {stockTotalPages}
+                  </span>
+                  <button
+                    className="wh-page-btn"
+                    onClick={handleNextStockPage}
+                    disabled={stockPage === stockTotalPages}
+                  >
+                    ถัดไป
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
 
-      {/* MODALS */}
+      {/* MODALS : PRODUCTS */}
       {showAdd && (
         <AddProductModal
           onClose={() => setShowAdd(false)}
@@ -505,6 +568,155 @@ export default function Products() {
           onClose={() => setShowDetail(false)}
         />
       )}
+
+      {/* MODALS : STOCK */}
+      {showStockAdd && (
+        <StockModal
+          mode="add"
+          onClose={() => setShowStockAdd(false)}
+          onSave={handleAddStock}
+        />
+      )}
+
+      {showStockEdit && selectedStock && (
+        <StockModal
+          mode="edit"
+          initial={selectedStock}
+          onClose={() => {
+            setShowStockEdit(false);
+            setSelectedStock(null);
+          }}
+          onSave={handleEditStock}
+        />
+      )}
+    </div>
+  );
+}
+
+// ===== Modal สำหรับเพิ่ม/แก้ไขคลังสินค้า =====
+function StockModal({ mode, initial, onClose, onSave }) {
+  const isEdit = mode === "edit";
+
+  const [form, setForm] = useState({
+    id: initial?.id || "",
+    name: initial?.name || "",
+    category: initial?.category || "",
+    quantity: initial?.quantity ?? 0,
+    location: initial?.location || "",
+    status: initial?.status || "เพียงพอ",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]:
+        name === "quantity" ? Number(value) || 0 : value,
+    }));
+  };
+
+  const handleSubmit = () => {
+    if (!form.name.trim()) {
+      alert("กรุณากรอกชื่อรายการ");
+      return;
+    }
+    if (!isEdit && !form.id.trim()) {
+      alert("กรุณากรอกรหัสสต็อก");
+      return;
+    }
+    onSave(form);
+  };
+
+  return (
+    <div className="modal-backdrop">
+      <div className="modal-box">
+        <h2 className="modal-title">
+          {isEdit ? "แก้ไขรายการคลังสินค้า" : "เพิ่มรายการคลังสินค้า"}
+        </h2>
+        <p className="modal-sub">
+          {isEdit
+            ? "ปรับข้อมูลรายการสต็อกให้ถูกต้องและเป็นปัจจุบัน"
+            : "กรอกรายละเอียดสต็อกใหม่ เช่น ผ้า อุปกรณ์หน้าร้าน หรือบรรจุภัณฑ์"}
+        </p>
+
+        <div className="modal-form">
+          <div className="modal-field">
+            <label>รหัสสต็อก</label>
+            <input
+              name="id"
+              placeholder="เช่น F005 หรือ S005"
+              value={form.id}
+              onChange={handleChange}
+              disabled={isEdit}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label>ชื่อรายการ</label>
+            <input
+              name="name"
+              placeholder="เช่น ผ้าไหมมัดหมี่ลายใหม่"
+              value={form.name}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label>ประเภท</label>
+            <input
+              name="category"
+              placeholder="เช่น ผ้า (Fabric), บรรจุภัณฑ์, อุปกรณ์หน้าร้าน"
+              value={form.category}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label>จำนวนคงเหลือ</label>
+            <input
+              type="number"
+              name="quantity"
+              min="0"
+              value={form.quantity}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label>ตำแหน่งเก็บ</label>
+            <input
+              name="location"
+              placeholder="เช่น คลังผ้า - ชั้น F1"
+              value={form.location}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label>สถานะ</label>
+            <select
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+            >
+              {STOCK_STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="modal-buttons">
+          <button className="btn-cancel" onClick={onClose}>
+            ยกเลิก
+          </button>
+          <button className="btn-save" onClick={handleSubmit}>
+            {isEdit ? "บันทึกการแก้ไข" : "บันทึก"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

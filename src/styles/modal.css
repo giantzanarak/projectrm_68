@@ -1,27 +1,42 @@
-/* พื้นหลังทึบ ๆ ด้านหลัง modal */
-.modal-bg {
+/* ================== ชั้นพื้นหลังทึบ (รองรับทั้งแบบเดิมและแบบใหม่) ================== */
+.modal-bg,
+.modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(15, 23, 42, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  padding: 24px;
+  z-index: 999;
 }
 
-/* กล่อง modal พื้นฐาน */
+/* ================== กล่อง modal พื้นฐาน ================== */
 .modal-box {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 22px 24px 20px;
-  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.5);
-  max-width: 95vw;
+  position: relative;        /* ให้ .modal-close อิงกล่องนี้ */
+  width: 100%;
+  max-width: 600px;          /* ขนาดกลางแบบหน้าโปรโมชั่น/คลังสินค้า */
+  max-height: 90vh;          /* เนื้อหาเยอะให้เลื่อนในกล่องเอง */
+  margin: 0 auto;
   box-sizing: border-box;
+
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px 22px;
+  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.15);
 }
 
-/* ใช้กับ Add / Edit (ขนาดกลาง) */
+/* modal รายละเอียดสินค้า (ใหญ่กว่าหน่อย) */
+.detail-modal {
+  width: 820px;
+  max-width: 95vw;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* ถ้าอยากบังคับขนาด add/edit ให้เล็กกว่าก็ทำแบบนี้ได้ */
 .modal-box:not(.detail-modal) {
-  width: 520px;
+  max-width: 600px;
 }
 
 /* ปุ่มปิดมุมขวาบน */
@@ -37,23 +52,14 @@
   color: #6b7280;
 }
 
-/* ===== modal รายละเอียดสินค้า ===== */
+/* ===== layout รายละเอียดสินค้า ===== */
 
-.detail-modal {
-  position: relative;
-  width: 820px;
-  max-height: 85vh;
-  overflow-y: auto;
-}
-
-/* layout ซ้ายรูป ขวาข้อมูล */
 .detail-layout {
   display: flex;
   gap: 24px;
   align-items: flex-start;
 }
 
-/* รูปสินค้า */
 .detail-image-wrap {
   position: relative;
   width: 260px;
@@ -83,7 +89,6 @@
   font-weight: 600;
 }
 
-/* ข้อมูลด้านขวา */
 .detail-info {
   flex: 1;
 }
@@ -101,7 +106,6 @@
   margin-bottom: 14px;
 }
 
-/* grid ข้อมูล 2 คอลัมน์ */
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -136,7 +140,7 @@
   margin-top: 4px;
 }
 
-/* ====== ส่วนที่ใช้กับ modal อื่น (Add / Edit) ====== */
+/* ===== ส่วนที่ใช้กับ modal Add / Edit ทุกประเภท ===== */
 
 .modal-title {
   font-size: 18px;
@@ -145,7 +149,8 @@
   margin: 0 0 10px;
 }
 
-.modal-sub {
+.modal-sub,
+.modal-subtitle {
   font-size: 13px;
   color: #6b7280;
   margin-bottom: 14px;
@@ -158,7 +163,8 @@
   font-size: 13px;
 }
 
-.modal-form label {
+.modal-form label,
+.field label {
   display: block;
   font-size: 13px;
   font-weight: 500;
@@ -167,7 +173,10 @@
 }
 
 .modal-form input,
-.modal-form select {
+.modal-form select,
+.field input,
+.field select,
+.field textarea {
   width: 100%;
   box-sizing: border-box;
   padding: 9px 11px;
@@ -178,12 +187,15 @@
 }
 
 .modal-form input:focus,
-.modal-form select:focus {
+.modal-form select:focus,
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
 }
 
-/* 2 คอลัมน์ (ใช้กับ modal รับของได้ด้วย) */
+/* 2 คอลัมน์ (ถ้าต้องใช้) */
 .modal-form.two-col {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -195,7 +207,9 @@
   flex-direction: column;
 }
 
-.modal-buttons {
+/* footer ปุ่ม */
+.modal-buttons,
+.modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -203,7 +217,9 @@
 }
 
 .btn-cancel,
-.btn-save {
+.btn-save,
+.cancel-btn,
+.save-btn {
   border-radius: 999px;
   padding: 7px 16px;
   font-size: 13px;
@@ -212,21 +228,25 @@
   border: none;
 }
 
-.btn-cancel {
+.btn-cancel,
+.cancel-btn {
   background: #f3f4f6;
   color: #374151;
 }
 
-.btn-cancel:hover {
+.btn-cancel:hover,
+.cancel-btn:hover {
   background: #e5e7eb;
 }
 
-.btn-save {
+.btn-save,
+.save-btn {
   background: #2563eb;
   color: #ffffff;
 }
 
-.btn-save:hover {
+.btn-save:hover,
+.save-btn:hover {
   background: #1d4ed8;
 }
 

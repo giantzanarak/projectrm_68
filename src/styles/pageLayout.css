@@ -1,0 +1,8 @@
+/* ===== กรอบหลักของทุกหน้าใน content area (เหมือน Dashboard/Promotions/Logs) ===== */
+
+.page-layout {
+  max-width: 1150px;        /* ความกว้างเท่าหน้าแดชบอร์ด */
+  margin: 0 auto;           /* จัดให้อยู่กลางแนวนอน */
+  padding: 32px 32px 40px;  /* ระยะห่างจากขอบบน/ซ้าย/ขวา/ล่าง */
+  box-sizing: border-box;
+}
