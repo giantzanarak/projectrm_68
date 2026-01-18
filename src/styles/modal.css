@@ -1,82 +1,352 @@
-/* BACKDROP */
-.modal-backdrop {
+/* ================== Animation & Effects ================== */
+@keyframes modalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ================== พื้นหลัง Modal (Glassmorphism) ================== */
+.modal-bg {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(4px);
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5); /* สีพื้นหลังเข้มขึ้นเล็กน้อย */
+  backdrop-filter: blur(12px); /* เพิ่มความเบลอ */
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
-}
-
-/* MODAL BOX */
-.modal-box {
-  background: white;
-  width: 650px;          /* ← ขยายขนาดให้เท่ากับ modal รายละเอียด */
-  max-width: 90%;
+  justify-content: center;
   padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
-  animation: fadeIn 0.25s ease;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
 }
 
-/* TITLE */
-.modal-box h2 {
+/* ================== กล่อง Modal พื้นฐาน ================== */
+.modal-box {
+  position: relative;
+  width: 100%;
+  /* ขยายขนาดสูงสุดสำหรับหน้าแก้ไข */
+  max-width: 750px; 
+  max-height: 90vh;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border-radius: 24px; /* มุมโค้งมนขึ้น */
+  padding: 32px 40px; /* เพิ่ม Padding */
+  
+  /* เงาที่นุ่มและลึกขึ้น */
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 10px 20px -5px rgba(0, 0, 0, 0.05);
+  
+  /* Animation ตอนเด้งขึ้นมา */
+  animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow-y: auto; /* ให้ scroll ได้ถ้าเนื้อหาเกิน */
+}
+
+/* Custom Scrollbar */
+.modal-box::-webkit-scrollbar {
+  width: 8px;
+}
+.modal-box::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-box::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 20px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* Modal รายละเอียดสินค้า (ขยายให้ใหญ่ขึ้นอีก) */
+.modal-box.detail-modal {
+  max-width: 960px; /* ขยายความกว้าง */
+  padding: 0; /* layout จัดการ padding เอง */
+  overflow: hidden; /* ซ่อนส่วนเกิน */
+  display: flex; /* ใช้ flex จัด layout */
+}
+
+/* ปุ่มปิดมุมขวาบน */
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: color 0.2s, transform 0.2s;
+  padding: 4px;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  color: #1f2937;
+  background: #f3f4f6;
+  transform: rotate(90deg);
+}
+
+/* ================== Typography & Headings ================== */
+.modal-title {
+  font-size: 26px; /* ใหญ่ขึ้น */
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.modal-sub {
+  font-size: 15px;
+  color: #6b7280;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* ================== Form Styles (สำหรับหน้าแก้ไข) ================== */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* เพิ่มระยะห่าง */
+}
+
+.modal-form label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.modal-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px; /* เพิ่ม padding */
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+  color: #1f2937;
+}
+
+.modal-form input::placeholder {
+  color: #9ca3af;
+}
+
+.modal-form input:focus {
+  background: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Layout 2 คอลัมน์ */
+.modal-form.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+}
+
+/* Image Preview Area */
+.image-preview-area {
+  width: 100%;
+  height: 280px; /* สูงขึ้น */
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f9fafb;
+  border: 2px dashed #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   margin-bottom: 16px;
 }
 
-/* FORM CONTENT */
-.modal-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* INPUT */
-.modal-body input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-/* FOOTER BUTTONS */
-.modal-footer {
-  margin-top: 16px;
+/* ================== Buttons ================== */
+.modal-buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f3f4f6;
 }
 
-.cancel-btn,
-.save-btn {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
+.btn-cancel,
+.btn-save {
+  border-radius: 12px;
+  padding: 12px 24px; /* ปุ่มใหญ่ขึ้น */
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.cancel-btn {
-  background: #eee;
+.btn-cancel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
 }
 
-.save-btn {
-  background: #4A72FF;
-  color: white;
+.btn-cancel:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  color: #111827;
 }
 
-/* ANIMATION */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+.btn-save {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.btn-save:hover {
+  background: #1d4ed8;
+  box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ================== Detail Modal Layout ================== */
+.detail-layout {
+  display: flex;
+  width: 100%;
+  height: 600px; /* กำหนดความสูงตายตัวเพื่อให้ดูเต็ม */
+}
+
+.detail-image-wrap {
+  flex: 2; /* สัดส่วน 2/5 */
+  position: relative;
+  background: #f3f4f6;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-chip-id {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 8px 16px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  color: #111827;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.detail-info {
+  flex: 3; /* สัดส่วน 3/5 */
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.detail-title {
+  font-size: 32px; /* ชื่อสินค้าใหญ่ */
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 12px;
+  line-height: 1.2;
+}
+
+.detail-sub {
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 32px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 32px;
+  margin-bottom: 32px;
+}
+
+.detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.detail-value {
+  font-size: 18px; /* ค่าข้อมูลใหญ่ขึ้น */
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.detail-value.price {
+  color: #2563eb;
+  font-size: 24px; /* ราคาเด่น */
+  font-weight: 700;
+}
+
+.detail-summary-card {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-note {
+  font-size: 14px;
+  color: #6b7280;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+/* ================== Responsive ================== */
+@media (max-width: 900px) {
+  .modal-box.detail-modal {
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .detail-image-wrap {
+    flex: none;
+    height: 300px;
+  }
+  .detail-info {
+    flex: none;
+    padding: 32px;
   }
 }

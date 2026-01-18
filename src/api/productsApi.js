@@ -1,129 +1,50 @@
 // src/api/productsApi.js
-const API_BASE = "http://localhost:8000";
+// *** ตัดการ fetch PHP ออก เปลี่ยนเป็น mock data ฝั่ง frontend ล้วน ๆ ***
 
-/**
- * ดึงรายการสินค้า
- * อ่านจาก products_get.php แล้ว map ฟิลด์ให้ตรงกับที่หน้า React ใช้
- */
+// ข้อมูลสินค้าให้สอดคล้องกับโปรเจคร้านผ้าทอ / ชุดไทย
+const MOCK_PRODUCTS = [
+  {
+    id: 1,
+    code: "P001",
+    name: "ชุดไทยจักรพรรดิ",
+    category: "ชุดไทยให้เช่า",
+    base_price: 4500,
+    stock_total: 5,
+    status: "active",
+  },
+  {
+    id: 2,
+    code: "P002",
+    name: "ชุดไทยบรมพิมาน",
+    category: "ชุดไทยให้เช่า",
+    base_price: 5200,
+    stock_total: 3,
+    status: "active",
+  },
+  {
+    id: 3,
+    code: "P003",
+    name: "ชุดไทยอมรินทร์",
+    category: "ชุดไทยให้เช่า",
+    base_price: 4800,
+    stock_total: 4,
+    status: "active",
+  },
+  {
+    id: 4,
+    code: "F001",
+    name: "ผ้าซิ่นมัดหมี่สีครามทอง",
+    category: "ผ้าซิ่นสำเร็จรูป",
+    base_price: 3500,
+    stock_total: 8,
+    status: "active",
+  },
+];
+
+// ให้หน้า Products ใช้ฟังก์ชันนี้เหมือนเดิม
 export async function fetchProducts() {
-  const res = await fetch(`${API_BASE}/products_get.php`, {
-    headers: { Accept: "application/json" },
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    console.error("products_get.php error:", text);
-    throw new Error("โหลดข้อมูลผลิตภัณฑ์ไม่สำเร็จ");
-  }
-
-  let data;
-  try {
-    data = await res.json();
-  } catch (e) {
-    console.error("JSON parse error:", e);
-    throw new Error("โหลดข้อมูลผลิตภัณฑ์ไม่สำเร็จ");
-  }
-
-  if (!Array.isArray(data)) {
-    console.error("Unexpected data:", data);
-    data = [];
-  }
-
-  // map column จาก MySQL → โครงสร้างที่หน้า React ใช้
-  return data.map((item) => ({
-    // PHP alias เป็น id แล้ว ถ้าไม่มีก็ fallback เป็น idProducts
-    id: String(item.id ?? item.idProducts ?? ""),
-    name: item.name ?? "",
-    type: item.category ?? "",            // ประเภท → type
-    pattern: item.description ?? "",      // ลาย / รายละเอียด
-    width: item.size ?? "",               // ขนาด / ไซส์
-    stock: Number(item.stock ?? 0),
-    price: Number(item.price ?? 0),
-    location: "คลังหลัก",
-    status: (item.stock ?? 0) <= 10 ? "ใกล้หมด" : "เพียงพอ",
-    image: "/pics/default_fabric.jpg",
-  }));
-}
-
-/**
- * เพิ่มสินค้าใหม่
- * ใช้กับ AddProductModal
- */
-export async function createProduct(product) {
-  const payload = {
-    category: product.type ?? product.category ?? "",
-    name: product.name ?? "",
-    size: product.width ?? product.size ?? "",
-    price: Number(product.price ?? 0),
-    unit: product.unit ?? "ชุด",
-    description: product.pattern ?? product.description ?? "",
-    fabric_id: product.fabric_id ?? 1,
-    stock: Number(product.stock ?? 0),
-  };
-
-  const res = await fetch(`${API_BASE}/products_create.php`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    console.error("products_create.php error:", text);
-    throw new Error("เพิ่มผลิตภัณฑ์ไม่สำเร็จ");
-  }
-
-  // สมมติ PHP คืน { success:true, id: <newId> }
-  const data = await res.json().catch(() => ({}));
-  return data;
-}
-
-/**
- * แก้ไขสินค้า
- */
-export async function updateProduct(product) {
-  const payload = {
-    id: product.id,
-    category: product.type ?? product.category ?? "",
-    name: product.name ?? "",
-    size: product.width ?? product.size ?? "",
-    price: Number(product.price ?? 0),
-    unit: product.unit ?? "ชุด",
-    description: product.pattern ?? product.description ?? "",
-    fabric_id: product.fabric_id ?? 1,
-    stock: Number(product.stock ?? 0),
-  };
-
-  const res = await fetch(`${API_BASE}/products_update.php`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    console.error("products_update.php error:", text);
-    throw new Error("แก้ไขผลิตภัณฑ์ไม่สำเร็จ");
-  }
-
-  return res.json().catch(() => ({}));
-}
-
-/**
- * ลบสินค้า
- */
-export async function deleteProduct(id) {
-  const res = await fetch(`${API_BASE}/products_delete.php`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id }),
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    console.error("products_delete.php error:", text);
-    throw new Error("ลบผลิตภัณฑ์ไม่สำเร็จ");
-  }
-
-  return res.json().catch(() => ({}));
+  console.log("✅ ใช้ MOCK_PRODUCTS แทนการเรียก PHP backend");
+  // จำลองดีเลย์นิดนึง (ไม่บังคับ)
+  await new Promise((res) => setTimeout(res, 200));
+  return MOCK_PRODUCTS;
 }

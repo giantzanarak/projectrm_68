@@ -6,14 +6,6 @@
   padding: 0;
 }
 
-/* FONT & GLOBAL COLOR */
-body {
-  margin: 0;
-  padding: 0;
-  background: #f5f6fa; 
-  font-family: 'Prompt', sans-serif;
-}
-
 /* ป้องกัน layout ล้นขวา */
 * {
   box-sizing: border-box;

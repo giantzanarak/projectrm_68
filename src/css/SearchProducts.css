@@ -280,3 +280,178 @@
 .select-btn:hover {
   background: #1748c7;
 }
+
+/* ================================
+        PRODUCT DETAIL MODAL
+================================ */
+
+/* ฉากเทาโปร่ง ๆ ด้านหลัง */
+.sp-detail-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* กล่องรายละเอียดหลัก */
+.sp-detail-modal {
+  background: #ffffff;
+  border-radius: 18px;
+  max-width: 880px;
+  width: 100%;
+  max-height: 80vh;
+  padding: 20px 22px 22px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ปุ่มปิดมุมขวาบน */
+.sp-detail-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: none;
+  background: #f3f4f6;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sp-detail-close:hover {
+  background: #e5e7eb;
+}
+
+/* layout ซ้าย-ขวา */
+.sp-detail-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+/* ฝั่งรูป */
+.sp-detail-left {
+  background: #f9fafb;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sp-detail-img {
+  width: 100%;
+  height: 100%;
+  max-height: 430px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ฝั่งข้อมูล */
+.sp-detail-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* รหัสสินค้า */
+.sp-detail-id {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* ชื่อสินค้า */
+.sp-detail-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+/* tag ประเภท/ลาย */
+.sp-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* แถวข้อมูลทีละบรรทัด */
+.sp-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.sp-detail-row:last-of-type {
+  border-bottom: none;
+}
+
+/* ใช้ร่วมกับของเดิม */
+.sp-detail-row .info-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.sp-detail-row .info-value {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* pill สถานะสต็อก */
+.sp-stock-pill {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sp-stock-pill.ปานกลาง {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.sp-stock-pill.น้อย {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ================================
+        RESPONSIVE MODAL
+================================ */
+@media (max-width: 900px) {
+  .sp-detail-modal {
+    max-width: 95vw;
+    padding: 16px 16px 18px;
+  }
+
+  .sp-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sp-detail-left {
+    max-height: 260px;
+  }
+
+  .sp-detail-img {
+    max-height: 260px;
+  }
+}

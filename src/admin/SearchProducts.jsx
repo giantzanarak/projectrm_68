@@ -1,3 +1,4 @@
+// src/pages/SearchProducts.jsx
 import React, { useState } from "react";
 import "../css/SearchProducts.css";
 
@@ -74,6 +75,75 @@ function StatCard({ icon, label, value, bg }) {
   );
 }
 
+// ---------------- DETAIL MODAL ----------------
+function ProductDetailModal({ product, onClose }) {
+  if (!product) return null;
+
+  return (
+    <div className="sp-detail-backdrop" onClick={onClose}>
+      <div
+        className="sp-detail-modal"
+        onClick={(e) => e.stopPropagation()} // กันไม่ให้คลิกด้านในแล้วปิด
+      >
+        <button className="sp-detail-close" onClick={onClose}>
+          ✕
+        </button>
+
+        <div className="sp-detail-layout">
+          <div className="sp-detail-left">
+            <img
+              src={product.img}
+              alt={product.name}
+              className="sp-detail-img"
+            />
+          </div>
+
+          <div className="sp-detail-right">
+            <span className="sp-detail-id">{product.id}</span>
+            <h2 className="sp-detail-name">{product.name}</h2>
+
+            <div className="sp-detail-tags">
+              <span className="tag">{product.category}</span>
+              <span className="tag">{product.pattern}</span>
+            </div>
+
+            <div className="sp-detail-row">
+              <span className="info-label">ราคา</span>
+              <span className="info-value">
+                ฿{product.price.toLocaleString()}
+              </span>
+            </div>
+
+            <div className="sp-detail-row">
+              <span className="info-label">ไซส์</span>
+              <span className="info-value">{product.size}</span>
+            </div>
+
+            <div className="sp-detail-row">
+              <span className="info-label">คงเหลือ</span>
+              <span className="info-value">{product.stock} ชิ้น</span>
+            </div>
+
+            <div className="sp-detail-row">
+              <span className="info-label">สี</span>
+              <span className="info-value">{product.color}</span>
+            </div>
+
+            <div className="sp-detail-row">
+              <span className="info-label">สถานะสต็อก</span>
+              <span className={`sp-stock-pill ${product.status}`}>
+                {product.status === "น้อย"
+                  ? "สต็อกน้อย"
+                  : "สต็อกปานกลาง"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ---------------- MAIN PAGE ----------------
 export default function SearchProducts() {
   const [category, setCategory] = useState("ทุกหมวดหมู่");
@@ -82,6 +152,9 @@ export default function SearchProducts() {
 
   const [showCategory, setShowCategory] = useState(false);
   const [showColor, setShowColor] = useState(false);
+
+  // state สำหรับ modal รายละเอียด
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // ---------------- FILTER LOGIC ----------------
   const filteredProducts = mockProducts.filter((p) => {
@@ -93,8 +166,7 @@ export default function SearchProducts() {
     const matchCategory =
       category === "ทุกหมวดหมู่" || p.category === category;
 
-    const matchColor =
-      color === "ทุกสี" || p.color.includes(color);
+    const matchColor = color === "ทุกสี" || p.color.includes(color);
 
     return matchSearch && matchCategory && matchColor;
   });
@@ -102,23 +174,41 @@ export default function SearchProducts() {
   return (
     <div className="search-page-wrapper">
       <div className="search-page">
-
         {/* TITLE */}
         <h2 className="page-title">ค้นหาสินค้า</h2>
         <p className="page-subtitle">ค้นหาและเลือกรายการสินค้าสำหรับการขาย</p>
 
         {/* ===== STAT CARDS ===== */}
         <div className="stat-grid">
-          <StatCard icon="/pics/box2.png" label="สินค้าทั้งหมด" value="8" bg="#f1f5f9" />
-          <StatCard icon="/pics/box2.png" label="พร้อมจำหน่าย" value="2" bg="#dcfce7" />
-          <StatCard icon="/pics/box2.png" label="สต็อกปานกลาง" value="5" bg="#fef9c3" />
-          <StatCard icon="/pics/box2.png" label="สต็อกน้อย" value="1" bg="#fee2e2" />
+          <StatCard
+            icon="/pics/box2.png"
+            label="สินค้าทั้งหมด"
+            value="8"
+            bg="#f1f5f9"
+          />
+          <StatCard
+            icon="/pics/box2.png"
+            label="พร้อมจำหน่าย"
+            value="2"
+            bg="#dcfce7"
+          />
+          <StatCard
+            icon="/pics/box2.png"
+            label="สต็อกปานกลาง"
+            value="5"
+            bg="#fef9c3"
+          />
+          <StatCard
+            icon="/pics/box2.png"
+            label="สต็อกน้อย"
+            value="1"
+            bg="#fee2e2"
+          />
         </div>
 
         {/* ===== FILTER BAR ===== */}
         <div className="filter-bar-wrapper">
           <div className="filter-bar">
-
             {/* Search Box */}
             <input
               type="text"
@@ -240,15 +330,27 @@ export default function SearchProducts() {
                   </div>
                 </div>
 
-                <button className="select-btn">
-                  <img src="/pics/cart2.png" className="select-icon" /> เลือกสินค้า
+                {/* ปุ่มนี้เปลี่ยนจาก "เลือกสินค้า" -> เปิดรายละเอียด */}
+                <button
+                  className="select-btn"
+                  onClick={() => setSelectedProduct(p)}
+                >
+                  <img src="/pics/cart2.png" className="select-icon" />{" "}
+                  ดูรายละเอียด
                 </button>
               </div>
             </div>
           ))}
         </div>
-
       </div>
+
+      {/* MODAL รายละเอียดสินค้า */}
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 }

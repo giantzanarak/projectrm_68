@@ -1,10 +1,10 @@
 // src/context/AuthContext.jsx
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  // ดึง user จาก localStorage ตอนเปิดเว็บ
+  // โหลด user จาก localStorage ถ้ามี
   const [user, setUser] = useState(() => {
     try {
       const stored = localStorage.getItem("user");
@@ -14,31 +14,36 @@ export function AuthProvider({ children }) {
     }
   });
 
-  // sync user -> localStorage ทุกครั้งที่เปลี่ยน
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("role", user.role);
-    } else {
-      localStorage.removeItem("user");
-      localStorage.removeItem("role");
-    }
-  }, [user]);
-
-  // 🔹 ฟังก์ชัน login ที่ Login.jsx จะเรียก
   const login = (userData) => {
-    setUser(userData); // userData = { username, role }
+    setUser(userData);
+
+    try {
+      localStorage.setItem("user", JSON.stringify(userData));
+      if (userData?.role) {
+        localStorage.setItem("role", userData.role);
+      } else {
+        localStorage.removeItem("role");
+      }
+    } catch {
+      // เผื่อ localStorage พังเฉย ๆ ก็ไม่ต้องทำอะไรเพิ่ม
+    }
   };
 
   const logout = () => {
     setUser(null);
+    try {
+      localStorage.removeItem("user");
+      localStorage.removeItem("role");
+    } catch {}
   };
 
+  const value = { user, login, logout };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
+}

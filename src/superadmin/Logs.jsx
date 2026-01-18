@@ -9,7 +9,7 @@ import {
   FiXCircle,
 } from "react-icons/fi";
 
-import "../styles/orders.css"; // reuse layout + table style เดิม
+import "../styles/orders.css"; // ใช้ layout + table เดิมของหน้า orders
 
 // ตัวเลือก filter
 const MODULE_OPTIONS = [
@@ -21,8 +21,6 @@ const MODULE_OPTIONS = [
   "ผู้ใช้งาน",
   "รายงาน",
 ];
-
-const STATUS_OPTIONS = ["ทุกสถานะ", "สำเร็จ", "คำเตือน", "ข้อผิดพลาด"];
 
 // ข้อมูล mock สำหรับตารางบันทึกกิจกรรม
 const INITIAL_LOGS = [
@@ -128,17 +126,19 @@ const INITIAL_LOGS = [
   },
 ];
 
+const PAGE_SIZE = 10; // แสดงหน้าละ 10 รายการ
+
 export default function Logs() {
   const [searchTerm, setSearchTerm] = useState("");
   const [moduleFilter, setModuleFilter] = useState("ทุกโมดูล");
-  const [statusFilter, setStatusFilter] = useState("ทุกสถานะ");
+  const [page, setPage] = useState(1);
 
   const totalLogs = INITIAL_LOGS.length;
   const successCount = INITIAL_LOGS.filter((l) => l.status === "สำเร็จ").length;
   const warnCount = INITIAL_LOGS.filter((l) => l.status === "คำเตือน").length;
   const errorCount = INITIAL_LOGS.filter((l) => l.status === "ข้อผิดพลาด").length;
 
-  // filter logs
+  // filter logs ตามคำค้น + โมดูล
   const filteredLogs = useMemo(() => {
     return INITIAL_LOGS.filter((log) => {
       const matchSearch =
@@ -150,12 +150,24 @@ export default function Logs() {
       const matchModule =
         moduleFilter === "ทุกโมดูล" || log.module === moduleFilter;
 
-      const matchStatus =
-        statusFilter === "ทุกสถานะ" || log.status === statusFilter;
-
-      return matchSearch && matchModule && matchStatus;
+      return matchSearch && matchModule;
     });
-  }, [searchTerm, moduleFilter, statusFilter]);
+  }, [searchTerm, moduleFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredLogs.length / PAGE_SIZE));
+
+  const paginatedLogs = useMemo(() => {
+    const startIndex = (page - 1) * PAGE_SIZE;
+    return filteredLogs.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [filteredLogs, page]);
+
+  const handlePrevPage = () => {
+    setPage((p) => Math.max(1, p - 1));
+  };
+
+  const handleNextPage = () => {
+    setPage((p) => Math.min(totalPages, p + 1));
+  };
 
   return (
     <div className="orders-page logs-page">
@@ -163,51 +175,49 @@ export default function Logs() {
       <div className="orders-header-row">
         <div>
           <h1 className="page-title">บันทึก</h1>
-          <p className="page-subtitle">
-            ติดตามการใช้งานและกิจกรรมในระบบ
-          </p>
+          <p className="page-subtitle">ติดตามการใช้งานและกิจกรรมในระบบ</p>
         </div>
       </div>
 
-      {/* SUMMARY CARDS */}
-      <div className="orders-summary-grid">
-        <div className="summary-card">
-          <span className="icon-box purple">
+      {/* SUMMARY CARDS — ใช้ class ของ dashboard */}
+      <div className="dash-summary-grid">
+        <div className="dash-card">
+          <div className="dash-icon purple">
             <FiFileText />
-          </span>
+          </div>
           <div>
-            <p className="sum-title">กิจกรรมทั้งหมด</p>
-            <h2>{totalLogs}</h2>
+            <p className="dash-card-title">กิจกรรมทั้งหมด</p>
+            <p className="dash-number">{totalLogs}</p>
           </div>
         </div>
 
-        <div className="summary-card">
-          <span className="icon-box green">
+        <div className="dash-card">
+          <div className="dash-icon green">
             <FiCheckCircle />
-          </span>
+          </div>
           <div>
-            <p className="sum-title">สำเร็จ</p>
-            <h2>{successCount}</h2>
+            <p className="dash-card-title">สำเร็จ</p>
+            <p className="dash-number">{successCount}</p>
           </div>
         </div>
 
-        <div className="summary-card">
-          <span className="icon-box yellow">
+        <div className="dash-card">
+          <div className="dash-icon yellow">
             <FiAlertTriangle />
-          </span>
+          </div>
           <div>
-            <p className="sum-title">คำเตือน</p>
-            <h2>{warnCount}</h2>
+            <p className="dash-card-title">คำเตือน</p>
+            <p className="dash-number">{warnCount}</p>
           </div>
         </div>
 
-        <div className="summary-card">
-          <span className="icon-box red">
+        <div className="dash-card">
+          <div className="dash-icon blue">
             <FiXCircle />
-          </span>
+          </div>
           <div>
-            <p className="sum-title">ข้อผิดพลาด</p>
-            <h2>{errorCount}</h2>
+            <p className="dash-card-title">ข้อผิดพลาด</p>
+            <p className="dash-number">{errorCount}</p>
           </div>
         </div>
       </div>
@@ -222,7 +232,10 @@ export default function Logs() {
               type="text"
               placeholder="ค้นหากิจกรรม (ผู้ใช้, การกระทำ, รายละเอียด)"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(1);
+              }}
             />
           </div>
           <div className="logs-result-count">
@@ -230,29 +243,18 @@ export default function Logs() {
           </div>
         </div>
 
-        {/* ฟิลเตอร์ โมดูล + สถานะ */}
+        {/* ฟิลเตอร์ โมดูล */}
         <div className="logs-filter-group">
           <div className="logs-filter-select">
             <FiFilter className="logs-filter-icon" />
             <select
               value={moduleFilter}
-              onChange={(e) => setModuleFilter(e.target.value)}
+              onChange={(e) => {
+                setModuleFilter(e.target.value);
+                setPage(1);
+              }}
             >
               {MODULE_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="logs-filter-select">
-            <FiFilter className="logs-filter-icon" />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              {STATUS_OPTIONS.map((opt) => (
                 <option key={opt} value={opt}>
                   {opt}
                 </option>
@@ -279,11 +281,10 @@ export default function Logs() {
                   <th>การกระทำ</th>
                   <th>โมดูล</th>
                   <th>รายละเอียด</th>
-                  <th>สถานะ</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredLogs.map((log) => (
+                {paginatedLogs.map((log) => (
                   <tr key={log.id}>
                     <td>{log.datetime}</td>
                     <td>{log.user}</td>
@@ -295,26 +296,12 @@ export default function Logs() {
                       <span className="module-pill">{log.module}</span>
                     </td>
                     <td className="log-detail-cell">{log.detail}</td>
-                    <td>
-                      <span
-                        className={
-                          "status " +
-                          (log.status === "สำเร็จ"
-                            ? "success"
-                            : log.status === "คำเตือน"
-                            ? "pending"
-                            : "cancel")
-                        }
-                      >
-                        {log.status}
-                      </span>
-                    </td>
                   </tr>
                 ))}
 
-                {filteredLogs.length === 0 && (
+                {paginatedLogs.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="logs-empty">
+                    <td colSpan={6} className="logs-empty">
                       ไม่พบข้อมูลกิจกรรมตามเงื่อนไขที่เลือก
                     </td>
                   </tr>
@@ -322,6 +309,38 @@ export default function Logs() {
               </tbody>
             </table>
           </div>
+
+          {/* PAGINATION */}
+          {filteredLogs.length > PAGE_SIZE && (
+            <div
+              className="logs-pagination"
+              style={{
+                marginTop: "16px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "12px",
+              }}
+            >
+              <button
+                className="page-btn"
+                onClick={handlePrevPage}
+                disabled={page === 1}
+              >
+                ก่อนหน้า
+              </button>
+              <span className="page-info">
+                หน้า {page} / {totalPages}
+              </span>
+              <button
+                className="page-btn"
+                onClick={handleNextPage}
+                disabled={page === totalPages}
+              >
+                ถัดไป
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,13 +1,12 @@
 /* ===== โครง sidebar หลัก ===== */
-
 .sidebar {
   width: 240px;           /* กำหนดความกว้าง sidebar ชัดเจน */
   flex-shrink: 0;         /* ไม่ยอมให้บีบ / ขยาย */
-  height: 100vh;
+  min-height: 100vh;
   padding: 20px 18px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  /* ✨ เอา justify-content: space-between ออก เพื่อไม่ให้ดันปุ่มลงล่างจอ */
   border-right: 1px solid #e5e7eb;
   background: #ffffff;
   box-sizing: border-box;
@@ -21,7 +20,6 @@
 }
 
 /* Label หัวข้อ SUPERADMIN / STAFF */
-
 .sidebar-section-label {
   font-size: 11px;
   font-weight: 600;
@@ -34,11 +32,10 @@
 }
 
 /* ===== เมนูหลัก ===== */
-
 .menu {
   list-style: none;
   padding: 0;
-  margin: 0 0 12px 0;
+  margin: 0 0 12px 0; /* มีระยะห่างก่อนปุ่มออกจากระบบนิดหน่อย */
 }
 
 .menu li {
@@ -57,20 +54,17 @@
 }
 
 /* ICON */
-
 .icon {
   font-size: 18px;
 }
 
 /* ACTIVE MAIN MENU */
-
 .active > a {
   background: #e8efff;
   color: #2563eb;
 }
 
 /* ===== parent dropdown (รายการ / โหมดพนักงาน) ===== */
-
 .parent-row {
   display: flex;
   align-items: center;
@@ -95,7 +89,6 @@
 }
 
 /* ===== submenu ===== */
-
 .submenu {
   padding-left: 32px;
   display: flex;
@@ -121,7 +114,6 @@
 }
 
 /* ===== ปุ่มออกจากระบบ ===== */
-
 .logout-btn {
   width: 100%;
   padding: 10px 12px;
@@ -132,23 +124,17 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  margin-top: 12px;
+  margin-top: 16px;   /* ✨ เว้นห่างจาก “รายงานยอดขาย” นิดเดียว */
 }
 
 .logout-btn:hover {
   background: #ef4444;
 }
-.sidebar-section-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #9ca3af;
-  margin: 8px 0 6px;
-}
 
+/* guest text */
 .sidebar-guest-hint {
   font-size: 13px;
   color: #9ca3af;
   margin-top: 12px;
 }
+

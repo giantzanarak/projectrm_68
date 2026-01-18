@@ -1,403 +1,366 @@
-/* ==========================
-        PAGE WRAPPER
-========================== */
 .fabric-page {
   width: 100%;
   padding-bottom: 40px;
 }
 
-/* ==========================
-          HEADER
-========================== */
+/* HEADER */
 .fabric-header {
-  margin-bottom: 25px;
-}
-
-.fabric-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.fabric-sub {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-/* ==========================
-            TABS
-========================== */
-.fabric-tabs {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.fabric-tabs button {
-  padding: 10px 20px;
-  background: #f3f4f6;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  transition: 0.2s;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.fabric-tabs button:hover {
-  background: #e5e7eb;
-}
-
-.fabric-tabs .active {
-  background: #4a72ff;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(74, 114, 255, 0.4);
-}
-
-/* ==========================
-      ICON HEADER BOX
-========================== */
-.icon-box-premium {
-  width: 42px;
-  height: 42px;
-  background: #eef3ff;
-  color: #4a72ff;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-  margin-bottom: 12px;
-}
-
-.icon-green { background: #e7fbe8; color: #22c55e; }
-.icon-yellow { background: #fff5d1; color: #ca8a04; }
-.icon-red { background: #ffe4e6; color: #dc2626; }
-
-/* ==========================
-        SECTION BOX
-========================== */
-.fabric-section {
-  background: #ffffff;
-  padding: 28px;
-  border-radius: 18px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   margin-bottom: 24px;
 }
 
-/* Divider */
-.section-divider {
-  width: 100%;
-  height: 1px;
-  background: #e5e7eb;
-  margin: 18px 0;
-}
-
-/* ==========================
-         INPUT GRID
-========================== */
-.calc-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 20px;
-}
-
-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 6px;
-  display: block;
-}
-
-select,
-input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  background: #fff;
-  transition: 0.15s;
-}
-
-select:focus,
-input:focus {
-  outline: none;
-  border-color: #4a72ff;
-  box-shadow: 0 0 0 2px rgba(74, 114, 255, 0.3);
-}
-
-/* ==========================
-            BUTTON
-========================== */
-.calc-btn {
-  width: 100%;
-  padding: 14px;
-  background: #243cda;
-  color: white;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  transition: 0.15s;
-  margin-top: 8px;
-}
-
-.calc-btn:hover {
-  background: #1d2cb4;
-}
-
-/* ==========================
-       RESULT / SUMMARY BOX
-========================== */
-.result-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-}
-
-.result-box {
-  padding: 18px;
-  border-radius: 16px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  transition: 0.15s;
-  position: relative;
-}
-
-.result-box:hover {
-  transform: translateY(-3px);
-}
-
-.result-box h4 {
-  margin: 4px 0 10px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.big-number {
-  font-size: 28px;
+.page-title {
+  font-size: 26px;
   font-weight: 700;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
-/* Color Variants */
-.blue {
-  background: #eef5ff;
-  border-color: #d5e3ff;
+.page-subtitle {
+  font-size: 14px;
+  color: #6b7280;
 }
 
-.green {
-  background: #e6ffed;
-  border-color: #b8f5c1;
+/* TABS */
+.fabric-tabs {
+  display: inline-flex;
+  gap: 8px;
+  background: #e5edff;
+  padding: 4px;
+  border-radius: 999px;
+  margin-bottom: 18px;
 }
 
-.gray {
-  background: #f3f4f6;
-}
-
-.green-light {
-  background: #eaffea;
-  border-color: #9aff9a;
-}
-
-.red-light {
-  background: #ffeaea;
-  border-color: #ffbdbd;
-}
-
-/* ==========================
-        SUMMARY BLOCK
-========================== */
-.summary-box {
-  background: #fff;
-  padding: 22px;
-  border-radius: 18px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-  margin-bottom: 22px;
-}
-
-.summary-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.price-tag {
-  background: #e6edff;
-  color: #1e40af;
-  padding: 5px 12px;
-  border-radius: 10px;
+.fabric-tabs .tab {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 7px 18px;
+  border-radius: 999px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
+  color: #4b5563;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease,
+    box-shadow 0.15s ease, transform 0.05s ease;
 }
 
-.summary-value-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
+.fabric-tabs .tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.8);
+  color: #1f2937;
 }
 
-.green-text { color: #22c55e; }
-.blue-text { color: #2563eb; }
-.red-text { color: #dc2626; }
+.fabric-tabs .tab.active {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px);
+}
 
-/* Progress bar */
-.progress-bar {
-  height: 10px;
-  background: #e7e7e7;
-  border-radius: 10px;
-  overflow: hidden;
+/* MAIN CARD */
+.fabric-card {
+  background: #ffffff;
+  padding: 24px 26px;
+  border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
   margin-top: 8px;
 }
 
-.progress-fill {
-  height: 100%;
-  background: #4ade80;
-  transition: 0.3s;
-}
-
-/* ==========================
-       COST BY SIZE
-========================== */
-.cost-block {
-  margin-bottom: 35px;
-}
-
-.cost-header {
+/* CARD HEADER */
+.fabric-card-header {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
-.cost-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-
-.cost-card {
-  background: #f3f4ff;
-  padding: 20px;
-  border-radius: 16px;
-  text-align: center;
-  transition: 0.15s;
-  border: 1px solid #dee3ff;
-}
-
-.cost-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.size-circle {
-  width: 55px;
-  height: 55px;
-  margin: 0 auto 10px;
-  background: #243cda;
-  color: white;
-  border-radius: 50%;
+.fabric-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #eef3ff;
+  color: #2563eb;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 22px;
 }
 
-.small {
-  font-size: 14px;
+.fabric-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.fabric-card-sub {
+  font-size: 13px;
   color: #6b7280;
 }
 
-.price {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1f2937;
-  margin-top: 6px;
-}
-/* =====================
-    COST TABLE STYLE
-===================== */
-
-.cost-table-block {
-  margin-bottom: 35px;
+/* GRID FORM */
+.fabric-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 20px;
+  margin-bottom: 18px;
 }
 
-.cost-table-header {
+.fabric-field {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  flex-direction: column;
 }
 
-.cost-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-  font-size: 15px;
-}
-
-.cost-table thead {
-  background: #f1f4ff;
-}
-
-.cost-table th {
-  padding: 12px;
-  text-align: left;
-  color: #1e3a8a;
+.fabric-field label {
+  font-size: 13px;
   font-weight: 600;
-}
-
-.cost-table td {
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
   color: #374151;
+  margin-bottom: 4px;
 }
 
-.cost-table tbody tr:hover {
-  background: #f9fbff;
+.fabric-field select,
+.fabric-field input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  padding: 9px 10px;
+  font-size: 13px;
+  outline: none;
+  background: #ffffff;
 }
 
-td.highlight {
-  font-weight: bold;
-  color: #1e40af;
+.fabric-field select:focus,
+.fabric-field input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
 }
 
-/* แสดงข้อมูลผ้าที่ใช้คำนวณ */
-.calc-summary-header {
-  margin-top: 14px;
+.field-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+/* SOURCE RADIO */
+.fabric-source-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.radio-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.radio-pill input {
+  accent-color: #2563eb;
+}
+
+/* BUTTON */
+.fabric-footer {
+  margin-top: 4px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 12px;
+  border: none;
+  background: #243cda;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease,
+    box-shadow 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: #1d2cb4;
+  box-shadow: 0 4px 12px rgba(37, 56, 210, 0.4);
+  transform: translateY(-1px);
+}
+
+/* RESULT CARD */
+.fabric-result-card {
+  margin-top: 22px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.result-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
   margin-bottom: 10px;
 }
 
-.calc-summary-header p {
-  margin: 0;
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 18px;
 }
 
-.calc-summary-sub {
+.result-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.result-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.result-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 14px 0;
+}
+
+.result-formula-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.result-formula-list {
+  font-size: 13px;
+  color: #374151;
+  padding-left: 18px;
+}
+
+.result-formula-list li + li {
+  margin-top: 2px;
+}
+
+.result-text {
+  font-size: 13px;
+  color: #374151;
+  margin-top: 6px;
+}
+
+.result-ok {
+  font-size: 13px;
+  color: #166534;
+  background: #ecfdf5;
+  border-radius: 10px;
+  padding: 6px 10px;
+  margin-top: 6px;
+}
+
+.result-warning {
+  font-size: 13px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border-radius: 10px;
+  padding: 6px 10px;
+  margin-top: 6px;
+}
+
+/* TABLE (summary & cost) */
+.fabric-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+  font-size: 14px;
+  background: #ffffff;
+}
+
+.fabric-table thead {
+  background: #f1f5f9;
+}
+
+.fabric-table th,
+.fabric-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.fabric-table th {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.fabric-table td {
+  color: #374151;
+}
+
+.fabric-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.fabric-table .highlight {
+  font-weight: 700;
+  color: #1e40af;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.fabric-table-note {
+  margin-top: 10px;
   font-size: 13px;
   color: #6b7280;
 }
 
-/* กล่องคำแนะนำการใช้ผ้า */
-.fabric-suggestion {
-  margin-top: 14px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  font-size: 13px;
-  line-height: 1.6;
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .fabric-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.fabric-suggestion.ok {
-  background: #ecfdf5;
-  border: 1px solid #bbf7d0;
-  color: #166534;
+@media (max-width: 720px) {
+  .fabric-card {
+    padding: 18px 16px;
+  }
+
+  .fabric-row {
+    grid-template-columns: 1fr;
+  }
+
+  .fabric-tabs {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+/* แก้วงกลม radio ใหญ่ ๆ ในหน้านี้ */
+.radio-pill input[type="radio"] {
+  width: 14px !important;
+  height: 14px !important;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  appearance: auto;
+  -webkit-appearance: radio;
 }
 
-.fabric-suggestion.warn {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #b91c1c;
+.result-price-rows {
+  margin-top: 6px;
+}
+
+.result-note {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6b7280;
 }

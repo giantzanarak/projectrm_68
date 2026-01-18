@@ -44,9 +44,79 @@ export default function DashboardOverview({
       ? "สรุปยอดขายและสถิติสำหรับพนักงาน"
       : "สรุปข้อมูลและรายงานทั้งหมด");
 
-  // ✅ รวมสต็อกผ้าจาก fabricsData
+  // รวมสต็อกผ้าจาก fabricsData
   const totalFabricStock = fabricsData.reduce((sum, f) => sum + f.stock, 0);
 
+  // ------------------ CHART CONFIG ------------------
+
+  // ✅ กราฟเส้นยอดขาย: เอา "฿" ไปอยู่ที่แกน Y
+  const salesData = {
+    labels: ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."],
+    datasets: [
+      {
+        label: "ยอดขาย", // เดิม "ยอดขาย (฿)"
+        data: [48000, 52000, 47000, 65000, 58000, 69000],
+        borderColor: "#4A72FF",
+        backgroundColor: "rgba(74,114,255,0.2)",
+        borderWidth: 3,
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const salesOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: false,
+        ticks: {
+          callback: (value) => "฿" + Number(value).toLocaleString(), // หน่วยเงินฝั่งตัวเลข
+        },
+      },
+    },
+  };
+
+  // กราฟ Pie ใช้เป็นสัดส่วนจำนวนผ้าเฉย ๆ ไม่ต้องมีหน่วยเงิน
+  const pieData = {
+    labels: fabricsData.map((f) => f.name),
+    datasets: [
+      {
+        data: fabricsData.map((f) => f.stock),
+        backgroundColor: ["#4A72FF", "#67C8FF", "#A97DFF", "#FF8FA6", "#FFCD6A"],
+      },
+    ],
+  };
+
+  const pieOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+
+  // กราฟแท่งใช้หน่วย "เมตร" เลยปล่อยเป็นเลขธรรมดา
+  const fabricUsageData = {
+    labels: ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."],
+    datasets: [
+      {
+        label: "รับเข้า (เมตร)",
+        data: [130, 140, 135, 150, 160, 170],
+        backgroundColor: "#4CAF50",
+      },
+      {
+        label: "ใช้ไป (เมตร)",
+        data: [120, 135, 130, 140, 150, 160],
+        backgroundColor: "#FF6B6B",
+      },
+    ],
+  };
+
+  const fabricUsageOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: "bottom" } },
+  };
+
+  // ------------------ RENDER ------------------
   return (
     <>
       {/* HEADER */}
@@ -107,22 +177,7 @@ export default function DashboardOverview({
         <div className="chart-card">
           <h3 className="chart-title">แนวโน้มยอดขายรายเดือน</h3>
           <div className="chart-inner">
-            <Line
-              data={{
-                labels: ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."],
-                datasets: [
-                  {
-                    label: "ยอดขาย (฿)",
-                    data: [48000, 52000, 47000, 65000, 58000, 69000],
-                    borderColor: "#4A72FF",
-                    backgroundColor: "rgba(74,114,255,0.2)",
-                    borderWidth: 3,
-                    tension: 0.4,
-                  },
-                ],
-              }}
-              options={{ responsive: true, maintainAspectRatio: false }}
-            />
+            <Line data={salesData} options={salesOptions} />
           </div>
         </div>
 
@@ -130,24 +185,7 @@ export default function DashboardOverview({
         <div className="chart-card">
           <h3 className="chart-title">สัดส่วนผ้าในคลัง</h3>
           <div className="chart-inner">
-            <Pie
-              data={{
-                labels: fabricsData.map((f) => f.name),
-                datasets: [
-                  {
-                    data: fabricsData.map((f) => f.stock),
-                    backgroundColor: [
-                      "#4A72FF",
-                      "#67C8FF",
-                      "#A97DFF",
-                      "#FF8FA6",
-                      "#FFCD6A",
-                    ],
-                  },
-                ],
-              }}
-              options={{ responsive: true, maintainAspectRatio: false }}
-            />
+            <Pie data={pieData} options={pieOptions} />
           </div>
         </div>
       </section>
@@ -157,28 +195,7 @@ export default function DashboardOverview({
         <div className="chart-card full">
           <h3 className="chart-title">ปริมาณการใช้ผ้ารายเดือน</h3>
           <div className="chart-inner">
-            <Bar
-              data={{
-                labels: ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."],
-                datasets: [
-                  {
-                    label: "รับเข้า (เมตร)",
-                    data: [130, 140, 135, 150, 160, 170],
-                    backgroundColor: "#4CAF50",
-                  },
-                  {
-                    label: "ใช้ไป (เมตร)",
-                    data: [120, 135, 130, 140, 150, 160],
-                    backgroundColor: "#FF6B6B",
-                  },
-                ],
-              }}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: "bottom" } },
-              }}
-            />
+            <Bar data={fabricUsageData} options={fabricUsageOptions} />
           </div>
         </div>
       </section>

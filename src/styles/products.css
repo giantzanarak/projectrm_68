@@ -1,27 +1,24 @@
-/* ==========================
-   WRAPPER
-========================== */
+/* ================== WRAPPER & HEADER ================== */
+
 .products-wrapper {
-  padding: 24px 40px 32px;
-  background: #f5f7fb;
-  min-height: 100vh;
-  box-sizing: border-box;
+  width: 100%;
+  /* ไม่ต้อง padding ที่นี่ ปล่อยให้ Layout หลักเป็นคนกำหนด
+     จะได้ตำแหน่งเหมือนหน้า Dashboard / Promotions */
 }
 
-/* ==========================
-   HEADER
-========================== */
 .products-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  gap: 16px;
+  margin-bottom: 18px;
 }
 
 .prod-title {
   font-size: 24px;
   font-weight: 700;
   color: #111827;
+  margin-bottom: 4px;
 }
 
 .prod-sub {
@@ -29,163 +26,160 @@
   color: #6b7280;
 }
 
-.add-product-btn {
-  padding: 10px 18px;
+/* ปุ่มเพิ่มผลิตภัณฑ์ / เพิ่มรายการคลัง */
+.add-product-btn,
+.add-stock-btn {
+  padding: 10px 16px;
   border-radius: 999px;
   border: none;
   background: #2563eb;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
-  transition: background 0.15s ease, transform 0.1s ease,
-    box-shadow 0.15s ease;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+  white-space: nowrap;
 }
 
-.add-product-btn:hover {
-  background: #1d4ed8;
-  transform: translateY(-1px);
-  box-shadow: 0 16px 40px rgba(37, 99, 235, 0.45);
+.add-product-btn:hover,
+.add-stock-btn:hover {
+  filter: brightness(1.05);
 }
 
-/* ==========================
-   SUMMARY CARDS
-========================== */
+/* ================== SUMMARY CARDS TOP ================== */
+
 .products-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 18px;
+  margin-bottom: 22px;
 }
 
-.summary-card {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 14px 16px;
+.prod-summary-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
 }
 
-.icon-box {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
+.prod-summary-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 22px;
+  color: #ffffff;
 }
 
-.icon-box.purple {
-  background: #f5f3ff;
-  color: #7c3aed;
+/* รูป icon ใน summary card */
+.prod-summary-icon img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
 }
 
-.icon-box.green {
-  background: #ecfdf3;
-  color: #16a34a;
+.prod-summary-icon.purple { background: #4f46e5; }
+.prod-summary-icon.green  { background: #16a34a; }
+.prod-summary-icon.blue   { background: #2563eb; }
+.prod-summary-icon.yellow { background: #facc15; }
+
+.prod-summary-text {
+  display: flex;
+  flex-direction: column;
 }
 
-.icon-box.blue {
-  background: #eff6ff;
-  color: #2563eb;
-}
-
-.icon-box.yellow {
-  background: #fffbeb;
-  color: #f59e0b;
-}
-
-.sum-title {
-  font-size: 12px;
+.prod-summary-title {
+  font-size: 13px;
   color: #6b7280;
 }
 
-.summary-card h2 {
-  font-size: 20px;
+.prod-summary-value {
+  font-size: 22px;
   font-weight: 700;
   color: #111827;
+  margin-top: 2px;
 }
 
-/* ==========================
-   TABS
-========================== */
+/* ================== TABS ================== */
+
 .prod-tabs {
   display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  background: #f3f4f6;
   padding: 4px;
   border-radius: 999px;
-  background: #e5e7eb;
-  margin-bottom: 20px;
-  gap: 4px;
 }
 
 .prod-tabs button {
-  border: none;
-  background: transparent;
-  padding: 7px 14px;
-  font-size: 13px;
-  border-radius: 999px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  cursor: pointer;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: none;
+  font-size: 13px;
   color: #4b5563;
+  background: transparent;
+  cursor: pointer;
 }
 
 .prod-tabs button svg {
-  font-size: 14px;
+  font-size: 15px;
+}
+
+/* รูป icon ใน tab */
+.prod-tabs button img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
 }
 
 .prod-tabs button.active {
   background: #ffffff;
   color: #111827;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
 }
 
-/* ==========================
-   FILTER BAR (TAB products)
-========================== */
+/* ================== FILTER BAR (TAB PRODUCTS) ================== */
+
 .filter-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
 .search-box {
-  position: relative;
-  width: 320px;
-}
-
-.search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  color: #9ca3af;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 6px 12px;
 }
 
 .search-box input {
-  width: 100%;
-  padding: 8px 10px 8px 30px;
-  border-radius: 999px;
-  border: 1px solid #e5e7eb;
-  font-size: 13px;
-  background: #ffffff;
+  border: none;
   outline: none;
+  font-size: 13px;
+  flex: 1;
 }
 
-.search-box input::placeholder {
+.search-icon {
+  font-size: 16px;
   color: #9ca3af;
-}
-
-.search-box input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
 }
 
 .filter-right {
@@ -194,101 +188,270 @@
 }
 
 .filter-btn {
-  border-radius: 999px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  padding: 7px 12px;
-  font-size: 12px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  cursor: pointer;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-size: 12px;
   color: #4b5563;
+  cursor: pointer;
 }
 
-.filter-btn svg {
-  font-size: 14px;
+/* ================== GENERIC STATES ================== */
+
+.loading-text,
+.empty-state {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #6b7280;
 }
 
-/* ==========================
-   PRODUCT GRID
-========================== */
+/* ================== PRODUCT CARDS GRID ================== */
+
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 
-.empty-state {
-  margin-top: 18px;
-  font-size: 13px;
-  color: #9ca3af;
-}
+/* ================== PRODUCT CARD (ADMIN) ================== */
 
-.loading-text {
-  font-size: 13px;
-  color: #6b7280;
-}
-
-/* ==========================
-   FABRIC STOCK TAB (Fabric)
-========================== */
-.fabric-stock-section {
-  margin-top: 4px;
-}
-
-.fabric-table-wrapper {
-  margin-top: 8px;
+.prod-card-admin {
   background: #ffffff;
   border-radius: 18px;
-  padding: 14px 16px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-.fabric-table {
+.prod-card-admin:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+/* รูปด้านบน */
+.prod-card-img-wrap {
+  position: relative;
   width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.fabric-table thead tr {
+  height: 230px;
+  overflow: hidden;
   background: #f3f4f6;
 }
 
-.fabric-table th,
-.fabric-table td {
-  padding: 8px 10px;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+.prod-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.fabric-table th {
-  font-weight: 600;
-  color: #4b5563;
-}
-
-.fabric-table tbody tr:hover {
-  background: #f9fafb;
-}
-
-/* ==========================
-   WAREHOUSE TAB (Stock)
-========================== */
-.warehouse-section {
-  margin-top: 4px;
-}
-
-.warehouse-hint {
+/* แท็กบนรูป */
+.prod-chip-id,
+.prod-chip-stock {
+  position: absolute;
+  top: 10px;
+  padding: 4px 11px;
+  border-radius: 999px;
   font-size: 12px;
-  color: #6b7280;
+  font-weight: 600;
+}
+
+.prod-chip-id {
+  left: 12px;
+  background: #111827;
+  color: #f9fafb;
+}
+
+.prod-chip-stock {
+  right: 12px;
+}
+
+/* เพียงพอ */
+.prod-chip-stock.ok {
+  background: #ecfdf5;
+  color: #166534;
+}
+
+/* ใกล้หมด */
+.prod-chip-stock.warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* หมด */
+.prod-chip-stock.danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* เนื้อหาในการ์ด */
+.prod-card-body {
+  padding: 14px 16px 10px;
+}
+
+.prod-card-name {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+.prod-card-desc {
+  font-size: 13px;
+  color: #4b5563;
   margin-bottom: 10px;
 }
 
+/* meta grid : 2 คอลัมน์ */
+.prod-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 10px;
+  font-size: 12px;
+}
+
+.prod-meta-grid p {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  color: #6b7280;
+}
+
+.meta-value {
+  color: #111827;
+  font-weight: 600;
+}
+
+.meta-value.price {
+  color: #2563eb;
+}
+
+/* footer ปุ่ม */
+.prod-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px 14px;
+  border-top: 1px solid #e5e7eb;
+  gap: 8px;
+}
+
+.btn-outline-gray {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 10px;
+  font-size: 13px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-outline-gray:hover {
+  background: #f3f4f6;
+}
+
+/* ปุ่มไอคอน แก้ไข / ลบ */
+.prod-footer-right {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.icon-btn:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+}
+
+.icon-btn.danger {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+.icon-btn.danger:hover {
+  background: #fee2e2;
+}
+
+/* ================== WAREHOUSE TAB TABLE ================== */
+
+.warehouse-section {
+  margin-top: 8px;
+}
+
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.stock-search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 6px 12px;
+}
+
+.stock-search-box input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  flex: 1;
+}
+
+.stock-header-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.stock-filter-select {
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 7px 12px;
+  font-size: 13px;
+  background: #ffffff;
+}
+
+/* ตาราง */
+
 .warehouse-table-wrapper {
   background: #ffffff;
-  border-radius: 18px;
-  padding: 14px 16px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 14px;
 }
 
 .warehouse-table {
@@ -304,75 +467,126 @@
   text-align: left;
 }
 
-.warehouse-table thead tr {
-  background: #f3f4f6;
-}
-
 .warehouse-table th {
+  background: #f9fafb;
   font-weight: 600;
   color: #4b5563;
 }
 
-.warehouse-table tbody tr:hover {
-  background: #f9fafb;
-}
-
-/* STATUS BADGES ในคลังสินค้า */
+/* status badge */
 .wh-status {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 600;
 }
 
 .wh-ok {
-  background: #ecfdf3;
-  color: #16a34a;
+  background: #dcfce7;
+  color: #166534;
 }
 
 .wh-warning {
-  background: #fffbeb;
-  color: #f59e0b;
+  background: #fef9c3;
+  color: #92400e;
 }
 
 .wh-danger {
-  background: #fef2f2;
-  color: #dc2626;
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
-/* ==========================
-   RESPONSIVE
-========================== */
-@media (max-width: 1200px) {
+.wh-check {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+/* ปุ่มจัดการสต็อกในตาราง */
+.stock-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.stock-action-btn {
+  border-radius: 999px;
+  border: none;
+  padding: 5px 10px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.stock-action-btn.edit {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.stock-action-btn.delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Pagination */
+.warehouse-pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.wh-page-btn {
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.wh-page-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.wh-page-info {
+  font-size: 12px;
+  color: #4b5563;
+}
+
+/* ================== RESPONSIVE ================== */
+
+@media (max-width: 1024px) {
   .products-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .products-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .products-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+  }
+
+  .products-summary-grid {
+    grid-template-columns: 1fr 1fr;
   }
 
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
   }
 
-  .search-box {
-    width: 100%;
+  .filter-right {
+    justify-content: flex-end;
   }
 
-  .products-grid {
-    grid-template-columns: 1fr;
+  .stock-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stock-header-right {
+    justify-content: flex-end;
   }
 }
+

@@ -14,7 +14,7 @@ html, body {
   width: 100%;
   height: 100%;
   background: #f5f6fa;        /* สีพื้นหลังเดียวกับโปรเจกต์ */
-  font-family: 'Prompt', sans-serif;
+  font-family: 'Sarabun', sans-serif;
   color: #213547;              /* สีตัวอักษรมาตรฐาน */
   overflow-x: hidden;          /* กันล้นด้านขวา */
 }
