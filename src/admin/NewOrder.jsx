@@ -1,577 +1,299 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/NewOrder.css";
 
-const products = [
-  {
-    id: "P001",
-    name: "ชุดไทยจักรพรรดิ",
-    price: 4500,
-    stock: 5,
-    image:
-      "https://i.pinimg.com/1200x/b7/6c/1b/b76c1b9fbab0528a0993c8c1e04910b7.jpg",
-  },
-  {
-    id: "P002",
-    name: "ชุดไทยบรมพิมาน",
-    price: 5200,
-    stock: 3,
-    image:
-      "https://i.pinimg.com/736x/ad/1a/32/ad1a32e535731d7a55d1c30ace6460b4.jpg",
-  },
-  {
-    id: "P003",
-    name: "ชุดไทยอมรินทร์",
-    price: 4800,
-    stock: 4,
-    image:
-      "https://i.pinimg.com/1200x/f1/e9/6d/f1e96db21aa7fe21a6674eb3c86c06fa.jpg",
-  },
-  {
-    id: "P004",
-    name: "ผ้าซิ่นมัดหมี่",
-    price: 3500,
-    stock: 8,
-    image:
-      "https://i.pinimg.com/736x/f5/a0/a6/f5a0a6c40303547575ce07fe9b67145e.jpg",
-  },
-];
+const baseUrl = "http://localhost:3010";
 
 export default function NewOrder() {
   const [step, setStep] = useState(1);
   const [cart, setCart] = useState([]);
+  const [customer, setCustomer] = useState({ name: '', phone: '', taxId: '', company: '', payment: 'เงินสด' });
+  const [dbProducts, setDbProducts] = useState([]);
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/products`);
+      const data = await response.json();
+
+      console.log("Data from DB:", data);
+
+      const formattedData = data.map(p => {
+        let finalImageUrl = "/pics/box2.png";
+
+        if (p.image) {
+          const imagePath = p.image.startsWith('/') ? p.image : `/static/images/${p.image}`;
+          finalImageUrl = `${baseUrl}${imagePath}`; 
+        }
+
+
+        return {
+          id: p.idProducts, 
+          name: p.name,
+          price: p.price,
+          stock: p.stock_amount, 
+          image: finalImageUrl,
+          details: `${p.category_name || ''} ${p.type_name || ''}`
+        };
+      });
+
+      setDbProducts(formattedData);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchProducts(); 
+    const pendingItem = localStorage.getItem("pendingItem");
+    if (pendingItem) {
+      try {
+        const item = JSON.parse(pendingItem);
+        setCart((prevCart) => {
+          const exist = prevCart.find((i) => i.id === item.id);
+          if (exist) {
+            return prevCart.map((i) => i.id === item.id ? { ...i, qty: i.qty + item.qty } : i);
+          }
+          return [...prevCart, item];
+        });
+        localStorage.removeItem("pendingItem");
+      } catch (e) { console.error(e); }
+    }
+  }, []);
+
   const [showReceipt, setShowReceipt] = useState(false);
-
-  const [customer, setCustomer] = useState({
-    name: "",
-    phone: "",
-    taxId: "",
-    company: "",
-    payment: "เงินสด",
-  });
-
-  // 💸 เงินสดที่รับมา
   const [cashReceived, setCashReceived] = useState("");
+  useEffect(() => {
+    const pendingItem = localStorage.getItem("pendingItem");
+    if (pendingItem) {
+      try {
+        const item = JSON.parse(pendingItem);
+        setCart((prevCart) => {
+          const exist = prevCart.find((i) => i.id === item.id);
 
-  // ---------------- AUTO FORMAT PHONE ----------------
-  const handlePhone = (e) => {
-    let input = e.target.value.replace(/\D/g, "").slice(0, 10);
+          if (exist) {
+            return prevCart.map((i) =>
+              i.id === item.id ? { ...i, qty: i.qty + item.qty } : i
+            );
+          }
+          return [...prevCart, item];
+        });
+        localStorage.removeItem("pendingItem");
 
-    if (input.length > 6)
-      input = `${input.slice(0, 3)}-${input.slice(3, 6)}-${input.slice(6)}`;
-    else if (input.length > 3)
-      input = `${input.slice(0, 3)}-${input.slice(3)}`;
+      } catch (error) {
+        console.error("Error parsing pending item:", error);
+      }
+    }
+  }, []);
 
-    setCustomer({ ...customer, phone: input });
-  };
-
-  // ---------------- AUTO FORMAT TAX ID ----------------
-  const handleTaxId = (e) => {
-    let v = e.target.value.replace(/\D/g, "").slice(0, 13);
-
-    if (v.length > 11)
-      v = `${v[0]}-${v.slice(1, 5)}-${v.slice(5, 10)}-${v.slice(
-        10,
-        12
-      )}-${v.slice(12)}`;
-    else if (v.length > 10)
-      v = `${v[0]}-${v.slice(1, 5)}-${v.slice(5, 10)}-${v.slice(10)}`;
-    else if (v.length > 5)
-      v = `${v[0]}-${v.slice(1, 5)}-${v.slice(5)}`;
-    else if (v.length > 1) v = `${v[0]}-${v.slice(1)}`;
-
-    setCustomer({ ...customer, taxId: v });
-  };
-
-  // ---------------- CART FUNCTIONS ----------------
-  const addProduct = (p) => {
+  const addToCart = (p) => {
     const exist = cart.find((i) => i.id === p.id);
     if (exist) {
-      setCart(
-        cart.map((i) =>
-          i.id === p.id ? { ...i, qty: i.qty + 1 } : i
-        )
-      );
+      setCart(cart.map((i) => (i.id === p.id ? { ...i, qty: i.qty + 1 } : i)));
     } else {
       setCart([...cart, { ...p, qty: 1 }]);
     }
   };
 
-  const increaseQty = (id) => {
-    setCart(
-      cart.map((i) =>
-        i.id === id ? { ...i, qty: i.qty + 1 } : i
-      )
-    );
+  const updateQty = (id, delta) => {
+    setCart(cart.map((i) => (i.id === id ? { ...i, qty: Math.max(1, i.qty + delta) } : i)));
   };
 
-  const decreaseQty = (id) => {
-    setCart(
-      cart
-        .map((i) =>
-          i.id === id ? { ...i, qty: Math.max(0, i.qty - 1) } : i
-        )
-        .filter((i) => i.qty > 0)
-    );
-  };
+  const removeItem = (id) => setCart(cart.filter((i) => i.id !== id));
 
-  // ---------------- TOTALS ----------------
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const vat = subtotal * 0.07;
   const total = subtotal + vat;
 
-  const cashReceivedNum = Number(cashReceived) || 0;
-  const change = cashReceivedNum - total;
-  const isCash = customer.payment === "เงินสด";
-
-  const printReceipt = () => window.print();
+  const change = cashReceived ? Number(cashReceived) - total : 0;
 
   return (
     <div className="order-container">
-      <h2 className="order-title">สั่งซื้อสินค้า</h2>
+      <div className="main-layout">
 
-      {/* ---------------- STEP BAR ---------------- */}
-      <div className="step-wrapper">
-        <div className="step-item">
-          <div className={`step-circle ${step === 1 ? "active" : ""}`}>
-            <img src="/pics/cart2.png" className="step-icon-img" />
-          </div>
-          <p className={`step-text ${step === 1 ? "active" : ""}`}>
-            เลือกสินค้า
-          </p>
-        </div>
+        
+        <div className="left-panel">
+          <header className="cart-header">
+            <h1 className="title-large">
+              {step === 1 ? "ตะกร้าของคุณ " : step === 2 ? "ข้อมูลลูกค้า " : "ชำระเงิน "}
+              <span className="count-badge">({cart.length} รายการ)</span>
+            </h1>
 
-        <div className={`step-line ${step >= 2 ? "active" : ""}`}></div>
+            <div className="step-bar-compact">
+              <div className={`step-node ${step >= 1 ? "active" : ""}`}><div className="node-dot">1</div><span>เลือกสินค้า</span></div>
+              <div className={`node-connector ${step >= 2 ? "active" : ""}`}></div>
+              <div className={`step-node ${step >= 2 ? "active" : ""}`}><div className="node-dot">2</div><span>ข้อมูลลูกค้า</span></div>
+              <div className={`node-connector ${step >= 3 ? "active" : ""}`}></div>
+              <div className={`step-node ${step >= 3 ? "active" : ""}`}><div className="node-dot">3</div><span>ชำระเงิน</span></div>
+            </div>
+          </header>
 
-        <div className="step-item">
-          <div className={`step-circle ${step === 2 ? "active" : ""}`}>
-            <img src="/pics/user2.png" className="step-icon-img" />
-          </div>
-          <p className={`step-text ${step === 2 ? "active" : ""}`}>
-            ข้อมูลลูกค้า
-          </p>
-        </div>
-
-        <div className={`step-line ${step === 3 ? "active" : ""}`}></div>
-
-        <div className="step-item">
-          <div className={`step-circle ${step === 3 ? "active" : ""}`}>
-            <img src="/pics/confirmation.png" className="step-icon-img" />
-          </div>
-          <p className={`step-text ${step === 3 ? "active" : ""}`}>
-            ยืนยันและชำระเงิน
-          </p>
-        </div>
-      </div>
-
-      {/* ---------------- STEP 1 ---------------- */}
-      {step === 1 && (
-        <div className="layout">
-          <div className="box-left">
-            <h3 className="section-title">เลือกสินค้า</h3>
-
-            <div className="product-grid">
-              {products.map((p) => (
-                <div className="product-card" key={p.id}>
-                  <img src={p.image} className="product-img" />
-
-                  <span className="tag-id">{p.id}</span>
-                  <span className="tag-stock">คงเหลือ {p.stock}</span>
-
-                  <p className="p-name">{p.name}</p>
-                  <p className="p-price">
-                    ฿{p.price.toLocaleString()}
-                  </p>
-
-                  <button
-                    className="btn-add"
-                    onClick={() => addProduct(p)}
-                  >
-                    + เพิ่ม
-                  </button>
+          {step === 1 && (
+            <>
+              <section className="cart-items-section">
+                {cart.length === 0 ? (
+                  <p className="empty-msg">ตะกร้าว่างเปล่า เลือกสินค้าจากรายการด้านล่าง</p>
+                ) : (
+                  cart.map((item) => (
+                    <div className="item-row" key={item.id}>
+                      <img src={item.image} alt={item.name} className="item-thumb" />
+                      <div className="item-info-main">
+                        <div className="item-top"><h3>{item.name}</h3><p className="price-bold">฿{item.price.toLocaleString()}</p></div>
+                        <p className="item-desc">{item.details}</p>
+                        <div className="item-actions">
+                          <div className="qty-picker">
+                            <button onClick={() => updateQty(item.id, -1)}>−</button>
+                            <span>{item.qty}</span>
+                            <button onClick={() => updateQty(item.id, 1)}>+</button>
+                          </div>
+                          <button className="del-btn" onClick={() => removeItem(item.id)}>ลบทิ้ง</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </section>
+              <section className="more-products-grid">
+                <h2 className="section-title">เลือกสินค้าเพิ่ม</h2>
+                <div className="picker-grid">
+                  {dbProducts.map(p => (
+                    <div className="mini-card" key={p.id} onClick={() => addToCart(p)}>
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        // ✅ ถ้าโหลดรูปจาก URL ปกติไม่ได้ ให้เปลี่ยนไปใช้รูปสำรองในเครื่องทันที
+                        onError={(e) => { e.target.src = "/pics/box2.png"; }}
+                      />
+                      <div className="mini-card-body">
+                        <p>{p.name}</p>
+                        <strong>฿{p.price.toLocaleString()}</strong>
+                        <div style={{ fontSize: '11px', color: 'gray' }}>คงเหลือ: {p.stock}</div>
+                      </div>
+                      <div className="add-overlay">+ เพิ่ม</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </section>
+            </>
+          )}
+
+          {step === 2 && (
+            <div className="customer-form-card">
+              <h3 className="section-subtitle">รายละเอียดสำหรับออกใบเสร็จ</h3>
+              <div className="form-grid">
+                <div className="input-group"><label>ชื่อ - นามสกุล</label><input className="custom-input" value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} placeholder="ไม่บังคับ" /></div>
+                <div className="input-group"><label>เบอร์โทรศัพท์</label><input className="custom-input" value={customer.phone} onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} placeholder="000-000-0000" /></div>
+                <div className="input-group full-width"><label>เลขประจำตัวผู้เสียภาษี</label><input className="custom-input" value={customer.taxId} onChange={(e) => setCustomer({ ...customer, taxId: e.target.value })} placeholder="0-0000-00000-00-0" /></div>
+                <div className="input-group full-width"><label>ชื่อบริษัท</label><input className="custom-input" value={customer.company} onChange={(e) => setCustomer({ ...customer, company: e.target.value })} placeholder="ไม่บังคับ" /></div>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="box-right">
-            <Summary
-              cart={cart}
-              subtotal={subtotal}
-              vat={vat}
-              total={total}
-              increaseQty={increaseQty}
-              decreaseQty={decreaseQty}
-              nextDisabled={cart.length === 0}
-              onNext={() => setStep(2)}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* ---------------- STEP 2 ---------------- */}
-      {step === 2 && (
-        <div className="layout">
-          <div className="box-left">
-            <h3 className="section-title">ข้อมูลลูกค้า</h3>
-
-            <label>ชื่อ - นามสกุล</label>
-            <input
-              className="input"
-              placeholder="ไม่บังคับ"
-              value={customer.name}
-              onChange={(e) =>
-                setCustomer({ ...customer, name: e.target.value })
-              }
-            />
-
-            <label>เบอร์โทรศัพท์</label>
-            <input
-              className="input"
-              placeholder="000-000-0000"
-              value={customer.phone}
-              onChange={handlePhone}
-            />
-
-            <label>เลขประจำตัวผู้เสียภาษี</label>
-            <input
-              className="input"
-              placeholder="0-0000-00000-00-0"
-              value={customer.taxId}
-              onChange={handleTaxId}
-            />
-
-            <label>ชื่อบริษัท</label>
-            <input
-              className="input"
-              placeholder="ไม่บังคับ"
-              value={customer.company}
-              onChange={(e) =>
-                setCustomer({ ...customer, company: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="box-right">
-            <Summary
-              cart={cart}
-              subtotal={subtotal}
-              vat={vat}
-              total={total}
-              increaseQty={increaseQty}
-              decreaseQty={decreaseQty}
-              showBack
-              onBack={() => setStep(1)}
-              onNext={() => setStep(3)}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* ---------------- STEP 3 ---------------- */}
-      {step === 3 && (
-        <div className="layout">
-          <div className="box-left">
-            <h3 className="section-title">ข้อมูลลูกค้า</h3>
-
-            <div className="customer-summary">
-              <p>ชื่อ: {customer.name || "-"}</p>
-              <p>โทร: {customer.phone || "-"}</p>
-              <p>เลขประจำตัวผู้เสียภาษี: {customer.taxId || "-"}</p>
-              <p>บริษัท: {customer.company || "-"}</p>
-            </div>
-
-            <label>วิธีชำระเงิน</label>
-            <select
-              className="input"
-              value={customer.payment}
-              onChange={(e) => {
-                setCustomer({
-                  ...customer,
-                  payment: e.target.value,
-                });
-                if (e.target.value !== "เงินสด") {
-                  setCashReceived("");
-                }
-              }}
-            >
-              <option>เงินสด</option>
-              <option>โอนผ่านธนาคาร</option>
-            </select>
-
-            {/* ถ้าเป็นเงินสด ให้กรอกรับเงิน/แสดงเงินทอน */}
-            {isCash && (
-              <>
-                <label style={{ marginTop: "12px" }}>
-                  รับเงินมา (บาท)
-                </label>
-                <input
-                  className="input"
-                  type="number"
-                  min="0"
-                  value={cashReceived}
-                  onChange={(e) => setCashReceived(e.target.value)}
-                  placeholder="เช่น 6000"
-                />
-
-                <p
-                  style={{
-                    marginTop: "8px",
-                    fontSize: "14px",
-                  }}
-                >
-                  ยอดสุทธิที่ต้องชำระ:{" "}
-                  <strong>
-                    ฿{total.toLocaleString()}
-                  </strong>
-                </p>
-
-                <p
-                  style={{
-                    fontSize: "14px",
-                    color:
-                      cashReceived && change >= 0
-                        ? "#16a34a"
-                        : "#dc2626",
-                  }}
-                >
-                  {cashReceived
-                    ? change >= 0
-                      ? `เงินทอน: ฿${change.toLocaleString()}`
-                      : `เงินยังไม่พอ ขาดอีก ฿${Math.abs(
-                          change
-                        ).toLocaleString()}`
-                    : "กรอกจำนวนเงินที่ลูกค้าชำระ เพื่อให้ระบบคำนวณเงินทอน"}
-                </p>
-              </>
-            )}
-          </div>
-
-          <div className="box-right">
-            <div className="summary-card">
-              <h3 className="section-title">รายการสินค้า</h3>
-
-              {cart.map((item) => (
-  <div className="sum-item" key={item.id}>
-    {/* ใช้คลาสเดียวกับฝั่งสรุปตะกร้า */}
-    <img src={item.image} className="s-img" />
-    <div className="sum-info">
-      <p>{item.name}</p>
-      <span>{item.qty} × ฿{item.price.toLocaleString()}</span>
-    </div>
-    <p className="sum-price">
-      ฿{(item.qty * item.price).toLocaleString()}
-    </p>
-  </div>
-))}
-
-              <hr />
-
-              <p className="sum-line">
-                <span>ยอดรวม</span>
-                <span>฿{subtotal.toLocaleString()}</span>
-              </p>
-
-              <p className="sum-line">
-                <span>VAT 7%</span>
-                <span>฿{vat.toLocaleString()}</span>
-              </p>
-
-              <p className="sum-line total">
-                <span>ยอดสุทธิ</span>
-                <span>฿{total.toLocaleString()}</span>
-              </p>
-
-              <div className="btn-row">
-                <button
-                  className="btn-ghost"
-                  onClick={() => setStep(2)}
-                >
-                  ‹ ก่อนหน้า
-                </button>
-
-                <button
-                  className="btn-primary"
-                  onClick={() => setShowReceipt(true)}
-                  disabled={isCash && change < 0}
-                >
-                  ชำระเงินและพิมพ์ใบเสร็จ
-                </button>
+          {step === 3 && (
+            <div className="payment-step-content">
+              <div className="customer-form-card" style={{ marginBottom: '24px' }}>
+                <h3 className="section-subtitle">ข้อมูลการออกใบเสร็จ</h3>
+                <div className="customer-info-display">
+                  <div className="info-item"><span>ชื่อลูกค้า:</span> <strong>{customer.name || "ทั่วไป"}</strong></div>
+                  <div className="info-item"><span>เบอร์โทรศัพท์:</span> <strong>{customer.phone || "-"}</strong></div>
+                  <div className="info-item"><span>เลขประจำตัวผู้เสียภาษี:</span> <strong>{customer.taxId || "-"}</strong></div>
+                </div>
               </div>
 
-              {isCash && change < 0 && (
-                <p
-                  style={{
-                    marginTop: "6px",
-                    fontSize: "13px",
-                    color: "#dc2626",
-                    textAlign: "right",
-                  }}
-                >
-                  ยอดเงินสดยังไม่พอ กรุณาใส่จำนวนเงินให้มากกว่ายอดสุทธิ
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+              <div className="customer-form-card">
+                <h3 className="section-subtitle">เลือกวิธีชำระเงิน</h3>
+                <div className="payment-selector-grid">
+                  <button className={`pay-option ${customer.payment === 'เงินสด' ? 'active' : ''}`} onClick={() => setCustomer({ ...customer, payment: 'เงินสด' })}><span className="icon">💵</span> เงินสด</button>
+                  <button className={`pay-option ${customer.payment === 'โอนผ่านธนาคาร' ? 'active' : ''}`} onClick={() => setCustomer({ ...customer, payment: 'โอนผ่านธนาคาร' })}><span className="icon">📱</span> โอนผ่านธนาคาร/QR</button>
+                </div>
 
-      {/* ---------------- RECEIPT POPUP ---------------- */}
-      {showReceipt && (
-        <div className="receipt-overlay">
-          <div className="receipt-box" id="print-area">
-            <h3 className="r-title">ใบเสร็จรับเงิน</h3>
-            <p>ร้านผ้าทอพื้นเมือง</p>
-            <p>วันที่: {new Date().toLocaleString()}</p>
-            <p>วิธีชำระเงิน: {customer.payment}</p>
+                {customer.payment === 'เงินสด' && (
+                  <div className="cash-input-section">
+                    <label>รับเงินมา (บาท)</label>
+                    <input className="custom-input cash-large" type="number" value={cashReceived} onChange={(e) => setCashReceived(e.target.value)} placeholder="0.00" />
+                    {cashReceived && (
+                      <div className={`change-display ${change >= 0 ? 'success' : 'danger'}`}>
+                        {change >= 0 ? <><span>เงินทอน:</span> <strong>฿{change.toLocaleString()}</strong></> : <><span>ยอดเงินยังขาด:</span> <strong>฿{Math.abs(change).toLocaleString()}</strong></>}
+                      </div>
+                    )}
+                  </div>
+                )}
 
-            <hr />
-
-            {cart.map((item) => (
-              <div className="r-row" key={item.id}>
-                <span>
-                  {item.name} ({item.qty} × ฿
-                  {item.price.toLocaleString()})
-                </span>
-                <span>
-                  ฿{(item.qty * item.price).toLocaleString()}
-                </span>
+                {customer.payment === 'โอนผ่านธนาคาร' && (
+                  <div className="qr-section">
+                    <p>สแกน QR Code เพื่อชำระเงิน</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PROMPTPAY" alt="QR" className="qr-image" />
+                  </div>
+                )}
               </div>
-            ))}
-
-            <hr />
-
-            <div className="r-row">
-              <span>รวม</span>
-              <span>฿{subtotal.toLocaleString()}</span>
             </div>
+          )}
+        </div>
 
-            <div className="r-row">
-              <span>VAT 7%</span>
-              <span>฿{vat.toLocaleString()}</span>
-            </div>
+        {/* --- ฝั่งขวา --- */}
+        <aside className="right-panel">
+          <div className="summary-card">
+            <h2 className="summary-head">สรุปคำสั่งซื้อ</h2>
+            <div className="summary-line"><span>{cart.length} รายการ</span><span>฿{subtotal.toLocaleString()}</span></div>
+            <div className="divider-dashed"></div>
+            <div className="summary-line total-bold"><span>ยอดสุทธิ (รวม VAT 7%)</span><span>฿{total.toLocaleString()}</span></div>
+            <p className="vat-sub"> (รวมภาษีมูลค่าเพิ่ม ฿{vat.toLocaleString()}) </p>
 
-            <div className="r-row total">
-              <span>ยอดสุทธิ</span>
-              <span>฿{total.toLocaleString()}</span>
-            </div>
+            <button className="btn-checkout-primary" disabled={cart.length === 0} onClick={() => {
+              if (step === 1) setStep(2);
+              else if (step === 2) setStep(3);
+              else if (step === 3) setShowReceipt(true);
+              else if (showReceipt) window.print();
+            }}>
+              {showReceipt ? "พิมพ์ใบเสร็จอีกครั้ง" : step === 3 ? "ยืนยันการชำระเงิน" : "ถัดไป"} <span className="arrow">→</span>
+            </button>
 
-            {isCash && (
-              <>
-                <hr />
-                <div className="r-row">
-                  <span>รับเงินมา</span>
-                  <span>
-                    ฿{cashReceivedNum.toLocaleString()}
-                  </span>
+            {step > 1 && !showReceipt && <button className="btn-back-text" onClick={() => setStep(step - 1)}>← ย้อนกลับ</button>}
+          </div>
+        </aside>
+
+        {/* --- MODAL ใบเสร็จ --- */}
+        {showReceipt && (
+          <div className="receipt-modal-overlay left">
+            <div className="receipt-modal-content slide-in-left">
+              <button className="modal-close-x no-print" onClick={() => setShowReceipt(false)}>×</button>
+              <div className="receipt-paper">
+                <div className="receipt-header">
+                  <h2 className="shop-name-receipt">ร้านผ้าพื้นเมือง</h2>
+                  <p className="shop-address">123 ถ.มิตรภาพ ต.ในเมือง อ.เมือง จ.ขอนแก่น</p>
+                  <div className="divider-star">********************************</div>
+                  <h3 className="receipt-title">ใบเสร็จรับเงิน</h3>
                 </div>
-                <div className="r-row">
-                  <span>เงินทอน</span>
-                  <span>
-                    ฿{Math.max(change, 0).toLocaleString()}
-                  </span>
+                <div className="receipt-info-details">
+                  <p><span>เลขที่:</span> RE-{new Date().getTime().toString().slice(-6)}</p>
+                  <p><span>วันที่:</span> {new Date().toLocaleDateString('th-TH')}</p>
+                  <p><span>ลูกค้า:</span> {customer.name || "ทั่วไป"}</p>
                 </div>
-              </>
-            )}
-
-            <div className="r-btn-row">
-              <button
-                className="btn-print"
-                onClick={printReceipt}
-              >
-                พิมพ์ใบเสร็จ
-              </button>
-              <button
-                className="btn-close"
-                onClick={() => setShowReceipt(false)}
-              >
-                ปิด
-              </button>
+                <div className="divider-dash">--------------------------------</div>
+                <div className="receipt-item-list">
+                  {cart.map((item, index) => (
+                    <div key={index} className="receipt-item-row">
+                      <span className="item-name-qty">{item.name} x{item.qty}</span>
+                      <span className="item-price">฿{item.price.toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="divider-dash">--------------------------------</div>
+                <div className="receipt-total-section">
+                  <div className="receipt-row-summary"><span>ยอดรวม:</span><span>฿{subtotal.toLocaleString()}</span></div>
+                  <div className="receipt-row-summary total-bold"><span>รวมทั้งสิ้น (VAT 7%):</span><span>฿{total.toLocaleString()}</span></div>
+                </div>
+                <div className="divider-dash">--------------------------------</div>
+                <div className="payment-method-info">
+                  <p><span>ชำระด้วย:</span> {customer.payment}</p>
+                  {customer.payment === 'เงินสด' && <div className="receipt-row-summary"><span>เงินทอน:</span><span className="change-text-receipt">฿{change.toLocaleString()}</span></div>}
+                </div>
+                <div className="receipt-footer-text"><p>ขอบคุณที่อุดหนุน</p></div>
+                <div className="modal-actions-inside no-print">
+                  <button className="btn-modal-new-start" onClick={() => { setShowReceipt(false); setStep(1); setCart([]); setCashReceived(""); }}>เริ่มการขายใหม่</button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ---------------- SUMMARY COMPONENT ----------------
-function Summary({
-  cart,
-  subtotal,
-  vat,
-  total,
-  increaseQty,
-  decreaseQty,
-  nextDisabled,
-  onNext,
-  onBack,
-  showBack,
-}) {
-  return (
-    <div className="summary-card">
-      <h3 className="section-title">สรุปรายการ</h3>
-
-      {cart.length === 0 && (
-        <p className="summary-empty">ไม่มีสินค้าในตะกร้า</p>
-      )}
-
-      {cart.map((item) => (
-        <div className="s-item" key={item.id}>
-          <img src={item.image} className="s-img" />
-          <div className="s-info">
-            <p>{item.name}</p>
-
-            <div className="qty-box">
-              <button onClick={() => decreaseQty(item.id)}>
-                -
-              </button>
-              <span>{item.qty}</span>
-              <button onClick={() => increaseQty(item.id)}>
-                +
-              </button>
-            </div>
-          </div>
-
-          <p className="s-price">
-            ฿{(item.qty * item.price).toLocaleString()}
-          </p>
-        </div>
-      ))}
-
-      {cart.length > 0 && (
-        <>
-          <hr />
-          <p className="sum-line">
-            <span>ยอดรวม</span>
-            <span>฿{subtotal.toLocaleString()}</span>
-          </p>
-          <p className="sum-line">
-            <span>VAT 7%</span>
-            <span>฿{vat.toLocaleString()}</span>
-          </p>
-          <p className="sum-line total">
-            <span>ยอดสุทธิ</span>
-            <span>฿{total.toLocaleString()}</span>
-          </p>
-        </>
-      )}
-
-      <div className="btn-row">
-        {showBack && (
-          <button className="btn-ghost" onClick={onBack}>
-            ‹ ก่อนหน้า
-          </button>
         )}
-
-        <button
-          className={`btn-primary ${
-            nextDisabled ? "disabled" : ""
-          }`}
-          disabled={nextDisabled}
-          onClick={onNext}
-        >
-          ถัดไป
-        </button>
       </div>
     </div>
   );

@@ -1,85 +1,122 @@
 // src/pages/Login.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/login.css";
-import { useAuth } from "../context/AuthContext";
+
+const API = "http://localhost:3010";
+
+const mapRole = (raw) => {
+  const r = String(raw || "").trim().toLowerCase();
+  if (r === "admin") return "superadmin"; // ✅ admin = superadmin
+  return r; // staff
+};
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
-
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setErr("");
 
-    const userTrim = username.trim();
-    const passTrim = password.trim();
-
-    // ==== account ทดสอบ ====
-    // admin / admin  -> superadmin
-    // staff / staff  -> staff
-    let role = null;
-
-    if (userTrim === "admin" && passTrim === "admin") {
-      role = "superadmin";
-    } else if (userTrim === "staff" && passTrim === "staff") {
-      role = "staff";
-    } else {
-      alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+    if (!email || !password) {
+      setErr("กรุณากรอกอีเมลและรหัสผ่าน");
       return;
     }
 
-    const user = { username: userTrim, role };
+    try {
+      setLoading(true);
 
-    // เก็บเข้า context + localStorage
-    login(user);
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("role", role);
+      const res = await axios.post(
+        `${API}/users/login`,
+        { email, password },
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-    // ✅ redirect ทั้งคู่ให้ไปหน้า dashboard เดียวกันคือ "/"
-    navigate("/", { replace: true });
+      const user = res.data;
+      const role = mapRole(user?.role);
+
+      localStorage.setItem("user", JSON.stringify({ ...user, role }));
+      localStorage.setItem("role", role);
+
+      // ✅ เด้งตาม role
+      if (role === "superadmin") {
+        navigate("/products", { replace: true }); // หน้าแรก superadmin
+      } else if (role === "staff") {
+        navigate("/staff/neworder", { replace: true }); // หน้าแรก staff
+      } else {
+        navigate("/login", { replace: true });
+      }
+    } catch (error) {
+      setErr(
+        error?.response?.data?.message ||
+          "เข้าสู่ระบบไม่สำเร็จ (ตรวจสอบอีเมล/รหัสผ่าน)"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="login-page">
-      <div className="login-card">
-        <h1 className="login-title-main">ระบบจัดการร้านผ้าทอพื้นเมือง</h1>
-        <p className="login-sub-main">เข้าสู่ระบบเพื่อใช้งาน</p>
+    <div className="auth-page">
+      <div className="auth-decor auth-decor--right" />
+      <div className="auth-decor auth-decor--top" />
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          <label className="login-label">
-            ชื่อผู้ใช้
-            <input
-              type="text"
-              className="login-input"
-              placeholder="กรอกชื่อผู้ใช้"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </label>
+      <div className="auth-shell">
+        <div className="auth-brand">
+          <div className="brand-logo"><span>POS</span></div>
+          <div className="brand-text">
+            <div className="brand-title">Fabric Store</div>
+          </div>
+        </div>
 
-          <label className="login-label">
-            รหัสผ่าน
-            <input
-              type="password"
-              className="login-input"
-              placeholder="กรอกรหัสผ่าน"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
+        <div className="auth-card">
+          <h1 className="auth-title">Login</h1>
+          <div className="auth-divider" />
+          <p className="auth-subtitle">ยินดีต้อนรับเข้าสู่ระบบ</p>
 
-          <button type="submit" className="login-btn">
-            เข้าสู่ระบบ
-          </button>
-        </form>
+          <form className="auth-form" onSubmit={handleLogin}>
+            <label className="auth-label">
+              Email
+              <input
+                className="auth-input"
+                type="email"
+                placeholder="example@mail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
 
-        <div className="login-hint">
-          ผู้ดูแลระบบ: <strong>admin / admin</strong>
-          <br />
-          พนักงาน: <strong>staff / staff</strong>
+            <label className="auth-label">
+              Password
+              <input
+                className="auth-input"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+
+            {err && <div className="auth-error">{err}</div>}
+
+            <button className="auth-btn" type="submit" disabled={loading}>
+              {loading ? "Signing in..." : "ยืนยัน"}
+            </button>
+
+            
+
+            <div className="auth-hint">
+              <span>ยังไม่มีบัญชี</span>
+              <Link className="auth-link" to="/register">
+                สร้างบัญชี
+              </Link>
+            </div>
+          </form>
         </div>
       </div>
     </div>

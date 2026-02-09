@@ -1,8 +1,9 @@
 // src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
+import { useAuth } from "./context/AuthContext";
 
-/* ---------- SUPERADMIN PAGES ---------- */
+// ---------- SUPERADMIN PAGES ----------
 import Dashboard from "./superadmin/Dashboard";
 import Products from "./superadmin/Products";
 import Orders from "./superadmin/Orders";
@@ -10,26 +11,39 @@ import Promotions from "./superadmin/Promotions";
 import FabricCalculator from "./superadmin/FabricCalculator";
 import Logs from "./superadmin/Logs";
 
-/* ----------  FRONT / STAFF PAGES ---------- */
+// ---------- STAFF PAGES ----------
 import StaffNewOrder from "./admin/NewOrder";
 import SearchProducts from "./admin/SearchProducts";
 import StaffCheckOrders from "./admin/CheckOrders";
 import SalesReport from "./admin/SalesReport";
 
+// ---------- AUTH ----------
 import Login from "./pages/Login";
-import { useAuth } from "./context/AuthContext";
+import Register from "./pages/Register";
 
-// ทำเหมือนเดิม แต่อยู่ใต้ AuthProvider ที่ประกาศใน main.jsx
+// ✅ helper: อ่าน role ให้ชัวร์ (รองรับทั้ง context + localStorage)
+function getRoleFromStorage() {
+  try {
+    const u = JSON.parse(localStorage.getItem("user") || "null");
+    return u?.role || localStorage.getItem("role") || "";
+  } catch {
+    return localStorage.getItem("role") || "";
+  }
+}
+
+// ✅ Route guard
 function PrivateRoute({ children, allowedRoles }) {
   const { user } = useAuth();
-  const role = user?.role || localStorage.getItem("role");
+  const role = (user?.role || getRoleFromStorage() || "").toLowerCase();
 
-  if (!role) {
-    return <Navigate to="/login" replace />;
-  }
+  // ยังไม่ login
+  if (!role) return <Navigate to="/login" replace />;
 
-  if (allowedRoles && !allowedRoles.includes(role)) {
-    if (role === "staff") return <Navigate to="/" replace />;
+  // มีการกำหนด allowedRoles แล้ว role ไม่ผ่าน
+  if (allowedRoles && !allowedRoles.map((r) => r.toLowerCase()).includes(role)) {
+    // staff ถูกกันจาก superadmin -> ส่งไปหน้า staff
+    if (role === "staff") return <Navigate to="/staff/neworder" replace />;
+    // อื่น ๆ ส่งไป login
     return <Navigate to="/login" replace />;
   }
 
@@ -39,10 +53,11 @@ function PrivateRoute({ children, allowedRoles }) {
 export default function App() {
   return (
     <Routes>
-      {/* public */}
+      {/* ---------- PUBLIC ---------- */}
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-      {/* layout + protected */}
+      {/* ---------- PROTECTED LAYOUT ---------- */}
       <Route
         path="/"
         element={
@@ -51,11 +66,11 @@ export default function App() {
           </PrivateRoute>
         }
       >
-        {/* dashboard */}
+        {/* ✅ หน้าแรกของ "/" ให้เป็น Dashboard (ตามเดิม) */}
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
 
-        {/* superadmin only */}
+        {/* ---------- SUPERADMIN ONLY ---------- */}
         <Route
           path="products"
           element={
@@ -97,7 +112,7 @@ export default function App() {
           }
         />
 
-        {/* staff + superadmin ใช้ร่วมกัน */}
+        {/* ---------- STAFF + SUPERADMIN ---------- */}
         <Route
           path="staff/neworder"
           element={
@@ -132,7 +147,7 @@ export default function App() {
         />
       </Route>
 
-      {/* path แปลก ๆ → เด้งไป login */}
+      {/* ---------- FALLBACK ---------- */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

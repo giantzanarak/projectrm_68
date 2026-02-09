@@ -96,7 +96,7 @@ export default function Sidebar() {
           <li className={isActive("/staff/neworder") ? "active" : ""}>
             <Link to="/staff/neworder">
               <FiShoppingCart className="icon" />
-              สร้างบิลขาย
+              ตะกร้าสินค้า
             </Link>
           </li>
 
@@ -117,12 +117,11 @@ export default function Sidebar() {
           <li className={isActive("/staff/sales-report") ? "active" : ""}>
             <Link to="/staff/sales-report">
               <FiFileText className="icon" />
-              xxxxxxxx
+              ส่งออกไฟล์
             </Link>
           </li>
         </ul>
 
-        {/* 🔻 ปุ่มออกจากระบบจะมาติดกับรายงานยอดขายเลย */}
         <button className="logout-btn" onClick={handleLogout}>
           ออกจากระบบ
         </button>

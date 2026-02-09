@@ -233,7 +233,7 @@ export default function Dashboard() {
       {/* SUMMARY CARDS */}
       <section className="dash-summary-grid">
         <div className="dash-card">
-          <div className="dash-icon purple">💰</div>
+          <div className="dash-icon purple"></div>
           <div>
             <p className="dash-card-title">ยอดขายรวม</p>
             <h2 className="dash-number">฿328,000</h2>
@@ -242,7 +242,7 @@ export default function Dashboard() {
         </div>
 
         <div className="dash-card">
-          <div className="dash-icon blue">📦</div>
+          <div className="dash-icon blue"></div>
           <div>
             <p className="dash-card-title">ผ้าในคลัง</p>
             <h2 className="dash-number">{totalFabricStock} เมตร</h2>
@@ -251,7 +251,7 @@ export default function Dashboard() {
         </div>
 
         <div className="dash-card">
-          <div className="dash-icon green">📊</div>
+          <div className="dash-icon green"></div>
           <div>
             <p className="dash-card-title">ผลิตภัณฑ์ทั้งหมด</p>
             <h2 className="dash-number">1,234</h2>
@@ -260,7 +260,7 @@ export default function Dashboard() {
         </div>
 
         <div className="dash-card">
-          <div className="dash-icon yellow">⚠️</div>
+          <div className="dash-icon yellow"></div>
           <div>
             <p className="dash-card-title">สินค้าใกล้หมด</p>
             <h2 className="dash-number">4</h2>

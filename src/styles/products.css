@@ -1,9 +1,9 @@
-/* ================== WRAPPER & HEADER ================== */
+/* ================== Product Styles ================== */
 
+/* ================== WRAPPER & HEADER ================== */
 .products-wrapper {
   width: 100%;
-  /* ไม่ต้อง padding ที่นี่ ปล่อยให้ Layout หลักเป็นคนกำหนด
-     จะได้ตำแหน่งเหมือนหน้า Dashboard / Promotions */
+  padding: 20px;
 }
 
 .products-header {
@@ -47,7 +47,6 @@
 }
 
 /* ================== SUMMARY CARDS TOP ================== */
-
 .products-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -108,7 +107,6 @@
 }
 
 /* ================== TABS ================== */
-
 .prod-tabs {
   display: inline-flex;
   align-items: center;
@@ -150,7 +148,6 @@
 }
 
 /* ================== FILTER BAR (TAB PRODUCTS) ================== */
-
 .filter-bar {
   display: flex;
   justify-content: space-between;
@@ -201,7 +198,6 @@
 }
 
 /* ================== GENERIC STATES ================== */
-
 .loading-text,
 .empty-state {
   margin-top: 10px;
@@ -210,7 +206,6 @@
 }
 
 /* ================== PRODUCT CARDS GRID ================== */
-
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -218,7 +213,6 @@
 }
 
 /* ================== PRODUCT CARD (ADMIN) ================== */
-
 .prod-card-admin {
   background: #ffffff;
   border-radius: 18px;
@@ -249,6 +243,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  object-position: center; /* ทำให้ภาพดูสมส่วน */
 }
 
 /* แท็กบนรูป */
@@ -401,7 +396,6 @@
 }
 
 /* ================== WAREHOUSE TAB TABLE ================== */
-
 .warehouse-section {
   margin-top: 8px;
 }
@@ -446,7 +440,6 @@
 }
 
 /* ตาราง */
-
 .warehouse-table-wrapper {
   background: #ffffff;
   border-radius: 16px;
@@ -553,8 +546,547 @@
   color: #4b5563;
 }
 
-/* ================== RESPONSIVE ================== */
 
+/* พื้นหลังมืดโปร่งแสง */
+.modal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* สีดำโปร่งแสง */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px); /* เพิ่มเอฟเฟกต์เบลอพื้นหลัง */
+}
+
+/* กล่อง Modal */
+.modal-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 16px; /* ขอบโค้งมนตามรูป */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ปุ่มปิด (X) */
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #f3f4f6;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.modal-close:hover {
+  background: #e5e7eb;
+}
+
+/* หัวข้อ */
+.modal-title {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  color: #111827;
+  font-weight: 600;
+}
+
+.modal-sub {
+  margin-bottom: 24px;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* การจัดฟอร์ม */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.two-col {
+  flex-direction: row;
+  gap: 12px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.modal-field label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+/* Input */
+.modal-field input {
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.modal-field input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modal-field input:disabled {
+  background-color: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ปุ่มกดยืนยัน/ยกเลิก */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.btn-cancel, .btn-save {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel {
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.btn-cancel:hover {
+  background: #f9fafb;
+}
+
+.btn-save {
+  background: #2563eb; /* สีน้ำเงินสไตล์ Modern */
+  border: none;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #1d4ed8;
+}
+
+/* ขยายขนาด Modal ให้กว้างขึ้นเพื่อวาง 2 ฝั่ง */
+.modal-box.view-mode {
+  max-width: 850px;
+  width: 90%;
+  padding: 0; /* เอา Padding ออกเพื่อให้รูปชิดขอบ */
+  overflow: hidden;
+  display: flex;
+}
+
+.modal-content-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+/* ฝั่งรูปภาพ */
+.modal-image-section {
+  flex: 1.2;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ให้รูปเต็มพื้นที่ */
+}
+
+/* ฝั่งข้อมูล */
+.modal-info-section {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+.product-id {
+  color: #9ca3af;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.product-title {
+  font-size: 1.8rem;
+  margin: 5px 0;
+  color: #111827;
+}
+
+.product-category {
+  color: #6b7280;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+}
+
+/* การจัดวาง Grid ข้อมูล */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 20px;
+}
+
+.info-item label {
+  display: block;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.info-item span {
+  font-weight: 600;
+  color: #374151;
+}
+
+.stock-tag {
+  color: #059669 !important; /* สีเขียวสำหรับสต็อก */
+}
+
+/* ส่วนราคา */
+.price-section {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.price-section label {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.price-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #b91c1c; /* สีแดงเข้มตามภาพต้นฉบับ */
+}
+
+.total-value-section {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.edit-hint {
+  margin-top: auto;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  font-style: italic;
+  text-align: center;
+}
+/* ส่วนพื้นหลัง Modal */
+.modal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px); /* เพิ่มความเบลอให้พื้นหลังดูแพงขึ้น */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* กล่อง Modal หลัก */
+.modal-box.detail-modal {
+  max-width: 1000px; /* เพิ่มความกว้างเล็กน้อยเพื่อให้ดูโปร่ง */
+  width: 95%;
+  height: 85vh; /* กำหนดความสูงคงที่เพื่อให้ส่วนเนื้อหา Scroll ได้ */
+  display: flex;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 24px;
+  border: none;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* ปุ่มปิด (X) */
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.modal-close:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+/* การจัด Layout ซ้าย-ขวา */
+.detail-layout {
+  display: flex;
+  flex-wrap: wrap; /* รองรับมือถือ */
+  width: 100%;
+  height: 100%;
+}
+
+/* --- ฝั่งรูปภาพ --- */
+.detail-image-wrap {
+  flex: 1;
+  height: 100%;
+  background: #f8fafc;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #f1f5f9;
+}
+
+.detail-image {
+  width: 100%;
+  height: auto; /* เปลี่ยนจาก 100% เป็น auto เพื่อรักษาอัตราส่วนรูปภาพ */
+  max-height: 100%; /* ควบคุมความสูงไม่ให้ยาวเกินไป */
+  object-fit: cover; /* เปลี่ยนเป็น contain เพื่อให้เห็นรูปครบทั้งใบโดยไม่โดนตัดขอบ */
+  border-radius: 12px; /* เพิ่มความโค้งมนให้ตัวรูปภาพเล็กน้อย */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* เพิ่มเงาจางๆ ให้รูปภาพดูมีมิติ */
+}
+
+.no-image-container {
+  height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eee;
+  color: #888;
+  width: 100%;
+}
+
+/* ป้าย ID ที่แปะบนรูป */
+.detail-chip-id {
+  position: absolute;
+  bottom: 40px; 
+  right: 40px;
+  background: #111827;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* --- ฝั่งข้อมูล --- */
+.detail-info {
+  flex: 1.2;
+  height: 100%;
+  overflow-y: auto; /* เปิดการ Scroll ฝั่งขวา */
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background: #ffffff;
+}
+.detail-info::-webkit-scrollbar {
+  width: 6px;
+}
+.detail-info::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+.info-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.detail-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  background: #f8fafc; /* พื้นหลังอ่อนๆ ให้ข้อมูลดูเป็นสัดส่วน */
+  padding: 20px;
+  border-radius: 16px;
+}
+.detail-field-modern {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label-modern {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.value-modern {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+/* กล่องสรุปมูลค่า (Sticky ไว้ด้านล่างของเนื้อหา) */
+.stock-value-summary {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  padding: 24px;
+  border-radius: 18px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+}
+
+.summary-label { color: rgba(255, 255, 255, 0.8); font-weight: 400; }
+.summary-value { font-size: 1.6rem; font-weight: 800; }
+
+@media (max-width: 850px) {
+  .modal-box.detail-modal { height: 95vh; flex-direction: column; }
+  .detail-layout { flex-direction: column; }
+  .detail-image-wrap { height: 350px; flex: none; }
+  .detail-info { flex: 1; }
+}
+.detail-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 5px 0;
+}
+
+.detail-sub {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+/* การจัดตารางข้อมูล */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* แบ่งเป็น 2 คอลัมน์ */
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.detail-field {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 10px;
+}
+
+.detail-label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  font-size: 1.05rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.detail-value.price {
+  color: #2563eb; /* เน้นราคาเป็นสีน้ำเงิน */
+  font-size: 1.25rem;
+}
+
+/* กล่องสรุปมูลค่าสต็อก */
+.stock-value-summary {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto; /* ดันไปไว้ล่างสุด */
+  border: 1px dashed #d1d5db;
+}
+
+.summary-label {
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* หมายเหตุข้างล่าง */
+.detail-note {
+  margin-top: 20px;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.detail-note strong {
+  color: #ef4444; /* เน้นคำว่า แก้ไข เป็นสีแดง */
+}
+
+/* ปรับปรุงสำหรับมือถือ */
+@media (max-width: 768px) {
+  .detail-layout {
+    flex-direction: column;
+  }
+  .detail-image {
+    min-height: 300px;
+  }
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================== RESPONSIVE ================== */
 @media (max-width: 1024px) {
   .products-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

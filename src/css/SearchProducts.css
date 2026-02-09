@@ -455,3 +455,66 @@
     max-height: 260px;
   }
 }
+
+.add-to-cart-section {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  align-items: center;
+}
+
+.quantity-control {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.quantity-control button {
+  padding: 8px 15px;
+  background: #f8f9fa;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.quantity-control input {
+  width: 50px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  font-weight: bold;
+}
+
+.btn-add-cart {
+  flex: 1;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s;
+}
+
+.btn-add-cart:hover {
+  background: #1d4ed8;
+}
+
+.btn-add-cart:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.cart-icon-btn {
+  width: 20px;
+  filter: brightness(0) invert(1); /* ทำให้ไอคอนเป็นสีขาว */
+}

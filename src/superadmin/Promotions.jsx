@@ -1,5 +1,5 @@
-// src/pages/Promotions.jsx
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import axios from "axios";
 import {
   FiSearch,
   FiEdit2,
@@ -9,53 +9,14 @@ import {
 } from "react-icons/fi";
 
 import "../styles/promotions.css";
-import "../styles/modal.css";
 
-const STATUS_OPTIONS = ["เปิดใช้งาน", "ปิดใช้งาน"];
-const PAGE_SIZE = 4;
-
-const initialPromotions = [
-  {
-    id: "PR-001",
-    title: "โปรเปิดร้านใหม่",
-    desc: "ซื้อชุดไทยครบ 1 ชุด ลด 10% สำหรับชุดผ้าไหมทุกแบบ",
-    discount: 10,
-    start: "2025-01-01",
-    end: "2025-01-31",
-    status: "เปิดใช้งาน",
-  },
-  {
-    id: "PR-002",
-    title: "ชุดไทยคู่แม่ลูก",
-    desc: "ซื้อชุดแม่ + ชุดลูก รับส่วนลดเพิ่ม 15% จากยอดรวม",
-    discount: 15,
-    start: "2025-02-01",
-    end: "2025-02-28",
-    status: "เปิดใช้งาน",
-  },
-  {
-    id: "PR-003",
-    title: "โปรผ้าซิ่นมัดหมี่",
-    desc: "ซื้อผ้าซิ่นมัดหมี่ 2 ผืนขึ้นไป ลด 12%",
-    discount: 12,
-    start: "2025-01-15",
-    end: "2025-03-31",
-    status: "เปิดใช้งาน",
-  },
-  {
-    id: "PR-004",
-    title: "โปรสะสมแต้มลูกค้าประจำ",
-    desc: "ลูกค้าเก่าที่มีประวัติการซื้อเกิน 10,000 บาท รับส่วนลด 20%",
-    discount: 20,
-    start: "2024-12-01",
-    end: "2025-01-10",
-    status: "ปิดใช้งาน",
-  },
-];
+const API = "http://localhost:3010";
+const PAGE_SIZE = 6;
 
 export default function Promotions() {
-  const [promotions, setPromotions] = useState(initialPromotions);
-  const [loading] = useState(false);
+  const [promotions, setPromotions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -64,34 +25,42 @@ export default function Promotions() {
   const [editingPromo, setEditingPromo] = useState(null);
 
   const emptyForm = {
-    id: null,
-    title: "",
-    desc: "",
-    discount: 0,
-    start: "",
-    end: "",
-    status: "เปิดใช้งาน",
+    idPromotion: null,
+    Promotion_details: "",
+    promo_code: "",
+    PER_ITEM: 0,
   };
   const [form, setForm] = useState(emptyForm);
 
-  // -------- SEARCH + FILTER --------
+  const fetchPromotions = async () => {
+    try {
+      setLoading(true);
+      setErr("");
+      const res = await axios.get(`${API}/promotion`);
+      setPromotions(res.data || []);
+    } catch (e) {
+      console.error(e);
+      setErr(e?.response?.data?.message || "โหลดโปรโมชั่นไม่สำเร็จ");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPromotions();
+  }, []);
+
   const filteredPromotions = useMemo(() => {
     const term = search.trim().toLowerCase();
     if (!term) return promotions;
-
-    return promotions.filter(
-      (p) =>
-        (p.title || "").toLowerCase().includes(term) ||
-        (p.desc || "").toLowerCase().includes(term)
-    );
+    return promotions.filter((p) => {
+      const a = (p.Promotion_details || "").toLowerCase();
+      const b = (p.promo_code || "").toLowerCase();
+      return a.includes(term) || b.includes(term) || String(p.idPromotion).includes(term);
+    });
   }, [promotions, search]);
 
-  // -------- PAGINATION --------
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredPromotions.length / PAGE_SIZE)
-  );
-
+  const totalPages = Math.max(1, Math.ceil(filteredPromotions.length / PAGE_SIZE));
   const currentPagePromotions = useMemo(() => {
     const startIndex = (page - 1) * PAGE_SIZE;
     return filteredPromotions.slice(startIndex, startIndex + PAGE_SIZE);
@@ -100,16 +69,17 @@ export default function Promotions() {
   const handlePrevPage = () => setPage((p) => Math.max(1, p - 1));
   const handleNextPage = () => setPage((p) => Math.min(totalPages, p + 1));
 
-  // เช็คว่าใกล้หมดอายุภายใน X วันไหม
-  const isSoonExpire = (promo, days = 7) => {
-    if (!promo.end) return false;
-    const today = new Date();
-    const end = new Date(promo.end);
-    const diffDays = (end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24);
-    return diffDays >= 0 && diffDays <= days;
-  };
+  const totalCount = promotions.length;
+  const activeCount = promotions.filter((p) => Number(p.is_active) === 1).length;
 
-  // -------- MODAL / FORM --------
+  const avgDiscount =
+    totalCount > 0
+      ? (promotions.reduce((s, p) => s + Number(p.PER_ITEM || 0), 0) / totalCount).toFixed(1)
+      : "0.0";
+
+  const maxDiscount =
+    totalCount > 0 ? Math.max(...promotions.map((p) => Number(p.PER_ITEM || 0))) : 0;
+
   const openAddModal = () => {
     setEditingPromo(null);
     setForm(emptyForm);
@@ -119,13 +89,10 @@ export default function Promotions() {
   const openEditModal = (promo) => {
     setEditingPromo(promo);
     setForm({
-      id: promo.id,
-      title: promo.title || "",
-      desc: promo.desc || "",
-      discount: Number(promo.discount || 0),
-      start: promo.start || "",
-      end: promo.end || "",
-      status: promo.status || "เปิดใช้งาน",
+      idPromotion: promo.idPromotion,
+      Promotion_details: promo.Promotion_details || "",
+      promo_code: promo.promo_code || "",
+      PER_ITEM: Number(promo.PER_ITEM || 0),
     });
     setModalOpen(true);
   };
@@ -140,65 +107,79 @@ export default function Promotions() {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "discount" ? Number(value) || 0 : value,
+      [name]: name === "PER_ITEM" ? Number(value) || 0 : value,
     }));
   };
 
-  const handleSave = () => {
-    if (!form.title || !form.discount) {
-      alert("กรุณากรอกชื่อโปรโมชั่นและส่วนลด");
+  const handleSave = async () => {
+    if (!form.Promotion_details || !form.promo_code) {
+      alert("กรุณากรอก รายละเอียดโปรโมชั่น และ รหัสโปรฯ");
       return;
     }
 
-    if (editingPromo) {
-      setPromotions((prev) =>
-        prev.map((p) => (p.id === form.id ? { ...p, ...form } : p))
-      );
-    } else {
-      const newId = `PR-${Date.now()}`;
-      const newPromo = { ...form, id: newId };
-      setPromotions((prev) => [...prev, newPromo]);
+    try {
+      setLoading(true);
+      setErr("");
+
+      if (editingPromo) {
+        await axios.put(`${API}/promotion/${form.idPromotion}`, {
+          Promotion_details: form.Promotion_details,
+          promo_code: form.promo_code,
+          PER_ITEM: form.PER_ITEM,
+        });
+      } else {
+        await axios.post(`${API}/promotion`, {
+          Promotion_details: form.Promotion_details,
+          promo_code: form.promo_code,
+          PER_ITEM: form.PER_ITEM,
+        });
+      }
+
+      closeModal();
+      await fetchPromotions();
+    } catch (e) {
+      console.error(e);
+      alert(e?.response?.data?.message || "บันทึกไม่สำเร็จ");
+    } finally {
+      setLoading(false);
     }
-
-    closeModal();
   };
 
-  const handleDelete = (id) => {
-    if (!window.confirm("ยืนยันการลบโปรโมชั่นนี้หรือไม่")) return;
-    setPromotions((prev) => prev.filter((p) => p.id !== id));
+  // ✅ เปิด/ปิด (ใช้สวิตช์)
+  const handleToggleActive = async (idPromotion) => {
+    try {
+      setLoading(true);
+      await axios.put(`${API}/promotion/toggle/${idPromotion}`);
+      await fetchPromotions();
+    } catch (e) {
+      console.error(e);
+      alert(e?.response?.data?.message || "เปลี่ยนสถานะไม่สำเร็จ");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // -------- SUMMARY --------
-  const totalCount = promotions.length;
-  const activeCount = promotions.filter(
-    (p) => p.status === "เปิดใช้งาน"
-  ).length;
+  // ✅ ลบแบบ soft delete
+  const handleDelete = async (idPromotion) => {
+    const ok = window.confirm("ยืนยันลบ?");
+    if (!ok) return;
 
-  const avgDiscount =
-    totalCount > 0
-      ? (
-          promotions.reduce(
-            (s, p) => s + Number(p.discount || 0),
-            0
-          ) / totalCount
-        ).toFixed(1)
-      : "0.0";
+    try {
+      setPromotions((prev) => prev.filter((p) => p.idPromotion !== idPromotion));
+      await axios.put(`${API}/promotion/delete/${idPromotion}`);
+    } catch (e) {
+      console.error(e);
+      alert(e?.response?.data?.message || "ลบไม่สำเร็จ");
+      await fetchPromotions();
+    }
+  };
 
-  const maxDiscount =
-    totalCount > 0
-      ? Math.max(...promotions.map((p) => Number(p.discount || 0)))
-      : 0;
-
-  // -------- RENDER --------
   return (
     <div className="promotions-wrapper">
-      {/* HEADER */}
       <div className="promo-header">
         <div>
           <h2 className="promo-title">จัดการโปรโมชั่น</h2>
-          <span className="promo-sub">
-            จัดการโปรโมชั่นและส่วนลดพิเศษของร้านผ้าทอพื้นเมือง
-          </span>
+          <span className="promo-sub">ดึงข้อมูลจากฐานข้อมูลจริง </span>
         </div>
 
         <button className="promo-add-btn" onClick={openAddModal}>
@@ -206,7 +187,8 @@ export default function Promotions() {
         </button>
       </div>
 
-      {/* SUMMARY CARDS */}
+      {err && <div className="promo-empty">{err}</div>}
+
       <div className="promo-summary-grid">
         <div className="promo-summary-card">
           <p>โปรโมชั่นทั้งหมด</p>
@@ -226,12 +208,11 @@ export default function Promotions() {
         </div>
       </div>
 
-      {/* SEARCH BAR */}
       <div className="promo-search">
         <FiSearch className="icon" />
         <input
           type="text"
-          placeholder="ค้นหาโปรโมชั่น..."
+          placeholder="ค้นหา (รหัสโปรฯ / รายละเอียด)..."
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -240,7 +221,6 @@ export default function Promotions() {
         />
       </div>
 
-      {/* LIST / TABLE */}
       {loading ? (
         <div className="promo-empty">กำลังโหลดข้อมูลโปรโมชั่น...</div>
       ) : (
@@ -249,54 +229,38 @@ export default function Promotions() {
             <table className="promo-table">
               <thead>
                 <tr>
+                  <th>ID</th>
+                  <th>รายละเอียด</th>
                   <th>รหัสโปรฯ</th>
-                  <th>ชื่อโปรโมชั่น</th>
                   <th>ส่วนลด</th>
-                  <th>ช่วงเวลา</th>
                   <th>สถานะ</th>
                   <th>การจัดการ</th>
                 </tr>
               </thead>
+
               <tbody>
                 {currentPagePromotions.map((p) => {
-                  const soon = p.status === "เปิดใช้งาน" && isSoonExpire(p, 7);
-                  const label =
-                    soon && p.status === "เปิดใช้งาน"
-                      ? "ใกล้หมดอายุ"
-                      : p.status;
+                  const isActive = Number(p.is_active) === 1;
 
                   return (
-                    <tr key={p.id}>
-                      <td>{p.id}</td>
+                    <tr key={p.idPromotion}>
+                      <td>{p.idPromotion}</td>
 
                       <td>
                         <div className="promo-name-cell">
-                          <div className="promo-name-main">{p.title}</div>
-                          <div className="promo-name-desc">{p.desc}</div>
+                          <div className="promo-name-main">{p.Promotion_details}</div>
+                          <div className="promo-name-desc">
+                            created: {String(p.created_at || "").slice(0, 10) || "-"}
+                          </div>
                         </div>
                       </td>
 
-                      <td className="promo-discount-cell">
-                        {p.discount}%
-                      </td>
+                      <td style={{ fontWeight: 700 }}>{p.promo_code}</td>
+                      <td className="promo-discount-cell">{Number(p.PER_ITEM || 0)}%</td>
 
                       <td>
-                        <div className="promo-date-cell">
-                          <span>{p.start || "-"}</span>
-                          <span className="promo-date-arrow">→</span>
-                          <span>{p.end || "-"}</span>
-                        </div>
-                      </td>
-
-                      <td>
-                        <span
-                          className={`promo-status-pill ${
-                            p.status === "เปิดใช้งาน"
-                              ? "status-active"
-                              : "status-inactive"
-                          } ${soon ? "status-soon" : ""}`}
-                        >
-                          {label}
+                        <span className={`promo-status-pill ${isActive ? "status-active" : "status-inactive"}`}>
+                          {isActive ? "เปิดใช้งาน" : "ปิดใช้งาน"}
                         </span>
                       </td>
 
@@ -309,9 +273,21 @@ export default function Promotions() {
                           >
                             <FiEdit2 />
                           </button>
+
+                          {/* ✅ สวิตช์เปิด/ปิด */}
+                          <button
+  type="button"
+  className={`status-toggle ${isActive ? "on" : "off"}`}
+  onClick={() => handleToggleActive(p.idPromotion)}
+  title={isActive ? "คลิกเพื่อปิดใช้งาน" : "คลิกเพื่อเปิดใช้งาน"}
+>
+  <span className="status-dot" />
+  <span className="status-text">{isActive ? "เปิดใช้งาน" : "ปิดใช้งาน"}</span>
+</button>
+
                           <button
                             className="promo-icon-btn delete"
-                            onClick={() => handleDelete(p.id)}
+                            onClick={() => handleDelete(p.idPromotion)}
                             title="ลบ"
                           >
                             <FiTrash2 />
@@ -333,24 +309,15 @@ export default function Promotions() {
             </table>
           </div>
 
-          {/* PAGINATION */}
           {totalPages > 1 && (
             <div className="promo-pagination">
-              <button
-                className="page-btn"
-                onClick={handlePrevPage}
-                disabled={page === 1}
-              >
+              <button className="page-btn" onClick={handlePrevPage} disabled={page === 1}>
                 <FiChevronLeft />
               </button>
               <span>
                 หน้า {page} / {totalPages}
               </span>
-              <button
-                className="page-btn"
-                onClick={handleNextPage}
-                disabled={page === totalPages}
-              >
+              <button className="page-btn" onClick={handleNextPage} disabled={page === totalPages}>
                 <FiChevronRight />
               </button>
             </div>
@@ -358,100 +325,56 @@ export default function Promotions() {
         </>
       )}
 
-      {/* MODAL ADD / EDIT */}
       {modalOpen && (
-  <div
-    className="promo-modal-overlay"
-    onClick={closeModal}          // คลิกพื้นหลัง = ปิด
-  >
-    <div
-      className="promo-modal-card promo-modal-box"
-      onClick={(e) => e.stopPropagation()}  // กันคลิกในกล่องแล้วปิด
-    >
-      <h2 className="modal-title">
-        {editingPromo ? "แก้ไขโปรโมชั่น" : "เพิ่มโปรโมชั่นใหม่"}
-      </h2>
+        <div className="promo-modal-overlay" onClick={closeModal}>
+          <div className="promo-modal-card promo-modal-box" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-title">{editingPromo ? "แก้ไขโปรโมชั่น" : "เพิ่มโปรโมชั่นใหม่"}</h2>
 
-      <div className="promo-modal-grid">
-        <div className="field">
-          <label>ชื่อโปรโมชั่น</label>
-          <input
-            name="title"
-            value={form.title}
-            onChange={handleFormChange}
-            placeholder="เช่น ลดรับปีใหม่"
-          />
+            <div className="promo-modal-grid">
+              <div className="field full">
+                <label>รายละเอียดโปรโมชั่น</label>
+                <input
+                  name="Promotion_details"
+                  value={form.Promotion_details}
+                  onChange={handleFormChange}
+                  placeholder="เช่น ลดรับปีใหม่"
+                />
+              </div>
+
+              <div className="field">
+                <label>รหัสโปรฯ</label>
+                <input
+                  name="promo_code"
+                  value={form.promo_code}
+                  onChange={handleFormChange}
+                  placeholder="เช่น NEWYEAR2025"
+                />
+              </div>
+
+              <div className="field">
+                <label>ส่วนลด (%)</label>
+                <input
+                  type="number"
+                  name="PER_ITEM"
+                  value={form.PER_ITEM}
+                  onChange={handleFormChange}
+                  min="0"
+                  max="100"
+                />
+              </div>
+            </div>
+
+            <div className="modal-footer promo-modal-footer">
+              <button className="cancel-btn" onClick={closeModal}>
+                ยกเลิก
+              </button>
+              <button className="save-btn" onClick={handleSave}>
+                บันทึก
+              </button>
+            </div>
+          </div>
         </div>
-
-        <div className="field full">
-          <label>รายละเอียด</label>
-          <input
-            name="desc"
-            value={form.desc}
-            onChange={handleFormChange}
-            placeholder="คำอธิบายสั้น ๆ"
-          />
-        </div>
-
-        <div className="field">
-          <label>ส่วนลด (%)</label>
-          <input
-            type="number"
-            name="discount"
-            value={form.discount}
-            onChange={handleFormChange}
-            min="0"
-            max="100"
-          />
-        </div>
-
-        <div className="field">
-          <label>สถานะ</label>
-          <select
-            name="status"
-            value={form.status}
-            onChange={handleFormChange}
-          >
-            {STATUS_OPTIONS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="field">
-          <label>วันที่เริ่ม</label>
-          <input
-            type="date"
-            name="start"
-            value={form.start}
-            onChange={handleFormChange}
-          />
-        </div>
-
-        <div className="field">
-          <label>วันที่สิ้นสุด</label>
-          <input
-            type="date"
-            name="end"
-            value={form.end}
-            onChange={handleFormChange}
-          />
-        </div>
-      </div>
-
-      <div className="modal-footer promo-modal-footer">
-        <button className="cancel-btn" onClick={closeModal}>
-          ยกเลิก
-        </button>
-        <button className="save-btn" onClick={handleSave}>
-          บันทึก
-        </button>
-      </div>
+      )}
     </div>
-  </div>
-)}
-</div>
   );
 }
