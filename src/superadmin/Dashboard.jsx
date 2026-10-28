@@ -1,352 +1,433 @@
-// src/pages/superadmin/Dashboard.jsx
-import { useState } from "react";
-import { FiChevronDown, FiBell } from "react-icons/fi";
-import "../styles/dashboard.css";
-import fabricsData from "../data/fabricsData";
-
-import { Line, Pie, Bar } from "react-chartjs-2";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  ArcElement,
-  BarElement,
-  Legend,
-  Tooltip,
+  FiRefreshCw, FiDollarSign, FiCalendar, FiAlertCircle, FiLayers,
+  FiClock, FiChevronRight, FiScissors, FiAward,
+} from "react-icons/fi";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip,
 } from "chart.js";
+import { getBills, getBillDetails, getProducts, baht } from "../api/billApi";
+import { getTailoringOrders } from "../api/fetch_api_admin";
+import { getFabricRolls } from "../api/fetch_api_superadmin";
+import "../styles/dashboardHome.css";
 
-ChartJS.register(
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  ArcElement,
-  BarElement,
-  Legend,
-  Tooltip
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip);
+
+const LOW_STOCK_METERS = 10;
+const CHART_DAYS = 14;
+const AUTO_REFRESH_MS = 5 * 60 * 1000;
+
+const dayKey = (d) => {
+  if (!d) return "";
+  const dt = d instanceof Date ? d : new Date(d);
+  if (Number.isNaN(dt.getTime())) return "";
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+};
+
+const fromKey = (key) => {
+  const [y, m, d] = String(key).slice(0, 10).split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+
+const daysBetween = (fromK, toK) =>
+  Math.round((fromKey(toK) - fromKey(fromK)) / 86400000);
+
+const shortDate = (key) =>
+  key ? fromKey(key).toLocaleDateString("th-TH", { day: "numeric", month: "short" }) : "-";
+
+const sum = (arr, fn) => arr.reduce((s, x) => s + (Number(fn(x)) || 0), 0);
+
+function orderIsFinished(o) {
+  const list = (o.items || []).map((it) => it.status).filter(Boolean);
+  return list.length > 0 && list.every((s) => s === "เสร็จแล้ว");
+}
+
+function orderMoney(o) {
+  const total = (Number(o.pieces_total) || 0) + (Number(o.alterations_total) || 0);
+  const paid = (Number(o.deposit) || 0) + (Number(o.final_paid_amount) || 0);
+  return { total, paid, outstanding: Math.max(0, total - paid) };
+}
+
+const Panel = ({ title, icon: Icon, action, onAction, children, className = "" }) => (
+  <section className={`dh-panel ${className}`}>
+    <div className="dh-panel-head">
+      <h3>{Icon && <Icon size={16} />} {title}</h3>
+      {action && (
+        <button type="button" className="dh-link" onClick={onAction}>
+          {action} <FiChevronRight size={14} />
+        </button>
+      )}
+    </div>
+    {children}
+  </section>
 );
 
 export default function Dashboard() {
-  const [month, setMonth] = useState("เดือนนี้");
-  const [showStockPopup, setShowStockPopup] = useState(false);
+  const navigate = useNavigate();
+  const [data, setData] = useState({ bills: [], details: [], products: [], orders: [], rolls: [] });
+  const [failed, setFailed] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [loadedAt, setLoadedAt] = useState(null);
 
-  // รวมสต็อกผ้าตัวอย่าง
-  const totalFabricStock = fabricsData.reduce((sum, f) => sum + f.stock, 0);
+  // silent = โหลดเบื้องหลัง ไม่แสดงสถานะกำลังโหลด (ใช้กับรีเฟรชอัตโนมัติ)
+  const load = useCallback(async ({ silent = false } = {}) => {
+    if (!silent) setLoading(true);
+    const [bills, details, products, orders, rolls] = await Promise.allSettled([
+      getBills(), getBillDetails(), getProducts(), getTailoringOrders(), getFabricRolls(),
+    ]);
+    const val = (r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []);
+    setData({
+      bills: val(bills), details: val(details), products: val(products),
+      orders: val(orders), rolls: val(rolls),
+    });
+    setFailed({
+      bills: bills.status === "rejected",
+      orders: orders.status === "rejected",
+      rolls: rolls.status === "rejected",
+    });
+    setLoadedAt(new Date());
+    setLoading(false);
+  }, []);
 
-  const stockAlerts = [
-    { id: 1, text: "ผ้าไหมสีแดง เหลือ 12 เมตร", level: "danger" },
-    { id: 2, text: "ผ้าย้อมครามขาวดำ เหลือ 45 เมตร", level: "warning" },
-    { id: 3, text: "ผ้าฝ้ายสีเขียว เหลือ 8 เมตร", level: "danger" },
-    { id: 4, text: "ผ้าทอพิเศษ เหลือ 5 ม้วน", level: "danger" },
-  ];
+  useEffect(() => { load(); }, [load]);
 
-  const bestSellers = [
-    { rank: 1, name: "ผ้าไหมลายดอก สีฟ้า", qty: 1250, revenue: 856250 },
-    { rank: 2, name: "ผ้าย้อมครามลายขาว", qty: 980, revenue: 844100 },
-    { rank: 3, name: "ผ้าตะขาบโบราณ", qty: 875, revenue: 839375 },
-    { rank: 4, name: "ผ้าฝ้ายลายดอกแดง", qty: 720, revenue: 832400 },
-    { rank: 5, name: "ผ้าไหมทอง", qty: 650, revenue: 829250 },
-  ];
+  // รีเฟรชอัตโนมัติทุก 5 นาที และทันทีเมื่อกลับมาที่แท็บนี้ — ข้ามวันแล้ววันที่/ตัวเลขเปลี่ยนเอง
+  useEffect(() => {
+    const timer = setInterval(() => load({ silent: true }), AUTO_REFRESH_MS);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") load({ silent: true });
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [load]);
 
-  /* -----------------------------
-        DATA + OPTIONS : LINE
-  ------------------------------ */
-  const lineData = {
-    labels: ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."],
-    datasets: [
-      {
-        label: "ยอดขาย (บาท)",
-        data: [48000, 52000, 47000, 65000, 58000, 69000],
-        borderColor: "#4A72FF",
-        backgroundColor: "rgba(74,114,255,0.2)",
-        borderWidth: 3,
-        tension: 0.4,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-      },
-    ],
-  };
+  const todayKey = dayKey(new Date());
+  const monthPrefix = todayKey.slice(0, 7);
+  const yesterdayKey = dayKey(new Date(Date.now() - 86400000));
 
-  const lineOptions = {
+  /* ---------- sales ---------- */
+  const sales = useMemo(() => {
+    const byDay = {};
+    data.bills.forEach((b) => {
+      const k = dayKey(b.created_at);
+      if (!k) return;
+      byDay[k] = byDay[k] || { total: 0, count: 0 };
+      byDay[k].total += Number(b.totalAmount) || 0;
+      byDay[k].count += 1;
+    });
+    const monthBills = data.bills.filter((b) => dayKey(b.created_at).startsWith(monthPrefix));
+    return {
+      byDay,
+      today: byDay[todayKey] || { total: 0, count: 0 },
+      yesterday: byDay[yesterdayKey] || { total: 0, count: 0 },
+      monthTotal: sum(monthBills, (b) => b.totalAmount),
+      monthCount: monthBills.length,
+      monthBillIds: new Set(monthBills.map((b) => String(b.idBill))),
+    };
+  }, [data.bills, todayKey, yesterdayKey, monthPrefix]);
+
+  const chart = useMemo(() => {
+    const keys = Array.from({ length: CHART_DAYS }, (_, i) =>
+      dayKey(new Date(Date.now() - (CHART_DAYS - 1 - i) * 86400000))
+    );
+    return {
+      labels: keys.map(shortDate),
+      datasets: [{
+        label: "ยอดขาย",
+        data: keys.map((k) => sales.byDay[k]?.total || 0),
+        backgroundColor: keys.map((k) => (k === todayKey ? "#2563eb" : "#bfdbfe")),
+        hoverBackgroundColor: "#3b82f6",
+        borderRadius: 6,
+        maxBarThickness: 28,
+      }],
+    };
+  }, [sales.byDay, todayKey]);
+
+  const chartOptions = useMemo(() => ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: (context) =>
-            `ยอดขาย: ฿${context.parsed.y.toLocaleString()}`,
+          label: (ctx) => ` ${baht(ctx.parsed.y)}`,
         },
       },
     },
     scales: {
-      y: {
-        ticks: {
-          callback: (value) => `฿${Number(value).toLocaleString()}`,
-        },
-        beginAtZero: false,
-      },
-    },
-  };
-
-  /* -----------------------------
-        PIE : สัดส่วนผ้า
-  ------------------------------ */
-  const pieColors = ["#4A72FF", "#67C8FF", "#A97DFF", "#FF8FA6", "#FFCD6A"];
-
-  const pieData = {
-    labels: fabricsData.map((f) => f.name),
-    datasets: [
-      {
-        data: fabricsData.map((f) => f.stock),
-        backgroundColor: pieColors,
-      },
-    ],
-  };
-
-  const pieOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { position: "top" },
-      tooltip: {
-        callbacks: {
-          label: (ctx) => {
-            const total = ctx.dataset.data.reduce((s, v) => s + v, 0);
-            const value = ctx.parsed;
-            const percent = ((value / total) * 100).toFixed(1);
-            return `${ctx.label}: ${value} เมตร (${percent}%)`;
-          },
-        },
-      },
-    },
-  };
-
-  /* -----------------------------
-        BAR : การใช้ผ้ารายเดือน
-  ------------------------------ */
-  const barLabels = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."];
-
-  const barData = {
-    labels: barLabels,
-    datasets: [
-      {
-        label: "รับเข้า (เมตร)",
-        data: [130, 140, 135, 150, 160, 170],
-        backgroundColor: "#4CAF50",
-      },
-      {
-        label: "ใช้ไป (เมตร)",
-        data: [120, 135, 130, 140, 150, 160],
-        backgroundColor: "#FF6B6B",
-      },
-    ],
-  };
-
-  const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { position: "bottom" },
-      tooltip: {
-        callbacks: {
-          label: (ctx) => {
-            const label = ctx.dataset.label || "";
-            const val = ctx.parsed.y ?? 0;
-            return `${label}: ${val} เมตร`;
-          },
-        },
-      },
-    },
-    scales: {
+      x: { grid: { display: false }, ticks: { color: "#94a3b8", font: { size: 11 } } },
       y: {
         beginAtZero: true,
+        grid: { color: "#f1f5f9" },
+        border: { display: false },
         ticks: {
-          // ✅ ใส่หน่วยที่แกน Y
-          callback: (value) => `${value} ม.`,
+          color: "#94a3b8",
+          font: { size: 11 },
+          callback: (v) => (v >= 1000 ? `฿${(v / 1000).toLocaleString("th-TH")}k` : `฿${v}`),
         },
       },
-      x: {
-        ticks: { maxRotation: 0 },
-      },
     },
-  };
+  }), []);
 
-  // helper สำหรับสรุปใต้ pie chart
-  const totalStock = fabricsData.reduce((s, f) => s + f.stock, 0);
+  /* ---------- tailoring ---------- */
+  const tailoring = useMemo(() => {
+    const active = data.orders.filter((o) => !orderIsFinished(o));
+    const withMoney = data.orders.map((o) => ({ o, ...orderMoney(o) }));
+    const owing = withMoney.filter((x) => x.outstanding > 0);
+
+    const watch = active
+      .filter((o) => o.deadline)
+      .map((o) => ({ o, diff: daysBetween(todayKey, dayKey(o.deadline)) }))
+      .filter((x) => x.diff <= 7)
+      .sort((a, b) => a.diff - b.diff);
+
+    const appointments = [];
+    data.orders.forEach((o) => {
+      (o.appointments || []).forEach((a) => {
+        if (String(a.appointment_date || "").slice(0, 10) === todayKey && !a.done) {
+          appointments.push({ o, time: a.appointment_time || "", purpose: a.purpose || "นัดหมาย" });
+        }
+      });
+      if (dayKey(o.deadline) === todayKey && !orderIsFinished(o)) {
+        appointments.push({ o, time: "", purpose: "กำหนดส่งงาน", deadline: true });
+      }
+    });
+    appointments.sort((a, b) => (a.time || "99:99").localeCompare(b.time || "99:99"));
+
+    return {
+      activeCount: active.length,
+      owingTotal: sum(owing, (x) => x.outstanding),
+      owingCount: owing.length,
+      overdueCount: watch.filter((x) => x.diff < 0).length,
+      watch,
+      appointments,
+    };
+  }, [data.orders, todayKey]);
+
+  /* ---------- best sellers this month ---------- */
+  const bestSellers = useMemo(() => {
+    const nameOf = (id) => data.products.find((p) => String(p.id) === String(id))?.name;
+    const map = {};
+    data.details
+      .filter((d) => sales.monthBillIds.has(String(d.Bill_idBill)))
+      .forEach((d) => {
+        const key = d.Products_idProducts ?? d.notes ?? "other";
+        const name = nameOf(d.Products_idProducts) || d.notes || "สินค้า";
+        map[key] = map[key] || { name, qty: 0, revenue: 0 };
+        map[key].qty += Number(d.quantity) || 0;
+        map[key].revenue += (Number(d.unit_price) || 0) * (Number(d.quantity) || 0);
+      });
+    return Object.values(map).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
+  }, [data.details, data.products, sales.monthBillIds]);
+
+  /* ---------- fabric stock ---------- */
+  const fabric = useMemo(() => {
+    const low = data.rolls
+      .map((r) => ({ r, left: Number(r.remaining_length) || 0 }))
+      .filter((x) => x.left < LOW_STOCK_METERS)
+      .sort((a, b) => a.left - b.left);
+    return { low, emptyCount: low.filter((x) => x.left === 0).length };
+  }, [data.rolls]);
+
+  const salesDiff = sales.today.total - sales.yesterday.total;
+
+  const kpis = [
+    {
+      key: "today", tone: "blue", icon: FiDollarSign,
+      label: "ยอดขายวันนี้",
+      value: baht(sales.today.total),
+      note: `${sales.today.count} บิล · ${
+        salesDiff === 0 ? "เท่ากับเมื่อวาน"
+          : `${salesDiff > 0 ? "▲" : "▼"} ${baht(Math.abs(salesDiff))} จากเมื่อวาน`
+      }`,
+      noteTone: salesDiff > 0 ? "up" : salesDiff < 0 ? "down" : "",
+      to: "/staff/checkorders",
+    },
+    {
+      key: "month", tone: "violet", icon: FiCalendar,
+      label: `ยอดขาย${new Date().toLocaleDateString("th-TH", { month: "long" })}`,
+      value: baht(sales.monthTotal),
+      note: `${sales.monthCount} บิล`,
+      to: "/staff/sales-report",
+    },
+    {
+      key: "owe", tone: "red", icon: FiAlertCircle,
+      label: "ยอดค้างชำระ (งานตัด)",
+      value: baht(tailoring.owingTotal),
+      note: `${tailoring.owingCount} ใบสั่งตัด`,
+      to: "/staff/tailoringorders",
+    },
+    {
+      key: "fabric", tone: "amber", icon: FiLayers,
+      label: "ผ้าใกล้หมด",
+      value: `${fabric.low.length} ม้วน`,
+      note: fabric.emptyCount ? `หมดแล้ว ${fabric.emptyCount} ม้วน` : `เหลือน้อยกว่า ${LOW_STOCK_METERS} ม.`,
+      to: "/Fabric",
+    },
+  ];
 
   return (
-    <>
-      {/* HEADER */}
-      <div className="dashboard-header">
+    <div className="dh-page">
+      <header className="dh-header">
         <div>
-          <h2 className="dash-title">แดชบอร์ด</h2>
-          <span className="dash-sub">สรุปข้อมูลและรายงานทั้งหมด</span>
+          <h1>สรุปยอดขาย</h1>
+          <p>
+            {new Date().toLocaleDateString("th-TH", {
+              weekday: "long", day: "numeric", month: "long", year: "numeric",
+            })}
+            {loadedAt && ` · อัปเดตล่าสุด ${loadedAt.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" })} น.`}
+          </p>
         </div>
+        <button type="button" className="dh-refresh" onClick={() => load()} disabled={loading}>
+          <FiRefreshCw size={15} className={loading ? "spin" : ""} />
+          {loading ? "กำลังโหลด..." : "รีเฟรช"}
+        </button>
+      </header>
 
-        <div className="dash-right">
-          {/* ปุ่มแจ้งเตือนสต็อกบนหัว */}
-          <button
-            className="dash-bell-btn"
-            onClick={() => setShowStockPopup((v) => !v)}
-          >
-            <FiBell />
-            {stockAlerts.length > 0 && (
-              <span className="dash-bell-badge">{stockAlerts.length}</span>
-            )}
+      {failed.bills && (
+        <p className="dh-alert">โหลดข้อมูลบิลไม่สำเร็จ — ตรวจสอบว่าเซิร์ฟเวอร์เปิดอยู่</p>
+      )}
+      
+      <div className="dh-kpis">
+        {kpis.map(({ key, tone, icon: Icon, label, value, note, noteTone, to }) => (
+          <button type="button" key={key} className={`dh-kpi ${tone}`} onClick={() => navigate(to)}>
+            <span className="dh-kpi-icon"><Icon size={18} /></span>
+            <span className="dh-kpi-label">{label}</span>
+            <strong className="dh-kpi-value">{loading ? "…" : value}</strong>
+            <span className={`dh-kpi-note ${noteTone || ""}`}>{loading ? "" : note}</span>
           </button>
-
-          <div className="dash-month-select">
-            <span>{month}</span>
-            <FiChevronDown />
-          </div>
-        </div>
-
-        {/* POPUP แจ้งเตือนสต็อก */}
-        {showStockPopup && (
-          <div className="stock-popup">
-            <div className="stock-popup-header">
-              <span>แจ้งเตือนสต็อก</span>
-              <button
-                className="stock-popup-close"
-                onClick={() => setShowStockPopup(false)}
-              >
-                ×
-              </button>
-            </div>
-            <div className="stock-popup-list">
-              {stockAlerts.map((a) => (
-                <div
-                  key={a.id}
-                  className={`stock-popup-item stock-${a.level}`}
-                >
-                  {a.text}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        ))}
       </div>
 
-      {/* SUMMARY CARDS */}
-      <section className="dash-summary-grid">
-        <div className="dash-card">
-          <div className="dash-icon purple"></div>
-          <div>
-            <p className="dash-card-title">ยอดขายรวม</p>
-            <h2 className="dash-number">฿328,000</h2>
-            <span className="dash-extra green">▲ เพิ่มขึ้น 12.5%</span>
+      <div className="dh-row dh-row-main">
+        <Panel
+          title={`ยอดขาย ${CHART_DAYS} วันล่าสุด`}
+          icon={FiDollarSign}
+          action="ประวัติการขาย"
+          onAction={() => navigate("/staff/checkorders")}
+          className="dh-chart-panel"
+        >
+          <div className="dh-chart">
+            <Bar data={chart} options={chartOptions} />
           </div>
-        </div>
+        </Panel>
 
-        <div className="dash-card">
-          <div className="dash-icon blue"></div>
-          <div>
-            <p className="dash-card-title">ผ้าในคลัง</p>
-            <h2 className="dash-number">{totalFabricStock} เมตร</h2>
-            <span className="dash-extra green">▲ เพิ่มขึ้น 8 เมตร</span>
-          </div>
-        </div>
+        <Panel
+          title="นัดหมายวันนี้"
+          icon={FiClock}
+          action="ปฏิทิน"
+          onAction={() => navigate("/staff/tailoringcalendar")}
+        >
+          {tailoring.appointments.length === 0 ? (
+            <p className="dh-empty">ไม่มีนัดหมายวันนี้</p>
+          ) : (
+            <ul className="dh-list">
+              {tailoring.appointments.map((a, i) => (
+                <li key={i} onClick={() => navigate(`/Order/detail/${a.o.order_code}`)}>
+                  <span className={`dh-time ${a.deadline ? "deadline" : ""}`}>
+                    {a.time ? a.time.slice(0, 5) : a.deadline ? "ส่งงาน" : "—"}
+                  </span>
+                  <div className="dh-list-main">
+                    <strong>{a.o.customer_name || "-"}</strong>
+                    <span>{a.purpose} · {a.o.order_code}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+      </div>
 
-        <div className="dash-card">
-          <div className="dash-icon green"></div>
-          <div>
-            <p className="dash-card-title">ผลิตภัณฑ์ทั้งหมด</p>
-            <h2 className="dash-number">1,234</h2>
-            <span className="dash-extra green">▲ เพิ่มขึ้น 15 รายการ</span>
-          </div>
-        </div>
+      <div className="dh-row dh-row-three">
+        <Panel
+          title="งานตัดใกล้ถึงกำหนดส่ง"
+          icon={FiScissors}
+          action="คิวตัดชุด"
+          onAction={() => navigate("/staff/tailoringorders")}
+        >
+          {failed.orders ? (
+            <p className="dh-empty">โหลดข้อมูลงานตัดไม่สำเร็จ</p>
+          ) : tailoring.watch.length === 0 ? (
+            <p className="dh-empty">ไม่มีงานที่ต้องส่งใน 7 วันนี้</p>
+          ) : (
+            <ul className="dh-list">
+              {tailoring.watch.slice(0, 6).map(({ o, diff }) => (
+                <li key={o.order_id} onClick={() => navigate(`/Order/detail/${o.order_code}`)}>
+                  <div className="dh-list-main">
+                    <strong>{o.customer_name || "-"}</strong>
+                    <span>{o.order_code} · ส่ง {shortDate(dayKey(o.deadline))}</span>
+                  </div>
+                  <span className={`dh-tag ${diff < 0 ? "red" : diff <= 2 ? "amber" : "gray"}`}>
+                    {diff < 0 ? `เลย ${Math.abs(diff)} วัน` : diff === 0 ? "วันนี้" : `อีก ${diff} วัน`}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {tailoring.watch.length > 6 && (
+            <p className="dh-more">และอีก {tailoring.watch.length - 6} งาน</p>
+          )}
+        </Panel>
 
-        <div className="dash-card">
-          <div className="dash-icon yellow"></div>
-          <div>
-            <p className="dash-card-title">สินค้าใกล้หมด</p>
-            <h2 className="dash-number">4</h2>
-            <span className="dash-extra red">ต้องการสั่งซื้อเพิ่ม</span>
-          </div>
-        </div>
-      </section>
+        <Panel
+          title="สินค้าขายดีเดือนนี้"
+          icon={FiAward}
+          action="รายงาน"
+          onAction={() => navigate("/staff/sales-report")}
+        >
+          {bestSellers.length === 0 ? (
+            <p className="dh-empty">ยังไม่มีการขายสินค้าเดือนนี้</p>
+          ) : (
+            <ol className="dh-rank">
+              {bestSellers.map((p, i) => (
+                <li key={p.name}>
+                  <span className="dh-rank-no">{i + 1}</span>
+                  <div className="dh-list-main">
+                    <strong>{p.name}</strong>
+                    <span>ขายได้ {p.qty} ชิ้น</span>
+                  </div>
+                  <span className="dh-money">{baht(p.revenue)}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </Panel>
 
-      {/* CHART ROW */}
-      <section className="chart-row">
-        {/* LINE CHART */}
-        <div className="chart-card">
-          <h3 className="chart-title">แนวโน้มยอดขายรายเดือน</h3>
-          <div className="chart-inner">
-            <Line data={lineData} options={lineOptions} />
-          </div>
-        </div>
-
-        {/* PIE CHART */}
-        <div className="chart-card">
-          <h3 className="chart-title">สัดส่วนผ้าในคลัง</h3>
-          <div className="chart-inner">
-            <Pie data={pieData} options={pieOptions} />
-          </div>
-
-          {/* ✅ สรุปใต้กราฟ */}
-          <div className="fabric-summary-list">
-            {fabricsData.map((f, idx) => {
-              const percent = ((f.stock / totalStock) * 100).toFixed(1);
-              return (
-                <div key={f.id} className="fabric-summary-row">
-                  <span
-                    className="fabric-color-dot"
-                    style={{ backgroundColor: pieColors[idx % pieColors.length] }}
-                  />
-                  <span className="fabric-name">{f.name}</span>
-                  <span className="fabric-value">{f.stock} เมตร</span>
-                  <span className="fabric-percent">{percent}%</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* FULL BAR */}
-      <section className="chart-row-full">
-        <div className="chart-card full">
-          <h3 className="chart-title">ปริมาณการใช้ผ้ารายเดือน</h3>
-          <div className="chart-inner">
-            <Bar data={barData} options={barOptions} />
-          </div>
-        </div>
-      </section>
-
-      {/* BOTTOM SECTION */}
-      <section className="bottom-row">
-        {/* ✅ ตารางสินค้าขายดี */}
-        <div className="list-card">
-          <h3>ผลิตภัณฑ์ขายดี</h3>
-          <div className="table-wrapper">
-            <table className="best-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>ชื่อผลิตภัณฑ์</th>
-                  <th>ปริมาณที่ขาย (ม.)</th>
-                  <th>รายได้ (บาท)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bestSellers.map((item) => (
-                  <tr key={item.rank}>
-                    <td>{item.rank}</td>
-                    <td>{item.name}</td>
-                    <td>{item.qty.toLocaleString()}</td>
-                    <td>฿{item.revenue.toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-    
-      </section>
-    </>
+        <Panel
+          title="ผ้าใกล้หมด"
+          icon={FiLayers}
+          action="จัดการผ้า"
+          onAction={() => navigate("/Fabric")}
+        >
+          {failed.rolls ? (
+            <p className="dh-empty">โหลดข้อมูลผ้าไม่สำเร็จ</p>
+          ) : fabric.low.length === 0 ? (
+            <p className="dh-empty">ผ้าทุกม้วนมีเพียงพอ</p>
+          ) : (
+            <ul className="dh-list">
+              {fabric.low.slice(0, 6).map(({ r, left }) => (
+                <li key={r.roll_id} onClick={() => navigate(`/Fabric/detail/${r.roll_id}`)}>
+                  <div className="dh-list-main">
+                    <strong>{r.fabric_name || "ผ้า"}</strong>
+                    <span>FR-{String(r.roll_id).padStart(3, "0")} · {r.color_name || r.type_name || "-"}</span>
+                  </div>
+                  <span className={`dh-tag ${left === 0 ? "red" : "amber"}`}>
+                    {left === 0 ? "หมด" : `${left} ม.`}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {fabric.low.length > 6 && (
+            <p className="dh-more">และอีก {fabric.low.length - 6} ม้วน</p>
+          )}
+        </Panel>
+      </div>
+    </div>
   );
 }

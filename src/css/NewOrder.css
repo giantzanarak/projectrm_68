@@ -1,678 +1,1369 @@
-.order-container {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0px 0px;
-  font-family: 'Prompt', sans-serif;
-  color: #1a1a1a;
+
+
+.pos-root {
+  --bg:        #f5f6fa;
+  --surface:   #ffffff;
+  --surface2:  #f1f5f9;
+  --border:    #e2e8f0;
+  --border2:   #cbd5e1;
+  --ink:       #0f172a;
+  --ink-mid:   #64748b;
+  --ink-soft:  #94a3b8;
+  --dark:      #1e293b;
+  --dark-deep: #0f172a;
+  --dark-lt:   #334155;
+  --gold:      #3b82f6;
+  --gold-lt:   #60a5fa;
+  --gold-pale: #dbeafe;
+  --green:     #16a34a;
+  --green-bg:  #f0fdf4;
+  --red:       #dc2626;
+  --red-bg:    #fef2f2;
+  --shadow:    0 4px 20px rgba(15,23,42,.09);
+  --shadow-lg: 0 16px 56px rgba(15,23,42,.2);
+  --r:         14px;
+  --r-sm:      9px;
+  --tr:        .18s ease;
+
+  font-family: 'Sarabun', sans-serif;
+  background: var(--bg);
+  min-height: 100%;
+  color: var(--ink);
+  padding: 28px 32px 64px;
+  margin: -24px;
 }
 
-.main-layout {
+.pos-root *,
+.pos-root *::before,
+.pos-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.pos-top {
   display: flex;
-  gap: 50px;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.left-panel { flex: 2; }
-.right-panel { flex: 1; position: sticky; top: 30px; }
+.pos-top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-
-.cart-header { margin-bottom: 35px; }
-.title-large { font-size: 24px;
+.pos-title {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 24px;
   font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 4px;
-padding-bottom: 20px;}
-.count-badge { color: #888; font-weight: 400; font-size: 20px; }
-
-.step-bar-compact {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: #f8fafc;
-  padding: 15px 25px;
-  border-radius: 12px;
-  width: 500;
+  line-height: 1.1;
 }
 
-.step-bar-compact {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; 
-  width: 100%; 
-  padding: 20px 20px; 
-  margin-bottom: 30px;
+.pos-sub { font-size: 14px; color: var(--ink-mid); margin-top: 5px; }
+.pos-sub b { color: var(--gold); font-weight: 700; }
+
+.pos-btn-ghost,
+.pos-btn-danger {
+  padding: 11px 20px;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all var(--tr);
+  white-space: nowrap;
 }
 
+.pos-btn-ghost:hover { border-color: var(--dark); color: var(--dark); }
 
-.step-node {
+.pos-btn-danger { border-color: #fecaca; color: var(--red); }
+.pos-btn-danger:hover { background: var(--red-bg); border-color: var(--red); }
+
+.pos-btn-save {
+  width: 100%;
+  padding: 15px 22px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: linear-gradient(135deg, var(--gold-lt), var(--gold));
+  font-family: inherit;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--dark-deep);
+  cursor: pointer;
+  transition: all var(--tr);
+  box-shadow: 0 5px 16px rgba(0,0,0,.18);
+}
+
+.pos-btn-save:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+.pos-btn-save:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
+
+.pos-btn-inline { width: auto; padding: 11px 22px; font-size: 14px; }
+
+.pos-link {
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gold);
+  cursor: pointer;
+}
+
+.pos-link:hover { text-decoration: underline; }
+
+.pos-note { font-size: 12.5px; color: var(--ink-soft); text-align: center; margin-top: 8px; }
+.pos-empty {
+  background: var(--surface);
+  border: 1px dashed var(--border2);
+  border-radius: var(--r);
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.pos-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.pos-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 22px 24px;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+
+.pos-block-head {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  flex-shrink: 0; 
+  margin-bottom: 14px;
 }
 
-
-.node-connector {
-  flex-grow: 1; 
-  height: 2px;
-  background-color: #e2e8f0;
-  margin: 0 20px; 
+.pos-block-head h2 {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
 }
 
+.pos-count { font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; }
 
-.step-node.active + .node-connector {
-  background-color: #2563eb; 
+.pos-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
 
+.pos-filters-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
 
-.node-dot {
+.pos-search { position: relative; flex: 1; min-width: 200px; }
+
+.pos-search svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
+.pos-search input { padding-left: 42px !important; }
+
+.pos-filters input,
+.pos-filters select {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  transition: border-color var(--tr), background var(--tr);
+}
+
+.pos-filters select,
+.pos-filters input[type="date"] { width: auto; cursor: pointer; }
+
+.pos-filters input:focus,
+.pos-filters select:focus { border-color: var(--dark); background: var(--surface); }
+
+.pos-clear {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--r-sm);
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink-mid);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--tr);
+}
+
+.pos-clear:hover { border-color: var(--red); color: var(--red); }
+
+.pos-filters-bar .pos-count { margin-left: auto; }
+
+.pos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 12px;
+}
+
+.pos-item {
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  padding: 0 0 10px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  overflow: hidden;
+  transition: all var(--tr);
+}
+
+.pos-item:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: var(--shadow); }
+
+.pos-item.picked { border-color: var(--dark); box-shadow: 0 0 0 2px rgba(15,23,42,.12); }
+.pos-item.off { opacity: .55; }
+
+.pos-item-img {
+  position: relative;
+  aspect-ratio: 1/1;
+  background: var(--surface2);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.pos-item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.pos-noimg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--border2);
+}
+
+.pos-item-qty {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 99px;
+  background: var(--dark);
+  color: var(--gold-pale);
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pos-item-off {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: rgba(255,253,248,.94);
+  color: var(--red);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.pos-item-name {
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ขนาดชุด — ใส่ได้ตั้งแต่–ถึง (ไว้ตอบลูกค้าว่าควรใส่ตัวไหน) */
+.pos-item-size {
+  padding: 2px 10px 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #2563eb;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.pos-item-stock {
+  padding: 2px 10px 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.pos-item-price {
+  padding: 3px 10px 0;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.pos-bill {
+  position: sticky;
+  top: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--gold);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pos-bill-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--ink-soft);
+}
+
+.pos-cart-empty {
+  padding: 26px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+  border: 1px dashed var(--border2);
+  border-radius: var(--r-sm);
+}
+
+.pos-cart {
+  display: flex;
+  flex-direction: column;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.pos-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px 80px 24px;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.pos-line:last-child { border-bottom: none; }
+
+.pos-line-tailoring { grid-template-columns: minmax(0, 1fr) 80px 24px; }
+
+.pos-line-info { min-width: 0; }
+
+.pos-line-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pos-line-price { font-size: 11.5px; color: var(--ink-soft); margin-top: 1px; }
+
+.pos-qty {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid var(--border2);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.pos-qty button {
+  width: 26px;
+  border: none;
+  background: var(--surface2);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dark);
+  cursor: pointer;
+  transition: background var(--tr);
+}
+
+.pos-qty button:hover { background: var(--gold-pale); }
+
+.pos-qty input {
+  width: 40px;
+  min-width: 0;
+  border: none;
+  text-align: center;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  background: var(--surface);
+  outline: none;
+  padding: 5px 0;
+  -moz-appearance: textfield;
+}
+
+.pos-qty input::-webkit-outer-spin-button,
+.pos-qty input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.pos-line-total {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.pos-line-x {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all var(--tr);
+}
+
+.pos-line-x:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+
+.pos-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.pos-f { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+
+.pos-f > span { font-size: 12.5px; font-weight: 600; color: var(--ink-mid); }
+
+.pos-f select,
+.pos-f input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  transition: border-color var(--tr), background var(--tr);
+}
+
+.pos-f select { cursor: pointer; }
+.pos-f select:focus,
+.pos-f input:focus { border-color: var(--dark); background: var(--surface); }
+
+.pos-f2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.pos-sum {
+  padding: 14px 16px;
+  border-radius: var(--r-sm);
+  background: var(--surface2);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pos-sum-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--ink-mid);
+}
+
+.pos-sum-row span:last-child { font-weight: 600; color: var(--ink); white-space: nowrap; }
+.pos-sum-row.minus span:last-child { color: var(--red); }
+
+.pos-sum-row.total {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1.5px solid var(--border2);
+  font-family: 'Sarabun', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.pos-sum-row.total span:last-child {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 24px;
+  color: var(--gold);
+}
+
+.pos-cash {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px dashed var(--border2);
+  border-radius: var(--r-sm);
+}
+
+.pos-quick { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.pos-quick button {
+  padding: 7px 13px;
+  border: 1.5px solid var(--border2);
+  border-radius: 99px;
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all var(--tr);
+}
+
+.pos-quick button:hover { border-color: var(--dark); color: var(--dark); }
+
+.pos-change {
+  padding: 9px 13px;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.pos-change b { font-family: 'Sarabun', sans-serif; font-size: 19px; }
+.pos-change.ok  { background: var(--green-bg); color: var(--green); }
+.pos-change.bad { background: var(--red-bg);   color: var(--red); }
+
+.pos-kpi {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.pos-kpi-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 22px;
+  border-radius: var(--r);
+  background: linear-gradient(160deg, var(--dark-deep), var(--dark));
+  box-shadow: var(--shadow);
+}
+
+.pos-kpi-main .pos-kpi-label { color: var(--gold-lt); }
+.pos-kpi-main .pos-kpi-note  { color: rgba(255,255,255,.6); }
+
+.pos-kpi-big {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.pos-kpi-side {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.pos-kpi-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--border2);
+  border-radius: var(--r);
+  background: var(--surface);
+  box-shadow: 0 1px 4px rgba(15,23,42,.05);
+}
+
+.pos-kpi-cell.cash     { border-top-color: var(--green); }
+.pos-kpi-cell.transfer { border-top-color: var(--gold); }
+
+.pos-kpi-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pos-kpi-label i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--border2);
+}
+
+.pos-kpi-cell.cash .pos-kpi-label i     { background: var(--green); }
+.pos-kpi-cell.transfer .pos-kpi-label i { background: var(--gold); }
+
+.pos-kpi-num {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.pos-kpi-cell.cash .pos-kpi-num     { color: var(--green); }
+.pos-kpi-cell.transfer .pos-kpi-num { color: var(--gold); }
+
+.pos-kpi-note { font-size: 11.5px; color: var(--ink-soft); }
+
+.pos-list { display: flex; flex-direction: column; gap: 9px; margin-bottom: 24px; }
+
+.pos-list-head,
+.pos-row {
+  display: grid;
+  grid-template-columns: 150px 150px 124px minmax(0,1fr) 74px 96px 110px 88px;
+  gap: 14px;
+  align-items: center;
+}
+
+.pos-list-head {
+  padding: 12px 18px 12px 20px;
+  border: 1px solid var(--dark);
+  border-radius: var(--r-sm);
+  background: linear-gradient(135deg, var(--dark-deep), var(--dark));
+  box-shadow: 0 4px 12px rgba(15,23,42,.2);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold-pale);
+  margin-bottom: 3px;
+}
+
+.pos-c { text-align: center; }
+.pos-r { text-align: right; }
+
+.pos-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--r);
+  padding: 13px 18px;
+  box-shadow: 0 1px 4px rgba(15,23,42,.06);
+  transition: all var(--tr);
+}
+
+.pos-row:hover { transform: translateX(3px); box-shadow: var(--shadow); border-color: var(--border2); }
+
+.pos-row-no {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--gold);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pos-row-no:hover { text-decoration: underline; }
+
+.pos-row-date { font-size: 13px; color: var(--ink-mid); white-space: nowrap; }
+
+.pos-row-pay {
+  font-size: 13px;
+  color: var(--ink-mid);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pos-row-items { font-size: 13px; color: var(--ink-mid); white-space: nowrap; }
+
+.pos-row-tailoring-badge {
+  display: block;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-top: 2px;
+}
+.pos-row-disc { font-size: 13px; color: var(--red); white-space: nowrap; }
+
+.pos-row-total {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.pos-row-act { display: flex; gap: 7px; justify-content: center; }
+
+.pos-icon {
   width: 32px;
   height: 32px;
-  background-color: #e2e8f0;
-  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all var(--tr);
+  flex-shrink: 0;
+}
+
+.pos-icon:hover { border-color: var(--dark); color: var(--dark); background: var(--surface2); }
+.pos-icon.del:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+
+.pos-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.pos-pager > button {
+  padding: 9px 18px;
+  border: 1.5px solid var(--border2);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all var(--tr);
+}
+
+.pos-pager > button:hover:not(:disabled) { border-color: var(--dark); color: var(--dark); }
+.pos-pager > button:disabled { opacity: .4; cursor: default; }
+
+.pos-dots { display: flex; gap: 6px; }
+
+.pos-dots button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border2);
+  background: var(--surface);
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14px;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all var(--tr);
+}
+
+.pos-dots button:hover { border-color: var(--dark); color: var(--dark); }
+.pos-dots button.active {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: var(--gold-pale);
+  font-weight: 700;
+}
+
+.pos-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,17,12,.6);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+  animation: pos-fade .18s ease;
+}
+
+@keyframes pos-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.pos-receipt-wrap {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: pos-up .22s cubic-bezier(.4,0,.2,1);
+}
+
+@keyframes pos-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.pos-receipt {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 24px 22px;
+  box-shadow: var(--shadow-lg);
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.pos-receipt-head { text-align: center; padding-bottom: 14px; border-bottom: 1px dashed #bbb; }
+
+.pos-receipt-head h3 {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.pos-receipt-head p { font-size: 12px; color: #555; }
+
+.pos-receipt-no {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 15px !important;
+  font-weight: 700;
+  color: var(--gold) !important;
+  margin: 6px 0 2px;
+}
+
+.pos-receipt-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 12.5px;
+}
+
+.pos-receipt-table th {
+  text-align: left;
+  padding: 6px 4px;
+  border-bottom: 1px solid #ccc;
+  font-size: 11.5px;
+  color: #555;
+}
+
+.pos-receipt-table td { padding: 6px 4px; border-bottom: 1px dotted #ddd; }
+.pos-receipt-table th:not(:first-child),
+.pos-receipt-table td:not(:first-child) { text-align: right; white-space: nowrap; }
+
+.pos-receipt-none { padding: 20px 4px; text-align: center; color: #777; font-size: 12.5px; }
+
+.pos-receipt-sum { display: flex; flex-direction: column; gap: 5px; padding-top: 8px; }
+
+.pos-receipt-sum > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12.5px;
+  color: #444;
+}
+
+.pos-receipt-sum > div span:last-child { white-space: nowrap; }
+
+.pos-receipt-sum .grand {
+  margin-top: 5px;
+  padding-top: 8px;
+  border-top: 1.5px solid #333;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.pos-receipt-foot {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #bbb;
+  text-align: center;
+  font-size: 11.5px;
+  color: #555;
+  line-height: 1.7;
+}
+
+.pos-thanks { margin-top: 6px; font-weight: 700; color: var(--gold); }
+
+.pos-receipt-actions { display: flex; gap: 9px; justify-content: flex-end; flex-wrap: wrap; }
+
+.pos-receipt-tailoring-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  margin-top: 10px;
+}
+
+.pos-swal-popup {
+  font-family: 'Sarabun', sans-serif !important;
+  border-radius: 18px !important;
+  border-top: 4px solid #3b82f6 !important;
+}
+
+.pos-swal-confirm,
+.pos-swal-danger,
+.pos-swal-cancel {
+  font-family: 'Sarabun', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  border-radius: 9px !important;
+  padding: 11px 24px !important;
+  margin: 0 6px !important;
+  cursor: pointer !important;
+  border: 1.5px solid transparent !important;
+}
+
+.pos-swal-confirm { background: #1e293b !important; color: #dbeafe !important; }
+.pos-swal-danger  { background: #dc2626 !important; color: #fff !important; }
+.pos-swal-cancel  { background: transparent !important; border-color: #cbd5e1 !important; color: #64748b !important; }
+
+@media print {
+  body.pos-printing * { visibility: hidden !important; }
+  body.pos-printing #pos-receipt,
+  body.pos-printing #pos-receipt * { visibility: visible !important; }
+
+  body.pos-printing #pos-receipt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: none;
+    padding: 8mm;
+  }
+
+  @page { margin: 6mm; }
+}
+
+.pos-row-cust {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.pos-row-cust i {
+  font-style: normal;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+.pos-row-cust em { font-style: normal; color: var(--ink-soft); }
+
+@media (max-width: 1280px) {
+  .pos-list-head,
+  .pos-row { grid-template-columns: 132px 130px 110px minmax(0,1fr) 66px 88px 100px 80px; }
+}
+
+@media (max-width: 1080px) {
+  .pos-layout { grid-template-columns: 1fr; }
+  .pos-bill { position: static; }
+}
+
+@media (max-width: 900px) {
+  .pos-root { padding: 20px 16px 48px; margin: -16px; }
+  .pos-title { font-size: 20px; }
+  .pos-card { padding: 18px 16px; }
+
+  .pos-kpi { grid-template-columns: 1fr; }
+  .pos-kpi-big { font-size: 30px; }
+
+  .pos-list-head { display: none; }
+
+  .pos-row {
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 8px 12px;
+    padding: 14px;
+  }
+
+  .pos-row-no    { grid-column: 1; font-size: 15px; }
+  .pos-row-total { grid-column: 2; text-align: right; }
+  .pos-row-cust { grid-column: span 2; }
+  .pos-row-date,
+  .pos-row-pay,
+  .pos-row-items,
+  .pos-row-disc  { grid-column: span 2; text-align: left !important; font-size: 12.5px; }
+
+  .pos-row-act {
+    grid-column: span 2;
+    justify-content: flex-end;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+}
+
+@media (max-width: 620px) {
+  .pos-f2 { grid-template-columns: 1fr; }
+  .pos-grid { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); }
+  .pos-line { grid-template-columns: minmax(0,1fr) 88px 24px; }
+  .pos-line-total { grid-column: 1 / 3; text-align: left; }
+}
+
+.pos-line-name i {
+  font-style: normal;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.pos-sum-later {
+  font-size: 12.5px !important;
+  color: var(--ink-soft) !important;
+  border-bottom-style: dotted !important;
+}
+
+/* ปุ่มด้านบน (สร้างคำสั่งตัดชุด / ดูบิลทั้งหมด) — แบบเดียวกับปุ่ม "เพิ่มม้วนผ้า" */
+html body .pos-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none;
+  border-radius: 14px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+  transition: all .25s ease;
+}
+
+html body .pos-btn-primary:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, .28);
+}
+
+/* สรุปยอด: ราคาทั้งหมด / ยอดชำระ / ยอดค้างชำระ */
+.pos-sum-main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1.5px solid var(--border2);
+}
+
+.pos-sum-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.pos-sum-line span:last-child {
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pos-sum-line.owe span:last-child  { color: #dc2626; }
+.pos-sum-line.owe.zero span:last-child { color: var(--ink-soft); }
+
+/* ======================================================
+   Polish — labels, product cards, inputs, cash, save
+   ====================================================== */
+
+/* 1. หัวช่องกรอก: หนาปานกลาง สีเทาเข้ม */
+.pos-f > span {
+  font-weight: 500;
+  color: #475569;
+}
+
+/* 3. การ์ดที่เลือก: ขอบฟ้า + แสงจาง แทนขอบดำ */
+.pos-item.picked {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, .18);
+}
+
+html body .pos-item.picked:hover {
+  border-color: #3b82f6;
+}
+
+.pos-item-qty {
+  background: #2563eb;
+}
+
+/* 4. ชื่อสินค้าจองไว้ 2 บรรทัด ราคาเรียงตรงกันทุกการ์ด */
+.pos-item-name {
+  min-height: calc(13px * 1.35 * 2);
+}
+
+/* 5. ช่องกรอกทุกช่องเป็นแบบเดียวกัน: พื้นขาว มีขอบ */
+.pos-f select,
+.pos-f input {
+  height: 44px;
+  padding-top: 0;
+  padding-bottom: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.pos-f select:focus,
+.pos-f input:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+}
+
+.pos-f input::placeholder {
+  color: #94a3b8;
+}
+
+/* 6. ล้างตะกร้า: เทา → แดงเมื่อชี้ */
+.pos-link-danger {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.pos-link-danger:hover {
+  color: #dc2626;
+}
+
+/* 7. ยังไม่ได้กรอกเงิน: สีเทาเป็นกลาง */
+.pos-change.idle {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.pos-change.idle b {
+  color: #0f172a;
+}
+
+/* 8. ปุ่มบันทึกตอนกดไม่ได้: อ่านออก */
+html body .pos-btn-save:disabled {
+  background: #e2e8f0;
+  color: #64748b;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.pos-note {
+  margin-top: 10px;
+  color: #64748b;
+}
+
+/* ======================================================
+   Receipt popup — one card: success bar / receipt / actions
+   ====================================================== */
+
+.pos-receipt-wrap {
+  max-width: 420px;
+  gap: 0;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, .22);
+}
+
+.pos-receipt-success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border-bottom: 1px solid #dcfce7;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #15803d;
+}
+
+.pos-receipt-success span {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.step-node.active .node-dot {
-  background-color: #2563eb; /* สีน้ำเงินตามรูปตัวอย่างของคุณ */
-}
-
-.step-node span {
-  font-size: 16px;
-  font-weight: 600;
-  color: #94a3b8;
-}
-
-.step-node.active span {
-  color: #2563eb;
-}
-
-.step-node { display: flex; align-items: center; gap: 8px; color: #94a3b8; }
-.node-dot {
-  text-align: center;
-  width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0;
-  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff;
-}
-
-.cart-items-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px; 
- 
- 
-}
-
-/* ขยายตัวกล่องสินค้า */
-.item-row {
-  display: flex;
-  gap: 10px; /* เพิ่มระยะห่างระหว่างรูปกับข้อความ */
-  padding: 50px; /* เพิ่มพื้นที่ว่างข้างในกล่องให้ดูใหญ่ขึ้น */
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px; /* เพิ่มความโค้งมนให้ดูพรีเมียม */
-  margin-bottom: 20px; /* ระยะห่างระหว่างกล่องบน-ล่าง */
-
-}
-
-/* ขยายขนาดรูปภาพสินค้า */
-.item-thumb {
-  width: 100px;  /* จากเดิม 130px ปรับเป็น 160px หรือมากกว่าตามต้องการ */
-  height: 200px; /* ปรับความสูงให้สมดุล */
-  object-fit: cover;
-  border-radius: 12px;
-  padding-left: 15px;
-}
-
-/* เอฟเฟกต์เมื่อเอาเมาส์ไปวาง (Optional) */
-.item-row:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border-color: #cbd5e1;
-}
-
-
-
-
-/* ส่วนข้อมูลภายในกล่อง */
-.item-info-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-}
-
-.item-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
-}
-
-.item-top h3 {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0;
-  color: #1e293b;
-}
-
-.price-bold {
-  font-size: 18px;
-  font-weight: 800;
-  color: #000;
-}
-
-.item-desc {
-  font-size: 14px;
-  color: #64748b;
-  margin-bottom: 16px;
-}
-
-/* จัดวางส่วนปุ่มควบคุม */
-.item-actions {
-  margin-top: auto; /* ดันลงไปด้านล่างสุดของกล่อง */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* ตัวปรับจำนวนสินค้า (สไตล์ในภาพตัวอย่าง) */
-.qty-picker {
-  display: flex;
-  align-items: center;
-  border: 1px solid #000;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.qty-picker button {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: #fff;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.qty-picker button:hover {
-  background: #f1f5f9;
-}
-
-.qty-picker span {
-  width: 40px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 15px;
-  border-left: 1.5px solid #000;
-  border-right: 1.5px solid #000;
-}
-
-/* ปุ่มลบทิ้งสีแดงที่วางตำแหน่งตามภาพ */
-.del-btn {
-  background: none;
-  border: none;
-  color: #ef4444;
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  padding: 4px 8px;
-  transition: color 0.2s;
-}
-
-.del-btn:hover {
-  color: #b91c1c;
-  text-decoration: underline;
-}
-.step-node span { font-size: 14px; font-weight: 600; }
-.node-connector { width: 40px; height: 2px; background: #e2e8f0; }
-
-.step-node.active { color: #2563eb; }
-.step-node.active .node-dot { background: #2563eb; }
-
-/* รายการสินค้า */
-.item-row { display: flex; gap: 20px; padding: 25px 0; border-bottom: 1px solid #f1f5f9; }
-.item-thumb { width: 140px; height: 180px; object-fit: cover; border-radius: 8px; }
-.item-info-main { flex: 1; display: flex; flex-direction: column; }
-.item-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.price-bold { font-weight: 800; font-size: 18px; }
-.item-desc { color: #64748b; font-size: 14px; margin: 8px 0; }
-.item-actions { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
-
-.qty-picker { display: flex; align-items: center; border: 1.5px solid #000; border-radius: 4px; }
-.qty-picker button { background: none; border: none; width: 32px; height: 32px; cursor: pointer; font-size: 18px; }
-.qty-picker span { width: 40px; text-align: center; font-weight: 700; }
-.del-btn { background: none; border: none; color: #ef4444; font-size: 13px; cursor: pointer; text-decoration: underline; }
-/* คอนเทนเนอร์หลักของส่วนเลือกสินค้าเพิ่ม */
-.more-products-grid {
-  margin-top: 40px;
-  padding: 20px;
-  background-color: #ffffff; /* พื้นหลังกล่องใหญ่เป็นสีขาว */
-  border-radius: 16px;       /* ความโค้งมนของกล่องหลัก */
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-}
-
-.section-title {
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 20px;
-  color: #1a1a1a;
-}
-
-/* ปรับ Grid ให้ขยายช่องกว้างขึ้น */
-.picker-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* ขยายช่องอัตโนมัติ */
-  gap: 20px; /* ระยะห่างระหว่างกล่องสินค้า */
-}
-
-/* กล่องสินค้าแต่ละชิ้น (Mini Card) */
-.mini-card {
-  background: #ffffff;
-  border: 1px solid #000000; /* ขอบสีดำตามสไตล์ในรูปตัวอย่าง */
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.mini-card:hover {
-  transform: translateY(-5px); /* เลื่อนขึ้นเมื่อเอาเมาส์วาง */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* ขยายขนาดรูปภาพในกล่องเล็ก */
-.mini-card img {
-  width: 100%;
-  height: 180px; /* เพิ่มความสูงรูปภาพให้เห็นชัดเจน */
-  object-fit: cover;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-/* ส่วนข้อมูลชื่อและราคา */
-.mini-card-body {
-  padding: 15px;
-  background: #ffffff;
-}
-
-.mini-card-body p {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: #334155;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; /* ตัดคำถ้าชื่อยาวเกินไป */
-}
-
-.mini-card-body strong {
-  display: block;
-  margin-top: 8px;
-  font-size: 16px;
-  font-weight: 800;
-  color: #000000;
-}
-
-/* ปรับแต่ง Overlay ตอนเอาเมาส์วาง (ปุ่มเพิ่ม) */
-.add-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* มืดลงเล็กน้อย */
+  background: #16a34a;
   color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  font-weight: 700;
-  font-size: 18px;
 }
 
-.mini-card:hover .add-overlay {
-  opacity: 1;
+.pos-receipt {
+  border-radius: 0;
+  box-shadow: none;
+  padding: 24px 26px 20px;
 }
 
-/* สรุปราคา (Right Panel) */
-.summary-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+/* 3. วันเวลา */
+.pos-receipt-head p:last-child {
+  font-variant-numeric: tabular-nums;
 }
 
-.summary-head { font-size: 22px; font-weight: 800; margin-bottom: 25px; border-left: 4px solid #000; padding-left: 12px; }
-.summary-line { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px; }
-.total-bold { font-size: 19px; font-weight: 900; margin-top: 15px; color: #000; }
-.text-green { color: #10b981; font-weight: 700; }
-.vat-sub { font-size: 12px; color: #94a3b8; text-align: right; margin-top: -10px; margin-bottom: 20px; }
-.divider-dashed { border-top: 1px dashed #e2e8f0; margin: 20px 0; }
-
-.promo-trigger {
-  width: 100%; text-align: left; background: #f1f5f9; border: none; padding: 12px 15px;
-  border-radius: 8px; font-weight: 600; cursor: pointer; margin-bottom: 20px;
+/* ใบสั่งตัดในใบเสร็จ: ราคาเต็ม / ค้างชำระ / กำหนดรับชุด */
+.pos-receipt-tailor td {
+  vertical-align: top;
 }
 
-.btn-checkout-primary {
-  width: 100%; padding: 18px; background: #000; color: #fff; border: none;
-  border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer;
-  display: flex; justify-content: space-between; transition: 0.2s;
-}
-.btn-checkout-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-.btn-checkout-primary.disabled { background: #cbd5e1; cursor: not-allowed; }
-
-/* Payment Badges */
-.payment-support { margin-top: 30px; }
-.payment-support p { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #94a3b8; margin-bottom: 12px; }
-.pay-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-.pay-badges span {
-  font-size: 10px; font-weight: 800; padding: 5px 10px; border-radius: 4px; border: 1px solid #e2e8f0; color: #64748b;
+.pos-receipt-tailor i {
+  font-style: normal;
+  color: #64748b;
 }
 
-/* More Products Grid */
-.more-products-grid { margin-top: 50px; }
-.section-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
-.picker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-.mini-card { border-radius: 8px; overflow: hidden; border: 1px solid #f1f5f9; cursor: pointer; position: relative; }
-.mini-card img { width: 100%; height: 120px; object-fit: cover; }
-.mini-card-body { padding: 10px; font-size: 12px; }
-.mini-card-body p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.add-overlay {
-  position: absolute; inset: 0; background: rgba(0,0,0,0.7); color: #fff;
-  display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; font-weight: 700;
-}
-.mini-card:hover .add-overlay { opacity: 1; }
-
-@media (max-width: 960px) {
-  .main-layout { flex-direction: column; }
-  .right-panel { width: 100%; position: static; }
-}
-
-/* ส่วนของหน้าข้อมูลลูกค้า (Step 2) */
-.customer-form-card {
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  margin-top: 10px; /* เว้นระยะจาก Step Bar */
-}
-
-.section-subtitle {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 25px;
-  color: #1e293b;
-  border-left: 5px solid #000; /* เส้นหนาสีดำตามสไตล์ที่คุณชอบ */
-  padding-left: 15px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* แบ่ง 2 ฝั่งซ้ายขวา */
-  gap: 25px;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* บังคับให้ช่อง เลขภาษี และ บริษัท ยาวเต็มบรรทัด */
-.input-group.full-width {
-  grid-column: span 2;
-}
-
-.input-group label {
-  font-size: 14px;
-  font-weight: 700;
-  color: #4b5563;
-}
-
-/* ตกแต่งช่อง Input ให้ดูโมเดิร์น */
-.custom-input {
-  width: 100%;
-  padding: 15px 18px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 16px;
-  font-family: 'Prompt', sans-serif;
-  background-color: #f8fafc; /* สีพื้นหลังอ่อนๆ */
-  transition: all 0.2s ease;
-}
-
-.custom-input:focus {
-  outline: none;
-  border-color: #000; /* เปลี่ยนขอบเป็นสีดำเมื่อพิมพ์ */
-  background-color: #fff;
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
-}
-
-/* จัดการปุ่มย้อนกลับให้ดูเด่นและคลิกง่ายขึ้น */
-.btn-back-text {
+.pos-receipt-tailor small {
   display: block;
-  width: fit-content; /* ให้ขนาดพอดีกับตัวอักษร */
-  margin: 20px auto 0; /* เว้นระยะห่างจากปุ่มดำด้านบน และจัดให้อยู่ตรงกลาง */
-  background: none;
-  border: none;
-  color: #94a3b8; /* สีเทาสุภาพ */
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  padding: 5px 10px;
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: #64748b;
 }
 
-.btn-back-text:hover {
-  color: #1e293b; /* เข้มขึ้นเมื่อเอาเมาส์วาง */
-  text-decoration: underline; /* ขีดเส้นใต้ให้รู้ว่ากดได้ */
-}
-/* คุม Layout ไม่ให้พัง */
-.info-display-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  padding: 10px 0;
-}
-/* --- ส่วนข้อมูลการออกใบเสร็จ --- */
-.customer-info-display {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* ปรับตามขนาดหน้าจออัตโนมัติ */
-  gap: 16px;
-  margin-top: 12px;
+.pos-receipt-tailor small b {
+  font-weight: 600;
+  color: #dc2626;
 }
 
-.info-item {
+/* 2. เส้นเหนือยอดสุทธิ: เส้นประเหมือนเส้นอื่น */
+.pos-receipt-sum .grand {
+  border-top: 1px dashed #bbb;
+}
+
+.pos-receipt-sum .owe {
+  margin-top: 4px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* 4. ข้อมูลลูกค้า/การชำระ: ซ้าย-ขวา */
+.pos-receipt-foot {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  text-align: left;
+  line-height: 1.5;
+  font-size: 12px;
 }
 
-.info-item span {
-  font-size: 13px;
-  color: #64748b; /* สีเทาอ่อนสำหรับหัวข้อ */
-}
-
-.info-item strong {
-  font-size: 16px;
-  color: #1e293b; /* สีเข้มสำหรับข้อมูล */
-  font-weight: 600;
-}
-
-/* --- ส่วนปุ่มเลือกวิธีชำระเงิน --- */
-.payment-selector-grid {
-  display: flex;
-  gap: 12px;
-  margin: 16px 0;
-}
-
-.pay-option {
-  flex: 1; /* ให้ปุ่มกว้างเท่ากัน */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  background: #ffffff;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  color: #64748b;
-}
-
-.pay-option .icon {
-  font-size: 24px;
-  margin-bottom: 8px;
-}
-
-/* สไตล์เมื่อปุ่มถูกเลือก (Active) */
-.pay-option.active {
-  border-color: #000000;
-  background-color: #f8fafc;
-  color: #000000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.pay-option:hover:not(.active) {
-  border-color: #cbd5e1;
-}
-
-/* --- ส่วนรับเงินสดและเงินทอน --- */
-.cash-input-section {
-  padding: 20px;
-  background-color: #f8fafc;
-  border-radius: 12px;
-  margin-top: 16px;
-}
-
-.cash-large {
-  font-size: 28px !important; /* ขนาดตัวเลขใหญ่ชัดเจน */
-  font-weight: 700;
-  text-align: center;
-  color: #1e293b;
-  padding: 12px !important;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  width: 100%;
-}
-
-.change-display {
-  margin-top: 16px;
-  padding: 16px;
-  border-radius: 8px;
+.pos-receipt-foot > div {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
+  gap: 12px;
 }
 
-/* สีสำหรับสถานะเงินทอน */
-.change-display.success {
-  background-color: #f0fdf4;
-  color: #16a34a; /* สีเขียวเมื่อเงินพอ */
-  border: 1px solid #bcf0da;
+.pos-receipt-foot > div span:first-child {
+  color: #64748b;
+  white-space: nowrap;
 }
 
-.change-display.danger {
-  background-color: #fef2f2;
-  color: #dc2626; /* สีแดงเมื่อเงินไม่พอ */
-  border: 1px solid #fecaca;
-}
-
-.change-display strong {
-  font-size: 24px;
-}
-
-/* --- QR Section --- */
-.qr-section {
-  text-align: center;
-  padding: 20px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  margin-top: 16px;
-}
-
-.qr-image {
-  width: 180px;
-  height: 180px;
-  margin: 12px auto;
-  display: block;
-}
-
-.total-amount-display {
-  font-size: 18px;
-  font-weight: 700;
+.pos-receipt-foot > div span:last-child {
   color: #0f172a;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
-/* ปรับ Overlay ให้จัดวางชิดซ้าย */
-.receipt-modal-overlay.left {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4); /* สีดำจางๆ */
-  display: flex;
-  justify-content: flex-start; /* ดันไปทางซ้าย */
+
+.pos-thanks {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 12.5px;
+}
+
+/* 5. แถบปุ่มด้านล่างของกล่อง */
+.pos-receipt-actions {
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 20px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+}
+
+.pos-receipt-btn {
+  display: inline-flex;
   align-items: center;
-  padding-left: 280px; /* ขยับหลบ Sidebar ของคุณ (ปรับค่าตามจริง) */
-  z-index: 9999;
-}
-
-/* เอฟเฟกต์เลื่อนมาจากทางซ้าย */
-.slide-in-left {
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from { transform: translateX(-50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-.receipt-modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  position: relative;
-  width: 380px; /* ขนาดใบเสร็จ */
-  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
-}
-
-/* ปุ่มเริ่มการขายใหม่ในใบเสร็จ */
-.btn-modal-new-start {
-  width: 100%;
-  padding: 12px;
-  margin-top: 15px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
+  transition: .15s;
+}
+
+.pos-receipt-btn.ghost {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+}
+
+.pos-receipt-btn.ghost:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.pos-receipt-btn.primary {
+  border: none;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+}
+
+.pos-receipt-btn.primary:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, .28);
+}
+
+.pos-receipt-actions .pos-receipt-btn:first-child {
+  margin-right: auto;
+}
+
+@media (max-width: 480px) {
+  .pos-receipt { padding: 20px 18px 16px; }
+  .pos-receipt-actions { flex-wrap: wrap; }
+  .pos-receipt-actions .pos-receipt-btn { flex: 1; justify-content: center; }
+}
+
+/* ช่องส่วนลด: หัวช่องมีปุ่มสลับ บาท ↔ โปรโมชั่น อยู่ขวา */
+.pos-f-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pos-f-head > span {
+  font-size: 12.5px;
+  font-weight: 500;
   color: #475569;
 }
 
-.btn-modal-new-start:hover {
-  background: #e2e8f0;
-}
+.pos-f-head .pos-link { padding: 0; }
+
+/* แบ่งหน้ารายการสินค้า */
+.pos-grid + .pos-pager { margin-top: 16px; }
+.pos-pager > button { padding: 7px 14px; font-size: 13px; }
+.pos-dots button { width: 32px; height: 32px; font-size: 13px; }

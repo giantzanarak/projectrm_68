@@ -1,0 +1,97 @@
+.summary-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.summary-container:has(> .summary-card:nth-child(4)) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.summary-container:has(> .summary-card:nth-child(5)) {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px;
+}
+
+@media (max-width: 1180px) {
+  .summary-container:has(> .summary-card:nth-child(4)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .summary-container,
+  .summary-container:has(> .summary-card:nth-child(4)),
+  .summary-container:has(> .summary-card:nth-child(5)) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary-card {
+  background: #ffffff;
+  padding: 18px 18px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.card-label {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.card-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 12px;
+  margin-top: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.card-value small {
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  margin-left: 6px;
+}
+
+.card-note {
+  font-size: 12.5px;
+  color: #94a3b8;
+  margin-top: -6px;
+}
+
+.card-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bg-gray-light { background-color: #F3F4F6; }
+
+.card-icon-box svg { color: rgb(0, 0, 0) !important; }
+
+@media (max-width: 1480px) {
+  .summary-container:has(> .summary-card:nth-child(4)) .card-value { font-size: 24px; }
+  .summary-container:has(> .summary-card:nth-child(4)) .card-icon-box { width: 48px; height: 48px; border-radius: 14px; }
+  .summary-container:has(> .summary-card:nth-child(4)) .card-icon-box svg { width: 20px; height: 20px; }
+}

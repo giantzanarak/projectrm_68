@@ -1,591 +1,280 @@
-// src/pages/Orders.jsx
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FiCalendar,
-  FiUser,
-  FiStar,
   FiPlus,
-  FiEdit,
+  FiEye,
+  FiEdit2,
   FiTrash2,
   FiCheckCircle,
+  FiPackage,
 } from "react-icons/fi";
-
-// ใช้ CSS ของ Dashboard ร่วมกัน เพื่อให้ layout / header / cards เหมือนกันเป๊ะ
+import { useNavigate } from "react-router-dom";
+import { useDialog } from "../context/DialogContext";
+import {
+  deletePurchaseOrder,
+  getPurchaseOrdersDetailed,
+} from "../api/fetch_api_superadmin";
 import "../styles/dashboard.css";
 import "../styles/orders.css";
 
 const ORDER_PAGE_SIZE = 10;
-const SUPPLIER_PAGE_SIZE = 10;
+
+const totalOrdered = (order) =>
+  order.items.reduce((sum, item) => sum + Number(item.ordered || 0), 0);
+
+const totalReceived = (order) =>
+  order.items.reduce((sum, item) => sum + Number(item.received || 0), 0);
+
+const formatDateInput = (date = new Date()) => {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const nextOrderId = (orders) => {
+  const year = new Date().getFullYear();
+  const maxSequence = orders.reduce((max, order) => {
+    const match = String(order.id || "").match(/PO-(\d{4})-(\d+)/);
+    if (!match || Number(match[1]) !== year) return max;
+    return Math.max(max, Number(match[2]));
+  }, 0);
+
+  return `PO-${year}-${String(maxSequence + 1).padStart(3, "0")}`;
+};
 
 export default function Orders() {
-  const [tab, setTab] = useState("orders");
-
-  // -----------------------------
-  // MOCK DATA
-  // -----------------------------
-  const [orders, setOrders] = useState([
-    {
-      id: "PO-2025-001",
-      date: "2025-11-25",
-      supplier: "บริษัท ผ้าไหมไทย จำกัด",
-      items: 5,
-      price: 45000,
-      delivery: "2025-12-05",
-      receiveStatus: "รับครบแล้ว",
-      receivedQty: 5,
-    },
-    {
-      id: "PO-2025-002",
-      date: "2025-11-28",
-      supplier: "ห้างหุ้นส่วน ผ้าฝ้ายคุณภาพ",
-      items: 3,
-      price: 28000,
-      delivery: "2025-12-08",
-      receiveStatus: "รอสินค้า",
-      receivedQty: 0,
-    },
-  ]);
-
-  const [suppliers] = useState([
-    { id: 1, name: "บริษัท ผ้าไหมไทย จำกัด", count: 12, total: 540000, rate: 4.8 },
-    { id: 2, name: "ห้างหุ้นส่วน ผ้าฝ้ายคุณภาพ", count: 8, total: 280000, rate: 4.5 },
-    { id: 3, name: "บริษัท ผ้าโพธิเซสเตอร์ จำกัด", count: 6, total: 195000, rate: 4.2 },
-    { id: 4, name: "ห้างหุ้นส่วน ผ้าทอมือ", count: 5, total: 175000, rate: 4.6 },
-  ]);
-
-  // -----------------------------
-  // PAGINATION STATE
-  // -----------------------------
+  const navigate = useNavigate();
+  const { showConfirm, showAlert } = useDialog();
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [orderPage, setOrderPage] = useState(1);
-  const [supplierPage, setSupplierPage] = useState(1);
 
-  // -----------------------------
-  // MODAL STATE
-  // -----------------------------
-  const [showModal, setShowModal] = useState(false);
-  const [editing, setEditing] = useState(null);
-
-  const [showReceiveModal, setShowReceiveModal] = useState(false);
-  const [receiveTarget, setReceiveTarget] = useState(null);
-  const [receiveQty, setReceiveQty] = useState("");
-
-  const [form, setForm] = useState({
-    id: "",
-    date: "",
-    supplier: "",
-    items: "",
-    price: "",
-    delivery: "",
-    receiveStatus: "รอสินค้า",
-    receivedQty: 0,
-  });
-
-  // =============================
-  // MAIN FORM
-  // =============================
-  const updateForm = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const saveOrder = () => {
-    const parsedItems = Number(form.items) || 0;
-    const parsedPrice = Number(form.price) || 0;
-
-    const payload = {
-      ...form,
-      items: parsedItems,
-      price: parsedPrice,
-      receivedQty: Number(form.receivedQty || 0),
-    };
-
-    if (editing) {
-      setOrders((prev) => prev.map((o) => (o.id === editing ? payload : o)));
-    } else {
-      setOrders((prev) => [...prev, payload]);
+  const loadOrders = async () => {
+    try {
+      setLoading(true);
+      const data = await getPurchaseOrdersDetailed();
+      setOrders(data);
+    } catch (error) {
+      console.error("โหลดใบสั่งซื้อไม่สำเร็จ:", error);
+      await showAlert(error?.response?.data?.message || "โหลดใบสั่งซื้อไม่สำเร็จ", {
+        title: "เกิดข้อผิดพลาด",
+        icon: "error",
+      });
+    } finally {
+      setLoading(false);
     }
-
-    // ใส่ใหม่ให้กลับไปหน้าแรก
-    setOrderPage(1);
-    closeMainModal();
   };
 
-  const editOrder = (order) => {
-    setEditing(order.id);
-    setForm({
-      id: order.id,
-      date: order.date,
-      supplier: order.supplier,
-      items: order.items,
-      price: order.price,
-      delivery: order.delivery,
-      receiveStatus: order.receiveStatus || "รอสินค้า",
-      receivedQty: order.receivedQty ?? 0,
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  const totalOrdersCount = orders.length;
+  const receivedCount = orders.filter((o) => o.receiveStatus === "รับครบแล้ว").length;
+  const waitingCount = orders.filter((o) => o.receiveStatus !== "รับครบแล้ว").length;
+
+  const orderTotalPages = Math.max(1, Math.ceil(orders.length / ORDER_PAGE_SIZE));
+  const pagedOrders = useMemo(
+    () => orders.slice((orderPage - 1) * ORDER_PAGE_SIZE, orderPage * ORDER_PAGE_SIZE),
+    [orders, orderPage]
+  );
+
+  const deleteOrder = async (order) => {
+    const confirmed = await showConfirm(`ต้องการลบใบสั่งซื้อ ${order.id} จริงหรือไม่?`, {
+      title: "ยืนยันการลบ",
+      confirmText: "ตกลง",
+      cancelText: "ยกเลิก",
     });
-    setShowModal(true);
+    if (!confirmed) return;
+
+    try {
+      await deletePurchaseOrder(order.po_id);
+      await showAlert(`ลบใบสั่งซื้อ ${order.id} เรียบร้อยแล้ว`, {
+        title: "ลบข้อมูลสำเร็จ",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      await loadOrders();
+      setOrderPage((p) => Math.min(p, Math.max(1, Math.ceil((orders.length - 1) / ORDER_PAGE_SIZE))));
+    } catch (error) {
+      console.error("ลบใบสั่งซื้อไม่สำเร็จ:", error);
+      await showAlert(error?.response?.data?.message || "ลบใบสั่งซื้อไม่สำเร็จ", {
+        title: "เกิดข้อผิดพลาด",
+        icon: "error",
+      });
+    }
   };
 
-  const deleteOrder = (id) => {
-    const next = orders.filter((o) => o.id !== id);
-    setOrders(next);
-
-    const totalPages = Math.max(1, Math.ceil(next.length / ORDER_PAGE_SIZE));
-    setOrderPage((p) => Math.min(p, totalPages));
-  };
-
-  const openAddModal = () => {
-    setEditing(null);
-    setForm({
-      id: "",
-      date: "",
-      supplier: "",
-      items: "",
-      price: "",
-      delivery: "",
-      receiveStatus: "รอสินค้า",
-      receivedQty: 0,
+  const handleEditOrder = async (id) => {
+    const confirmed = await showConfirm(`ต้องการแก้ไขใบสั่งซื้อ ${id} ใช่หรือไม่?`, {
+      title: "ยืนยันการแก้ไข",
+      confirmText: "ตกลง",
+      cancelText: "ยกเลิก",
     });
-    setShowModal(true);
+
+    if (!confirmed) return;
+    navigate(`/orders/edit/${encodeURIComponent(id)}`);
   };
 
-  const closeMainModal = () => {
-    setShowModal(false);
-    setEditing(null);
-  };
-
-  // =============================
-  // RECEIVE MODAL
-  // =============================
-  const openReceiveModal = (order) => {
-    setReceiveTarget(order);
-    setReceiveQty(
-      typeof order.receivedQty === "number" ? String(order.receivedQty) : ""
-    );
-    setShowReceiveModal(true);
-  };
-
-  const closeReceiveModal = () => {
-    setShowReceiveModal(false);
-    setReceiveTarget(null);
-    setReceiveQty("");
-  };
-
-  const handleConfirmReceive = () => {
-    if (!receiveTarget) return;
-
-    const qtyNum = Number(receiveQty) || 0;
-    const total = Number(receiveTarget.items) || 0;
-    const status = qtyNum >= total ? "รับครบแล้ว" : "รอสินค้า";
-
-    setOrders((prev) =>
-      prev.map((o) =>
-        o.id === receiveTarget.id
-          ? { ...o, receivedQty: qtyNum, receiveStatus: status }
-          : o
-      )
-    );
-
-    closeReceiveModal();
-  };
-
-  // =============================
-  // SUMMARY
-  // =============================
-  const totalOrders = orders.length;
-  const receivedCount = orders.filter(
-    (o) => o.receiveStatus === "รับครบแล้ว"
-  ).length;
-  const waitingCount = orders.filter(
-    (o) => o.receiveStatus === "รอสินค้า"
-  ).length;
-  const totalValue = orders.reduce(
-    (sum, o) => sum + Number(o.price || 0),
-    0
-  );
-
-  // =============================
-  // PAGINATION DATA
-  // =============================
-  const orderTotalPages = Math.max(
-    1,
-    Math.ceil(orders.length / ORDER_PAGE_SIZE)
-  );
-
-  const pagedOrders = useMemo(() => {
-    const start = (orderPage - 1) * ORDER_PAGE_SIZE;
-    return orders.slice(start, start + ORDER_PAGE_SIZE);
-  }, [orders, orderPage]);
-
-  const supplierTotalPages = Math.max(
-    1,
-    Math.ceil(suppliers.length / SUPPLIER_PAGE_SIZE)
-  );
-
-  const pagedSuppliers = useMemo(() => {
-    const start = (supplierPage - 1) * SUPPLIER_PAGE_SIZE;
-    return suppliers.slice(start, start + SUPPLIER_PAGE_SIZE);
-  }, [suppliers, supplierPage]);
-
-  const goOrderPrev = () => setOrderPage((p) => Math.max(1, p - 1));
-  const goOrderNext = () => setOrderPage((p) => Math.min(orderTotalPages, p + 1));
-
-  const goSupplierPrev = () => setSupplierPage((p) => Math.max(1, p - 1));
-  const goSupplierNext = () =>
-    setSupplierPage((p) => Math.min(supplierTotalPages, p + 1));
-
-  // =============================
-  // RENDER
-  // =============================
   return (
-    // ใช้ dashboard-page + orders-page (orders-page เก็บสไตล์เฉพาะหน้านี้)
     <div className="dashboard-page orders-page">
-      {/* HEADER ใช้ชุด class ของ Dashboard */}
       <div className="dashboard-header">
         <div>
           <h1 className="dash-title">จัดซื้อ</h1>
-          <p className="dash-sub">
-            จัดการคำสั่งซื้อวัตถุดิบและซัพพลายเออร์
-          </p>
+          <p className="dash-sub">จัดการคำสั่งซื้อวัตถุดิบและผู้จัดจำหน่าย</p>
         </div>
       </div>
 
-      {/* SUMMARY – ใช้ dash-summary-grid / dash-card เหมือน Dashboard */}
-      <div className="dash-summary-grid">
-        <div className="dash-card">
-          <span className="dash-icon purple">
-            <FiCalendar />
-          </span>
-          <div>
-            <p className="dash-card-title">ใบสั่งซื้อทั้งหมด</p>
-            <p className="dash-number">{totalOrders}</p>
+      <div className="summary-container">
+        <div className="summary-card">
+          <div className="card-content">
+            <span className="card-label">ใบสั่งซื้อทั้งหมด</span>
+            <h2 className="card-value">{totalOrdersCount}</h2>
+          </div>
+          <div className="card-icon-box bg-gray-light">
+            <FiCalendar size={22} />
           </div>
         </div>
 
-        <div className="dash-card">
-          <span className="dash-icon green">✔</span>
-          <div>
-            <p className="dash-card-title">รับครบแล้ว</p>
-            <p className="dash-number">{receivedCount}</p>
+        <div className="summary-card">
+          <div className="card-content">
+            <span className="card-label">รับครบแล้ว</span>
+            <h2 className="card-value">{receivedCount}</h2>
+          </div>
+          <div className="card-icon-box bg-gray-light">
+            <FiCheckCircle size={22} />
           </div>
         </div>
 
-        <div className="dash-card">
-          <span className="dash-icon yellow">⏱</span>
-          <div>
-            <p className="dash-card-title">รอสินค้า</p>
-            <p className="dash-number">{waitingCount}</p>
+        <div className="summary-card">
+          <div className="card-content">
+            <span className="card-label">รอสินค้า / รับบางส่วน</span>
+            <h2 className="card-value">{waitingCount}</h2>
           </div>
-        </div>
-
-        <div className="dash-card">
-          <span className="dash-icon blue">$</span>
-          <div>
-            <p className="dash-card-title">มูลค่ารวม</p>
-            <p className="dash-number">฿{totalValue.toLocaleString()}</p>
+          <div className="card-icon-box bg-gray-light">
+            <FiPackage size={22} />
           </div>
         </div>
       </div>
 
-      {/* TOOLBAR */}
       <div className="orders-toolbar">
-        <div className="orders-tabs">
-          <button
-            className={tab === "orders" ? "tab active" : "tab"}
-            onClick={() => setTab("orders")}
-          >
-            คำสั่งซื้อ
-          </button>
-          <button
-            className={tab === "suppliers" ? "tab active" : "tab"}
-            onClick={() => setTab("suppliers")}
-          >
-            ซัพพลายเออร์
-          </button>
+        <div className="orders-table-heading">คำสั่งซื้อ</div>
+        <button
+          className="btn-add"
+          onClick={() =>
+            navigate("/orders/add", {
+              state: { nextOrderId: nextOrderId(orders), defaultDate: formatDateInput() },
+            })
+          }
+        >
+          <FiPlus size={14} /> สร้างใบสั่งซื้อ
+        </button>
+      </div>
+
+      <div className="orders-table-section">
+        <div className="orders-table">
+          <table>
+            <thead>
+              <tr>
+                <th>เลขที่ใบสั่งซื้อ</th>
+                <th>วันที่สั่ง</th>
+                <th>ผู้จัดจำหน่าย</th>
+                <th>จำนวนผ้าทั้งหมด</th>
+                <th>มูลค่า</th>
+                <th>สถานะรับของ</th>
+                <th>การจัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="empty-row">กำลังโหลดข้อมูล...</td>
+                </tr>
+              ) : (
+                pagedOrders.map((order) => {
+                  const ordered = totalOrdered(order);
+                  const received = totalReceived(order);
+                  const statusClass =
+                    order.receiveStatus === "รับครบแล้ว"
+                      ? "status-success"
+                      : order.receiveStatus === "รับบางส่วน"
+                        ? "status-partial"
+                        : "status-pending";
+
+                  return (
+                    <tr key={order.po_id}>
+                      <td className="order-id-cell">{order.id}</td>
+                      <td>{order.date}</td>
+                      <td>{order.supplier}</td>
+                      <td>{ordered.toLocaleString()} ม้วน</td>
+                      <td className="blue-text">฿{Number(order.price || 0).toLocaleString()}</td>
+                      <td>
+                        <span className={`status-pill ${statusClass}`}>
+                          {order.receiveStatus}
+                        </span>
+                        <span className="status-note">{received}/{ordered} ม้วน</span>
+                      </td>
+                      <td>
+                        <div className="orders-actions">
+                          <button
+                            className="icon-btn"
+                            title="ดูรายละเอียด"
+                            onClick={() => navigate(`/orders/detail/${encodeURIComponent(order.id)}`)}
+                          >
+                            <FiEye size={16} />
+                          </button>
+                          <button
+                            className="icon-btn edit"
+                            title="แก้ไข"
+                            onClick={() => handleEditOrder(order.id)}
+                          >
+                            <FiEdit2 size={15} />
+                          </button>
+                          <button
+                            className="icon-btn delete"
+                            title="ลบ"
+                            onClick={() => deleteOrder(order)}
+                          >
+                            <FiTrash2 size={15} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+
+              {!loading && pagedOrders.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="empty-row">ไม่มีรายการสั่งซื้อ</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
 
-        {tab === "orders" && (
-          <button className="btn-add" onClick={openAddModal}>
-            <FiPlus size={14} />
-            <span>สร้างใบสั่งซื้อ</span>
-          </button>
+        {orderTotalPages > 1 && (
+          <div className="orders-pagination">
+            <button
+              className="page-btn"
+              onClick={() => setOrderPage((p) => Math.max(1, p - 1))}
+              disabled={orderPage === 1}
+            >
+              ก่อนหน้า
+            </button>
+            <span className="page-info">หน้า {orderPage} / {orderTotalPages}</span>
+            <button
+              className="page-btn"
+              onClick={() => setOrderPage((p) => Math.min(orderTotalPages, p + 1))}
+              disabled={orderPage === orderTotalPages}
+            >
+              ถัดไป
+            </button>
+          </div>
         )}
       </div>
-
-      {/* TAB: คำสั่งซื้อ */}
-      {tab === "orders" && (
-        <div className="orders-table-section">
-          <div className="orders-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>เลขที่ใบสั่งซื้อ</th>
-                  <th>วันที่สั่ง</th>
-                  <th>ซัพพลายเออร์</th>
-                  <th>จำนวน</th>
-                  <th>มูลค่า</th>
-                  <th>วันที่ส่งของ</th>
-                  <th>สถานะรับของ</th>
-                  <th>การจัดการ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pagedOrders.map((o) => (
-                  <tr key={o.id}>
-                    <td>{o.id}</td>
-                    <td>{o.date}</td>
-                    <td>{o.supplier}</td>
-                    <td>{o.items} รายการ</td>
-                    <td className="blue-text">
-                      ฿{Number(o.price || 0).toLocaleString()}
-                    </td>
-                    <td>{o.delivery}</td>
-                    <td>
-                      <span
-                        className={`status-pill ${
-                          o.receiveStatus === "รับครบแล้ว"
-                            ? "status-success"
-                            : "status-pending"
-                        }`}
-                      >
-                        {o.receiveStatus}
-                      </span>
-                      {typeof o.receivedQty === "number" && (
-                        <span className="status-note">
-                          {o.receivedQty}/{o.items} ชิ้น
-                        </span>
-                      )}
-                    </td>
-                    <td>
-                      <div className="orders-actions">
-                        <button
-                          className="icon-btn receive"
-                          title="บันทึกการรับสินค้า"
-                          onClick={() => openReceiveModal(o)}
-                        >
-                          <FiCheckCircle />
-                        </button>
-                        <button
-                          className="icon-btn edit"
-                          onClick={() => editOrder(o)}
-                        >
-                          <FiEdit />
-                        </button>
-                        <button
-                          className="icon-btn delete"
-                          onClick={() => deleteOrder(o.id)}
-                        >
-                          <FiTrash2 />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* pagination orders */}
-          {orderTotalPages > 1 && (
-            <div className="orders-pagination">
-              <button
-                className="page-btn"
-                onClick={goOrderPrev}
-                disabled={orderPage === 1}
-              >
-                ก่อนหน้า
-              </button>
-              <span className="page-info">
-                หน้า {orderPage} / {orderTotalPages}
-              </span>
-              <button
-                className="page-btn"
-                onClick={goOrderNext}
-                disabled={orderPage === orderTotalPages}
-              >
-                ถัดไป
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* TAB: ซัพพลายเออร์ */}
-      {tab === "suppliers" && (
-        <div className="suppliers-table-wrapper">
-          <div className="orders-table suppliers-table">
-            <table>
-              <thead>
-                <tr>
-                  <th style={{ width: "60px" }}>#</th>
-                  <th>ชื่อซัพพลายเออร์</th>
-                  <th>จำนวนคำสั่งซื้อ</th>
-                  <th>มูลค่ารวม</th>
-                  <th>เรตติ้ง</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pagedSuppliers.map((s, index) => (
-                  <tr key={s.id}>
-                    <td>
-                      {(supplierPage - 1) * SUPPLIER_PAGE_SIZE + index + 1}
-                    </td>
-                    <td>
-                      <div className="supplier-cell-name">
-                        <FiUser className="sup-icon-table" />
-                        <span>{s.name}</span>
-                      </div>
-                    </td>
-                    <td>{s.count} ครั้ง</td>
-                    <td>฿{s.total.toLocaleString()}</td>
-                    <td>
-                      <span className="rating-chip">
-                        <FiStar /> {s.rate}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* pagination suppliers */}
-          {supplierTotalPages > 1 && (
-            <div className="suppliers-pagination">
-              <button
-                className="page-btn"
-                onClick={goSupplierPrev}
-                disabled={supplierPage === 1}
-              >
-                ก่อนหน้า
-              </button>
-              <span className="page-info">
-                หน้า {supplierPage} / {supplierTotalPages}
-              </span>
-              <button
-                className="page-btn"
-                onClick={goSupplierNext}
-                disabled={supplierPage === supplierTotalPages}
-              >
-                ถัดไป
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* MODAL: เพิ่ม/แก้ใบสั่งซื้อ */}
-      {showModal && (
-        <div className="modal-bg">
-          <div className="modal-box">
-            <h2 className="modal-title">
-              {editing ? "แก้ไขใบสั่งซื้อ" : "เพิ่มใบสั่งซื้อ"}
-            </h2>
-
-            <div className="modal-form">
-              <label>เลขที่ใบสั่งซื้อ</label>
-              <input name="id" value={form.id} onChange={updateForm} />
-
-              <label>วันที่สั่ง</label>
-              <input
-                type="date"
-                name="date"
-                value={form.date}
-                onChange={updateForm}
-              />
-
-              <label>ซัพพลายเออร์</label>
-              <input
-                name="supplier"
-                value={form.supplier}
-                onChange={updateForm}
-              />
-
-              <label>จำนวนรายการ</label>
-              <input
-                type="number"
-                min="0"
-                name="items"
-                value={form.items}
-                onChange={updateForm}
-              />
-
-              <label>ราคา</label>
-              <input
-                type="number"
-                min="0"
-                name="price"
-                value={form.price}
-                onChange={updateForm}
-              />
-
-              <label>วันที่ส่งของ</label>
-              <input
-                type="date"
-                name="delivery"
-                value={form.delivery}
-                onChange={updateForm}
-              />
-
-              <label>สถานะการรับสินค้า</label>
-              <select
-                name="receiveStatus"
-                value={form.receiveStatus}
-                onChange={updateForm}
-              >
-                <option value="รอสินค้า">รอสินค้า</option>
-                <option value="รับครบแล้ว">รับครบแล้ว</option>
-              </select>
-            </div>
-
-            <div className="modal-buttons">
-              <button className="btn-cancel" onClick={closeMainModal}>
-                ยกเลิก
-              </button>
-              <button className="btn-save" onClick={saveOrder}>
-                บันทึก
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL: บันทึกรับสินค้า */}
-      {showReceiveModal && (
-        <div className="modal-bg">
-          <div className="modal-box receive-modal">
-            <h2 className="modal-title">บันทึกการรับสินค้า</h2>
-            <p className="modal-sub">
-              ใบสั่งซื้อ <strong>{receiveTarget?.id}</strong> —{" "}
-              {receiveTarget?.supplier}
-            </p>
-
-            <div className="modal-form two-col">
-              <div className="modal-field">
-                <label>จำนวนตามใบสั่งซื้อ</label>
-                <input readOnly value={receiveTarget?.items ?? ""} />
-              </div>
-              <div className="modal-field">
-                <label>จำนวนที่ได้รับจริง</label>
-                <input
-                  type="number"
-                  min="0"
-                  max={receiveTarget?.items ?? undefined}
-                  value={receiveQty}
-                  onChange={(e) => setReceiveQty(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="modal-buttons">
-              <button className="btn-cancel" onClick={closeReceiveModal}>
-                ยกเลิก
-              </button>
-              <button className="btn-save" onClick={handleConfirmReceive}>
-                บันทึกการรับสินค้า
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

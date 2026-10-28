@@ -1,0 +1,394 @@
+.add-orders-page {
+  padding-bottom: 32px;
+}
+
+.add-orders-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.add-orders-header h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.add-orders-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.add-orders-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #dbe4f0;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 12px;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-orders-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.add-orders-card,
+.add-orders-summary-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+}
+
+.add-orders-card {
+  padding: 28px;
+}
+
+.add-orders-summary-card {
+  padding: 24px;
+  position: sticky;
+  top: 24px;
+}
+
+.add-orders-section-head {
+  margin-bottom: 20px;
+}
+
+.add-orders-section-head h2,
+.add-orders-summary-card h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.add-orders-section-head p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.add-orders-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.add-orders-grid.two-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.add-orders-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-orders-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.add-orders-helper-text {
+  margin: -2px 0 2px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.add-orders-field input,
+.add-orders-field select {
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  font-size: 14px;
+  color: #0f172a;
+  outline: none;
+}
+
+.add-orders-field input:focus,
+.add-orders-field select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  background: #ffffff;
+}
+
+.add-orders-items-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.add-orders-item-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 2px solid #4f46e5;
+  background: #ffffff;
+  color: #4f46e5;
+  border-radius: 12px;
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-orders-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.add-orders-items-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(130px, 0.8fr) minmax(140px, 0.9fr) minmax(150px, 1fr) minmax(150px, 1fr) 42px;
+  gap: 12px;
+  padding: 0 2px;
+  margin-bottom: 4px;
+}
+
+.create-orders-columns {
+  grid-template-columns: minmax(0, 1.95fr) minmax(130px, 0.8fr) minmax(140px, 0.9fr) minmax(150px, 1fr) 42px;
+}
+
+.edit-orders-columns {
+  grid-template-columns: minmax(0, 1.95fr) minmax(130px, 0.8fr) minmax(140px, 0.9fr) minmax(150px, 1fr) 42px;
+}
+
+.add-orders-column-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  padding-left: 2px;
+}
+
+.add-orders-column-label:last-child {
+  text-align: center;
+}
+
+.add-orders-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(130px, 0.8fr) minmax(140px, 0.9fr) minmax(150px, 1fr) minmax(150px, 1fr) 42px;
+  gap: 12px;
+  align-items: center;
+}
+
+.create-orders-item-row {
+  grid-template-columns: minmax(0, 1.95fr) minmax(130px, 0.8fr) minmax(140px, 0.9fr) minmax(150px, 1fr) 42px;
+}
+
+.edit-orders-item-row {
+  grid-template-columns: minmax(0, 1.95fr) minmax(130px, 0.8fr) minmax(140px, 0.9fr) minmax(150px, 1fr) 42px;
+}
+
+.add-orders-item-row input,
+.add-orders-item-row select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  font-size: 14px;
+  color: #0f172a;
+  outline: none;
+}
+
+.add-orders-item-row input:focus,
+.add-orders-item-row select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  background: #ffffff;
+}
+
+.add-orders-delete-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #ef4444;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.add-orders-delete-btn:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.add-orders-delete-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.add-orders-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #edf2f7;
+  font-size: 14px;
+  color: #475569;
+}
+
+.add-orders-summary-row strong {
+  color: #0f172a;
+}
+
+.add-orders-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.add-orders-save,
+.add-orders-cancel {
+  border: none;
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.add-orders-save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+}
+
+.add-orders-cancel {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+@media (max-width: 960px) {
+  .add-orders-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .add-orders-summary-card {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .add-orders-header {
+    flex-direction: column;
+  }
+
+  .add-orders-grid.two-columns,
+  .add-orders-item-row,
+  .add-orders-items-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-orders-item-row {
+    grid-template-columns: 1fr;
+  }
+
+  .add-orders-column-label:last-child {
+    display: none;
+  }
+}
+
+.add-orders-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-orders-text-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-orders-text-action:hover {
+  text-decoration: underline;
+}
+
+/* ช่องผ้าที่สั่งซื้อ: dropdown + ปุ่มเพิ่มใหม่ใต้ช่อง */
+.create-orders-item-row,
+.edit-orders-item-row {
+  align-items: start;
+}
+
+.create-orders-item-row .add-orders-delete-btn,
+.edit-orders-item-row .add-orders-delete-btn {
+  margin-top: 5px;
+}
+
+.order-fabric-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.order-fabric-picker .add-orders-text-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* popup เพิ่มผ้าที่สั่งซื้อ */
+.order-fabric-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.order-fabric-field select {
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  background: #f8fafc;
+}
+
+.order-fabric-preview {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+}

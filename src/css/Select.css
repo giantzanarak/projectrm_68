@@ -1,0 +1,164 @@
+/* ---------- Select (แทน native <select> ทั้งระบบ — สไตล์เดียวกับตัวกรองหน้าม้วนผ้า) ---------- */
+
+/* wrapper รับ className เดิมของแต่ละหน้า (เพื่อคงความกว้าง/ตำแหน่ง)
+   แต่ล้างกรอบ/พื้นหลังที่เคยใช้กับ <select> ออก ให้ปุ่มด้านในเป็นตัวกำหนดหน้าตา */
+.ui-select.ui-select {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  height: auto;
+  min-height: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.ui-select .ui-select-trigger {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 14px 9px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #334155;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.ui-select .ui-select-trigger:hover:not(:disabled) {
+  border-color: #cbd5e1;
+}
+
+.ui-select .ui-select-trigger:focus-visible,
+.ui-select .ui-select-trigger.open {
+  outline: none;
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.ui-select .ui-select-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ui-select .ui-select-trigger.is-placeholder .ui-select-value {
+  color: #94a3b8;
+}
+
+.ui-select-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ui-select-arrow {
+  flex: 0 0 auto;
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+}
+
+.ui-select .ui-select-trigger.open .ui-select-arrow {
+  transform: rotate(180deg);
+  color: #3b82f6;
+}
+
+/* input ซ่อนไว้รองรับ required/name ของฟอร์ม — วางทับปุ่มให้ทูลทิป validation ชี้ถูกที่ */
+.ui-select .ui-select-native {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+  padding: 0;
+}
+
+.ui-select-menu {
+  position: fixed;
+  z-index: 3000;
+  max-width: min(480px, calc(100vw - 16px));
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+  font-family: inherit;
+  animation: uiSelectIn 0.15s ease;
+}
+
+@keyframes uiSelectIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ui-select-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.ui-select-item.grouped {
+  padding-left: 18px;
+}
+
+.ui-select-item.highlight {
+  background: #f1f5f9;
+}
+
+.ui-select-item.active {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.ui-select-item.disabled {
+  color: #cbd5e1;
+  cursor: not-allowed;
+  background: none;
+}
+
+.ui-select-item-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.ui-select-check {
+  flex: 0 0 auto;
+  color: #1d4ed8;
+}
+
+.ui-select-group {
+  padding: 10px 10px 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.2px;
+}
+
+@media print {
+  .ui-select-arrow { display: none; }
+  .ui-select .ui-select-trigger { border: none; background: none; padding: 0; min-height: 0; }
+}

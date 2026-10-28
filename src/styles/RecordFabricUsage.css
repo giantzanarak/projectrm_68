@@ -1,0 +1,327 @@
+:root {
+  --primary-blue: #3b82f6;
+  --bg-light: #f1f5f9;
+  --text-main: #1e293b;
+  --text-sub: #64748b;
+  --white: #ffffff;
+}
+
+.usage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto 30px;
+}
+
+.header-info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.header-info h1 {
+  font-size: 26px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.header-info p {
+  font-size: 14px;
+  color: var(--text-sub);
+  margin: 2px 0 0;
+}
+
+.btn-close-page {
+  background: #e2e8f0;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #475569;
+}
+
+.usage-content-wrapper {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.fabric-preview-card {
+  background: var(--white);
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+}
+
+.roll-badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: var(--primary-blue);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.preview-image-container {
+  background: #fdf6e7;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sand-clock-img {
+  width: 120px;
+  opacity: 0.8;
+}
+
+.preview-details {
+  padding: 24px;
+}
+
+.preview-details h2 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.color-text {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 20px;
+}
+
+.preview-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.text-blue { color: var(--primary-blue); }
+.font-bold { font-weight: 700; }
+
+.usage-progress-container {
+  margin-top: 20px;
+}
+
+.progress-bar-bg {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--primary-blue);
+}
+
+.progress-label {
+  font-size: 11px;
+  color: var(--text-sub);
+  text-align: right;
+}
+
+.usage-form-card {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+}
+
+.section-title {
+  font-size: 16px;
+  margin: 0 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.text-red { color: #ef4444; }
+
+.input-group select, .input-group input, .input-group textarea{
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 14px;
+  background: #f8fafc;
+}
+
+.search-input-wrapper, .unit-input-wrapper, .date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon, .calendar-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-sub);
+}
+
+.search-input-wrapper select {
+  width: 100%;
+  padding-left: 36px;
+}
+
+.unit-tag {
+  position: absolute;
+  right: 16px;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.date-input-wrapper input, .unit-input-wrapper input { width: 100%; }
+.calendar-icon { left: auto; right: 16px; }
+
+.helper-text {
+  font-size: 11px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.admin-badge {
+  background: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar-mini {
+  background: #cbd5e1;
+  color: #475569;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.calc-summary-box {
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-around;
+  margin: 30px 0;
+  align-items: center;
+}
+
+.calc-item {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.calc-label {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+}
+
+.calc-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.calc-value small {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.calc-divider {
+  width: 1px;
+  height: 40px;
+  background: #dbeafe;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 24px;
+}
+
+.btn-cancel {
+  padding: 12px 32px;
+  border-radius: 14px;
+  border: none;
+  background: #f1f5f9;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-submit-usage {
+  padding: 12px 20px;
+  border-radius: 14px;
+  border: none;
+  background: var(--primary-blue);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.usage-footer {
+  max-width: 1200px;
+  margin: 20px auto 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.status-dot {
+  color: #10b981;
+  margin-right: 4px;
+}
+
+/* ช่องกรอก/ปุ่ม ใช้ฟอนต์เดียวกับทั้งระบบ (เบราว์เซอร์ไม่ส่งต่อฟอนต์ให้เอง) */
+.usage-page-container input,
+.usage-page-container select,
+.usage-page-container textarea,
+.usage-page-container button {
+  font-family: inherit;
+}

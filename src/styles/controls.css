@@ -1,0 +1,165 @@
+
+.fc-root select:not([multiple]),
+.of-root select:not([multiple]),
+.oe-root select:not([multiple]),
+.pp-root select:not([multiple]),
+.pos-root select:not([multiple]),
+.sp-root select:not([multiple]),
+.orders-wrapper select:not([multiple]),
+.promotions-wrapper select:not([multiple]),
+.report-page select:not([multiple]),
+.silk-login-page select:not([multiple]) {
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: inherit;
+  color: var(--ink, #26221c);
+  background-color: var(--surface, #fffdf8);
+  border: 1px solid var(--border, #e4dbc9);
+  border-radius: var(--r-sm, 9px);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--tr, .18s), box-shadow var(--tr, .18s), background var(--tr, .18s);
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' fill='none' stroke='%23988e7f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  padding-right: 36px;
+  text-overflow: ellipsis;
+}
+
+.fc-root select:not([multiple]):hover,
+.of-root select:not([multiple]):hover,
+.oe-root select:not([multiple]):hover,
+.pp-root select:not([multiple]):hover,
+.pos-root select:not([multiple]):hover,
+.sp-root select:not([multiple]):hover,
+.orders-wrapper select:not([multiple]):hover,
+.promotions-wrapper select:not([multiple]):hover,
+.report-page select:not([multiple]):hover,
+.silk-login-page select:not([multiple]):hover { border-color: var(--border2, #cfc2a8); }
+
+.fc-root select:not([multiple]):focus,
+.of-root select:not([multiple]):focus,
+.oe-root select:not([multiple]):focus,
+.pp-root select:not([multiple]):focus,
+.pos-root select:not([multiple]):focus,
+.sp-root select:not([multiple]):focus,
+.orders-wrapper select:not([multiple]):focus,
+.promotions-wrapper select:not([multiple]):focus,
+.report-page select:not([multiple]):focus,
+.silk-login-page select:not([multiple]):focus {
+  border-color: var(--gold, #a9832f);
+  box-shadow: 0 0 0 3px rgba(169, 131, 47, .14);
+}
+
+.fc-root select:not([multiple]):disabled,
+.of-root select:not([multiple]):disabled,
+.oe-root select:not([multiple]):disabled,
+.pp-root select:not([multiple]):disabled,
+.pos-root select:not([multiple]):disabled,
+.sp-root select:not([multiple]):disabled,
+.orders-wrapper select:not([multiple]):disabled,
+.promotions-wrapper select:not([multiple]):disabled,
+.report-page select:not([multiple]):disabled,
+.silk-login-page select:not([multiple]):disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  background-color: var(--surface2, #f1ebdf);
+}
+
+.fc-root select:not([multiple]):invalid,
+.of-root select:not([multiple]):invalid,
+.oe-root select:not([multiple]):invalid,
+.pp-root select:not([multiple]):invalid,
+.pos-root select:not([multiple]):invalid,
+.sp-root select:not([multiple]):invalid,
+.orders-wrapper select:not([multiple]):invalid,
+.promotions-wrapper select:not([multiple]):invalid,
+.report-page select:not([multiple]):invalid,
+.silk-login-page select:not([multiple]):invalid { color: var(--ink-soft, #988e7f); }
+
+.oe-link,
+.fc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gold, #a9832f);
+  background: transparent;
+  border: 1px dashed var(--border2, #cfc2a8);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--tr, .18s);
+}
+
+.oe-link:hover,
+.fc-link:hover {
+  border-style: solid;
+  border-color: var(--gold, #a9832f);
+  background: rgba(169, 131, 47, .07);
+}
+
+.oe-link:active,
+.fc-link:active { transform: translateY(1px); }
+
+.of-btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 999px;
+  background: var(--dark, #2b2620);
+  color: var(--gold-pale, #f3e7c8);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(38, 33, 26, .22);
+  transition: all var(--tr, .18s);
+}
+
+.of-btn-add:hover {
+  background: var(--dark-lt, #4a4238);
+  box-shadow: 0 9px 24px rgba(38, 33, 26, .3);
+  transform: translateY(-1px);
+}
+
+.of-btn-add:active { transform: translateY(0); box-shadow: 0 4px 12px rgba(38, 33, 26, .22); }
+
+.fc-root select.fc-addon-pick {
+  width: 100%;
+  padding: 12px 36px 12px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gold, #a9832f);
+  background-color: rgba(169, 131, 47, .06);
+  border: 1px dashed var(--border2, #cfc2a8);
+  border-radius: 999px;
+}
+
+.fc-root select.fc-addon-pick:hover {
+  border-style: solid;
+  border-color: var(--gold, #a9832f);
+  background-color: rgba(169, 131, 47, .1);
+}
+
+.fc-root option,
+.of-root option,
+.oe-root option,
+.pp-root option,
+.pos-root option,
+.sp-root option,
+.orders-wrapper option,
+.promotions-wrapper option,
+.report-page option,
+.silk-login-page option {
+  font-family: 'Sarabun', sans-serif;
+  color: var(--ink, #26221c);
+  background: var(--surface, #fffdf8);
+  padding: 8px;
+}

@@ -1,0 +1,804 @@
+
+.tod-page {
+  padding: 8px 0 100px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.tod-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.tod-btn-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  border: none;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tod-btn-back:hover {
+  background: #e2e8f0;
+}
+
+.tod-header-main h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px;
+}
+
+.tod-header-main p {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+}
+
+.tod-appt-bar {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.tod-appt-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tod-appt-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.tod-appt-date {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tod-appt-tag {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.tod-appt-card.tone-today .tod-appt-tag {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.tod-appt-card.tone-soon .tod-appt-tag {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.tod-appt-card.tone-overdue .tod-appt-tag {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.tod-payment-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.tod-payment-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.tod-payment-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.tod-payment-row strong {
+  color: #334155;
+}
+
+.tod-payment-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding-left: 20px;
+  border-left: 1px solid #f1f5f9;
+}
+
+.tod-payment-total span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.tod-payment-total strong {
+  font-size: 26px;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.tod-payment-method-select {
+  margin-top: 4px;
+  padding: 6px 26px 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background-color: #f8fafc;
+  color: #334155;
+  cursor: pointer;
+}
+
+.tod-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tod-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 22px 24px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+}
+
+.tod-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.tod-card-head h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.tod-status-select {
+  padding: 8px 30px 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background-color: #f8fafc;
+  color: #334155;
+  cursor: pointer;
+}
+
+.tod-section {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.tod-section h4 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.tod-hint {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 4px 0 0;
+}
+
+.tod-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 24px;
+}
+
+.tod-info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f8fafc;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.tod-info-row strong {
+  color: #1e293b;
+  text-align: right;
+}
+
+.tod-measure-table {
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tod-measure-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #334155;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.tod-measure-row:last-child {
+  border-bottom: none;
+}
+
+.tod-measure-head {
+  background: #f8fafc;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.tod-thumb-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tod-thumb {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.tod-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tod-thumb-broken {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: #f8fafc;
+  color: #94a3b8;
+  font-size: 10.5px;
+  text-align: center;
+  padding: 6px;
+}
+
+.tod-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.tod-grid.three {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tod-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.tod-field.full {
+  grid-column: 1 / -1;
+}
+
+.tod-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.tod-field input,
+.tod-field textarea {
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-family: inherit;
+  background: #f8fafc;
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.tod-field input:focus,
+.tod-field textarea:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.tod-field textarea {
+  resize: vertical;
+  min-height: 56px;
+}
+
+.tod-alt-row {
+  border: 1px dashed #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.tod-alt-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.tod-icon-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  display: flex;
+}
+
+.tod-icon-btn:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.tod-btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  border: 1px dashed #93c5fd;
+  border-radius: 999px;
+  color: #2563eb;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 9px 16px;
+}
+
+.tod-btn-add:hover {
+  background: #dbeafe;
+  border-color: #60a5fa;
+}
+
+.tod-save-bar {
+  position: sticky;
+  bottom: 20px;
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tod-btn-save {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  padding: 13px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.35);
+}
+
+.tod-btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tod-empty {
+  text-align: center;
+  padding: 80px 20px;
+  color: #64748b;
+}
+
+.tod-empty h2 {
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.tod-empty .tod-btn-back {
+  display: inline-flex;
+  margin-top: 16px;
+}
+
+@media (max-width: 640px) {
+  .tod-appt-bar {
+    grid-template-columns: 1fr;
+  }
+  .tod-payment-total {
+    align-items: flex-start;
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 12px;
+    width: 100%;
+  }
+  .tod-info-grid,
+  .tod-grid,
+  .tod-grid.three {
+    grid-template-columns: 1fr;
+  }
+  .tod-measure-row {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 2px;
+  }
+}
+
+.tod-btn-print {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all .18s ease;
+}
+
+.tod-btn-print:hover { border-color: #3b82f6; color: #3b82f6; }
+
+.tod-card-head h3 { display: flex; align-items: center; gap: 7px; }
+
+.tod-hint-inline { font-size: 12.5px; color: #94a3b8; }
+
+.tod-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tod-fee-sum { font-size: 12.5px; color: #64748b; }
+.tod-fee-sum b { color: #b45309; font-size: 13.5px; }
+
+.tod-measure-edit .tod-measure-row {
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 30px;
+  align-items: center;
+}
+
+.tod-measure-edit .tod-measure-row input {
+  width: 100%;
+  min-width: 0;
+  padding: 7px 9px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.tod-measure-edit .tod-measure-row input::-webkit-outer-spin-button,
+.tod-measure-edit .tod-measure-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.tod-measure-edit .tod-measure-row input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+}
+
+.tod-measure-label { font-weight: 600; }
+
+.tod-measure-label-input { text-align: left !important; font-weight: 600; }
+
+.tod-appt-row {
+  display: grid;
+  grid-template-columns: 150px 110px minmax(0, 1fr) minmax(0, 1fr) 130px 34px;
+  gap: 12px;
+  align-items: end;
+  padding: 14px 0;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.tod-appt-row:last-of-type { border-bottom: none; }
+
+.tod-appt-row.is-done { opacity: .55; }
+
+.tod-appt-done {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: #64748b;
+  white-space: nowrap;
+  padding-bottom: 9px;
+  cursor: pointer;
+}
+
+.tod-appt-done input { width: 15px; height: 15px; cursor: pointer; accent-color: #3b82f6; }
+
+.tod-alt-row-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tod-alt-fee {
+  margin-left: auto;
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: #fffbeb;
+  color: #b45309;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media print {
+  .tod-save-bar,
+  .tod-icon-btn,
+  .tod-appt-actions { display: none !important; }
+
+  .tod-page { padding: 0; margin: 0; background: #fff; }
+  .tod-card {
+    box-shadow: none;
+    break-inside: avoid;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 10px;
+  }
+
+  .tod-measure-row,
+  .tod-appt-row { font-size: 11.5px; }
+  .tod-appt-row { grid-template-columns: 110px 70px 1fr 1fr 90px; }
+}
+
+@media (max-width: 900px) {
+  .tod-appt-row { grid-template-columns: 1fr; gap: 8px; }
+  .tod-appt-done { padding-bottom: 0; }
+  .tod-measure-edit .tod-measure-row { grid-template-columns: 1.4fr 1fr 1fr 1fr 28px; }
+}
+
+/* ── รูปภาพร่าง/แบบแนบ: เปลี่ยนรูป / ลบรูป ── */
+.tod-thumb-editable {
+  position: relative;
+  width: 100px;
+}
+
+.tod-thumb-actions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0));
+  border-radius: 0 0 12px 12px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.tod-thumb-editable:hover .tod-thumb-actions,
+.tod-thumb-editable:focus-within .tod-thumb-actions {
+  opacity: 1;
+}
+
+.tod-thumb-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #334155;
+  cursor: pointer;
+}
+
+.tod-thumb-action:hover {
+  background: #fff;
+  color: #dc2626;
+}
+
+.tod-thumb-action.is-disabled,
+.tod-thumb-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tod-thumb-action input[type="file"] {
+  display: none;
+}
+
+.tod-btn-upload {
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.tod-btn-upload input[type="file"] {
+  display: none;
+}
+
+.tod-btn-upload.is-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media print {
+  .tod-thumb-actions,
+  .tod-btn-upload {
+    display: none !important;
+  }
+}
+
+/* ======================================================
+   Weight & layout polish
+   ====================================================== */
+
+/* 3. หัวช่องกรอก: หนาปานกลาง สีเทาเข้ม — ต่างจากหัวข้อส่วน (700) */
+.tod-field label {
+  font-weight: 500;
+  color: #475569;
+  line-height: 1.4;
+}
+
+/* 4. แถววันนัด: ช่องกรอกทุกช่องสูงเท่ากัน หัวช่องอยู่ระดับเดียวกัน */
+.tod-appt-row {
+  align-items: end;
+}
+
+.tod-appt-row .tod-field {
+  margin-top: 0;
+}
+
+.tod-appt-row .tod-field input {
+  box-sizing: border-box;
+  height: 42px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 40px;
+}
+
+.tod-appt-done {
+  height: 42px;
+  padding-bottom: 0;
+}
+
+.tod-appt-row > .tod-icon-btn {
+  align-self: end;
+  height: 42px;
+}
+
+/* 5. ตารางขนาดตัว: คอลัมน์ชื่อจุดวัดแคบลง 3 คอลัมน์ตัวเลขเท่ากัน */
+.tod-measure-edit .tod-measure-row {
+  grid-template-columns: minmax(110px, 0.9fr) repeat(3, minmax(0, 1fr)) 30px;
+  column-gap: 14px;
+}
+
+/* 1. ชื่อจุดวัด: ตัวปกติ ให้ตัวเลขในช่องเด่นแทน */
+.tod-measure-label {
+  font-weight: 400;
+  color: #334155;
+}
+
+.tod-measure-label-input {
+  font-weight: 400;
+}
+
+.tod-measure-edit .tod-measure-row input {
+  font-weight: 500;
+}
+
+/* 2. ส่วนเผื่อไซซ์: ค่า 0 เป็นสีเทาตัวปกติ ค่าจริงหนาสีเข้ม */
+.tod-info-row strong {
+  font-weight: 600;
+}
+
+.tod-info-row strong.is-zero {
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+/* 6. ปุ่มบันทึกลอย: เว้นที่ด้านล่างให้เลื่อนเนื้อหาพ้นปุ่มได้ */
+.tod-page {
+  padding-bottom: 140px;
+}
+
+/* 7. ข้อความว่างกับปุ่มเพิ่ม: เว้นระยะ */
+.tod-hint + .tod-btn-add,
+.tod-hint + .tod-thumb-grid + .tod-btn-add {
+  margin-top: 14px;
+}
+
+.tod-section > .tod-btn-add,
+.tod-card > .tod-btn-add {
+  margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+  .tod-appt-done,
+  .tod-appt-row > .tod-icon-btn {
+    height: auto;
+  }
+  .tod-measure-edit .tod-measure-row {
+    grid-template-columns: 1.2fr 1fr 1fr 1fr 28px;
+    column-gap: 8px;
+  }
+}
+
+/* ระยะห่างระหว่างการ์ดทุกใบเท่ากัน 20px */
+.tod-page > .tod-header,
+.tod-page > .tod-card,
+.tod-page > .tod-appt-bar,
+.tod-page > .tod-payment-card,
+.tod-page > .tod-items {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.tod-page > .tod-header {
+  margin-bottom: 24px;
+}
+
+.tod-items {
+  gap: 20px;
+}
+
+@media print {
+  .tod-page { padding-bottom: 0; }
+}

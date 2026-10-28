@@ -1,264 +1,346 @@
-// src/pages/CheckOrders.jsx
-import React, { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import {
+  baht,
+  getBills, getBillDetails, getPayments,
+  cancelBill,
+} from "../api/billApi";
+import { getTailoringOrders } from "../api/fetch_api_admin";
+import { FiTrendingUp, FiFileText, FiDollarSign, FiCreditCard } from "react-icons/fi";
 import "../css/CheckOrders.css";
+import Select from "../components/Select";
 
-// ---------------- MOCK ORDERS ----------------
-const mockOrders = [
-  {
-    id: "ORD-001",
-    datetime: "2025-11-30 10:30",
-    customer: "นายจักรกฤษณ์ แก้วโยธา",
-    phone: "081-234-5678",
-    items: 2,
-    total: 8700,
-    payMethod: "เงินสด",
-    status: "สำเร็จ",
-  },
-  {
-    id: "ORD-002",
-    datetime: "2025-11-30 11:15",
-    customer: "นายญาณวุฒ ชุ่มใจ",
-    phone: "089-876-5432",
-    items: 1,
-    total: 4500,
-    payMethod: "บัตรเครดิต",
-    status: "สำเร็จ",
-  },
-  {
-    id: "ORD-003",
-    datetime: "2025-11-30 12:00",
-    customer: "นางสาวสุจิรา สัตถาผล",
-    phone: "092-345-6789",
-    items: 3,
-    total: 14200,
-    payMethod: "โอนเงิน",
-    status: "รอดำเนินการ",
-  },
-  {
-    id: "ORD-004",
-    datetime: "2025-11-30 13:45",
-    customer: "นายภาวัต วงค์มาลาสิทธิ์",
-    phone: "084-567-8901",
-    items: 2,
-    total: 3500,
-    payMethod: "เงินสด",
-    status: "ยกเลิก",
-  },
-];
+const swalTheme = {
+  popup: "pos-swal-popup",
+  confirmButton: "pos-swal-confirm",
+  cancelButton: "pos-swal-cancel",
+};
+const swalDanger = { ...swalTheme, confirmButton: "pos-swal-danger" };
 
-// ---------------- STAT CARD ----------------
-function StatCard({ icon, label, value, bg }) {
-  const isImage = icon?.includes("/"); // ถ้ามี path → เป็นรูป
+const PAGE_SIZE = 10;
+const dayKey = (d) => {
+  const dt = new Date(d);
+  if (!d || Number.isNaN(dt.getTime())) return "";
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+};
 
-  return (
-    <div className="stat-card">
-      <div className="stat-icon" style={{ background: bg }}>
-        {isImage ? (
-          <img src={icon} className="stat-img" />
-        ) : (
-          <span className="icon-emoji">{icon}</span>
-        )}
-      </div>
-
-      <div>
-        <p className="stat-label">{label}</p>
-        <h3 className="stat-value">{value}</h3>
-      </div>
-    </div>
-  );
-}
-
-// ---------------- MAIN PAGE ----------------
-export default function CheckOrders() {
-  const [paymentFilter, setPaymentFilter] = useState("ทุกวิธีชำระ");
-  const [query, setQuery] = useState("");
-  const [showPayMenu, setShowPayMenu] = useState(false);
-
-  const [selectedOrder, setSelectedOrder] = useState(null);
-
-  // ---------------- FILTER LOGIC ----------------
-  const filteredOrders = mockOrders.filter((o) => {
-    const matchQuery =
-      o.id.includes(query) ||
-      o.customer.includes(query) ||
-      o.phone.includes(query);
-
-    const matchPayment =
-      paymentFilter === "ทุกวิธีชำระ" || o.payMethod === paymentFilter;
-
-    return matchQuery && matchPayment;
+const formatDateTime = (d) => {
+  const dt = new Date(d);
+  if (!d || Number.isNaN(dt.getTime())) return "—";
+  return dt.toLocaleString("th-TH", {
+    day: "2-digit", month: "short", year: "2-digit",
+    hour: "2-digit", minute: "2-digit",
   });
+};
+
+export default function CheckOrders() {
+  const navigate = useNavigate();
+
+  const [bills, setBills] = useState([]);
+  const [details, setDetails] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [tailoringOrders, setTailoringOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [search, setSearch] = useState("");
+  const [payFilter, setPayFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("");
+  const [page, setPage] = useState(1);
+
+  useEffect(() => { loadAll(); }, []);
+
+  const loadAll = async () => {
+    try {
+      setLoading(true);
+      const [b, d, p, tOrders] = await Promise.all([
+        getBills(), getBillDetails(), getPayments(),
+        getTailoringOrders().catch(() => []),
+      ]);
+      setBills(b);
+      setDetails(d);
+      setPayments(p);
+      setTailoringOrders(tOrders);
+    } catch {
+      Swal.fire({
+        icon: "error", title: "โหลดข้อมูลไม่สำเร็จ",
+        text: "เชื่อมต่อระบบไม่ได้ ตรวจสอบว่าเซิร์ฟเวอร์เปิดอยู่",
+        confirmButtonText: "ตกลง", buttonsStyling: false, customClass: swalTheme,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const payName = (id) =>
+    payments.find((p) => String(p.id_payment) === String(id))?.Payment_type || "—";
+
+  const openOrder = (idBill) => navigate(`/staff/order/${idBill}`);
+
+  const linesOf = (idBill) =>
+    details.filter((d) => String(d.Bill_idBill) === String(idBill));
+
+  const itemCountOf = (idBill) =>
+    linesOf(idBill).reduce((s, d) => s + (Number(d.quantity) || 0), 0);
+
+  const tailoringOf = (idBill) =>
+    tailoringOrders.filter((t) => String(t.bill_id) === String(idBill));
+
+  const tailoringMoneyOf = (b) => {
+    const list = tailoringOf(b.idBill);
+    if (list.length === 0) return null;
+    const sum = (key) => list.reduce((s, t) => s + (Number(t[key]) || 0), 0);
+    const billed = Number(b.totalAmount) || 0;
+    const full = billed - sum("deposit") + sum("pieces_total") + sum("alterations_total");
+    const paid = billed + sum("final_paid_amount");
+    return { full, paid, outstanding: Math.max(0, full - paid) };
+  };
+
+  const today = dayKey(new Date());
+  const stats = useMemo(() => {
+    const todayBills = bills.filter((b) => dayKey(b.created_at) === today);
+    const sum = (arr) => arr.reduce((s, b) => s + (Number(b.totalAmount) || 0), 0);
+    return {
+      todayCount: todayBills.length,
+      todaySales: sum(todayBills),
+      allCount: bills.length,
+      allSales: sum(bills),
+    };
+  }, [bills, today]);
+
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return bills
+      .filter((b) => {
+        const matchSearch = !term
+          || String(b.Bill_details || "").toLowerCase().includes(term)
+          || String(b.notes || "").toLowerCase().includes(term)
+          || String(b.customer_name || "").toLowerCase().includes(term)
+          || String(b.customer_phone || "").replace(/\D/g, "").includes(term.replace(/\D/g, "") || " ")
+          || String(b.idBill).includes(term);
+        const matchPay = payFilter === "all" || String(b.Payment_idPayment) === payFilter;
+        const matchDate = !dateFilter || dayKey(b.created_at) === dateFilter;
+        return matchSearch && matchPay && matchDate;
+      })
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }, [bills, search, payFilter, dateFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const filteredSales = filtered.reduce((s, b) => s + (Number(b.totalAmount) || 0), 0);
+
+  const payBreakdown = useMemo(() => {
+    const rows = payments.map((p) => {
+      const list = bills.filter((b) => String(b.Payment_idPayment) === String(p.id_payment));
+      return {
+        id: p.id_payment,
+        name: p.Payment_type,
+        count: list.length,
+        total: list.reduce((s, b) => s + (Number(b.totalAmount) || 0), 0),
+        isCash: /เงินสด/.test(p.Payment_type || ""),
+      };
+    });
+    const known = new Set(payments.map((p) => String(p.id_payment)));
+    const others = bills.filter((b) => !known.has(String(b.Payment_idPayment)));
+    if (others.length) {
+      rows.push({
+        id: "other", name: "อื่น ๆ / ไม่ระบุ", count: others.length,
+        total: others.reduce((s, b) => s + (Number(b.totalAmount) || 0), 0), isCash: false,
+      });
+    }
+    return rows.filter((r) => r.count > 0);
+  }, [bills, payments]);
+
+  const resetFilters = () => { setSearch(""); setPayFilter("all"); setDateFilter(""); setPage(1); };
+
+  const handleCancel = async (b) => {
+    const ok = await Swal.fire({
+      icon: "warning",
+      title: "ยกเลิกบิลนี้?",
+      html: `<b>${b.Bill_details}</b> · ${baht(b.totalAmount)}<br/>บิลจะถูกตัดออกจากรายการ (ข้อมูลยังอยู่ในระบบ)`,
+      showCancelButton: true, confirmButtonText: "ยกเลิกบิล", cancelButtonText: "ไม่",
+      reverseButtons: true, buttonsStyling: false, customClass: swalDanger,
+    });
+    if (!ok.isConfirmed) return;
+
+    try {
+      await cancelBill(b.idBill);
+      setBills((prev) => prev.filter((x) => x.idBill !== b.idBill));
+      Swal.fire({
+        icon: "success", title: "ยกเลิกบิลแล้ว",
+        confirmButtonText: "ตกลง", buttonsStyling: false, customClass: swalTheme,
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: "error", title: "ยกเลิกไม่สำเร็จ",
+        text: err?.response?.data?.message || "เกิดข้อผิดพลาด",
+        confirmButtonText: "ตกลง", buttonsStyling: false, customClass: swalTheme,
+      });
+      loadAll();
+    }
+  };
 
   return (
-    <div className="checkorders-page">
-      {/* ===== HEADER ===== */}
-      <h2 className="co-title">ตรวจสอบคำสั่งซื้อ</h2>
-      <p className="co-subtitle">จัดการคำสั่งซื้อทั้งหมดของร้าน</p>
+    <div className="pos-root"> 
+      <header className="pos-top">
+        <div>
+          <h1 className="pos-title">ประวัติการขาย</h1>
+          
+        </div>
+        <button className="pos-btn-save pos-btn-inline" onClick={() => navigate("/staff/neworder")}>
+          + สร้างบิลใหม่
+        </button>
+      </header>
 
-      {/* ===== STAT CARDS ===== */}
-      <div className="co-stat-grid">
-        <StatCard
-          icon="/pics/box.png"
-          label="คำสั่งซื้อทั้งหมด"
-          value={mockOrders.length}
-          bg="#f1f5f9"
-        />
-
-        <StatCard
-          icon="/pics/success.png"
-          label="สำเร็จ"
-          value={mockOrders.filter((o) => o.status === "สำเร็จ").length}
-          bg="#dcfce7"
-        />
-
-        <StatCard
-          icon="/pics/time.png"
-          label="รอดำเนินการ"
-          value={
-            mockOrders.filter((o) => o.status === "รอดำเนินการ").length
-          }
-          bg="#fef9c3"
-        />
-
-        <StatCard
-          icon="/pics/money2.png"
-          label="ยอดขายรวม"
-          value={
-            "฿" +
-            mockOrders
-              .reduce((sum, o) => sum + o.total, 0)
-              .toLocaleString()
-          }
-          bg="#e0f2fe"
-        />
-      </div>
-
-      {/* ===== FILTER BAR (เหลือแค่วิธีชำระ) ===== */}
-      <div className="co-filter-bar-wrapper">
-        <div className="co-filter-bar">
-          {/* Search */}
-          <input
-            type="text"
-            className="co-search-input"
-            placeholder="ค้นหาคำสั่งซื้อ (เลขที่, ชื่อลูกค้า, เบอร์โทร)"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-
-          {/* Filter: Payment */}
-          <div
-            className="co-dropdown"
-            onClick={() => {
-              setShowPayMenu(!showPayMenu);
-            }}
-          >
-            <span>{paymentFilter}</span>
-            <span>⌄</span>
-
-            {showPayMenu && (
-              <div className="co-dropdown-menu">
-                {["ทุกวิธีชำระ", "เงินสด", "บัตรเครดิต", "โอนเงิน"].map(
-                  (item) => (
-                    <div
-                      key={item}
-                      className="co-dropdown-item"
-                      onClick={() => {
-                        setPaymentFilter(item);
-                        setShowPayMenu(false);
-                      }}
-                    >
-                      {item}
-                    </div>
-                  )
-                )}
-              </div>
-            )}
+      <div className="summary-container">
+        <div className="summary-card">
+          <div className="card-content">
+            <span className="card-label">ยอดขายวันนี้</span>
+            <h2 className="card-value">{baht(stats.todaySales)}</h2>
+            <span className="card-note">
+              {stats.todayCount} บิล · {new Date().toLocaleDateString("th-TH", { day: "numeric", month: "short" })}
+            </span>
           </div>
+          <div className="card-icon-box bg-gray-light"><FiTrendingUp size={24} /></div>
         </div>
 
-        <p className="co-result-count">
-          พบ <b>{filteredOrders.length}</b> รายการ
-        </p>
+        <div className="summary-card">
+          <div className="card-content">
+            <span className="card-label">ยอดขายรวมทั้งหมด</span>
+            <h2 className="card-value">{baht(stats.allSales)}</h2>
+            <span className="card-note">{stats.allCount} บิล</span>
+          </div>
+          <div className="card-icon-box bg-gray-light"><FiFileText size={24} /></div>
+        </div>
+
+        {payBreakdown.map((r) => (
+          <div className="summary-card" key={r.id}>
+            <div className="card-content">
+              <span className="card-label">
+                {r.isCash ? "เงินสด" : r.name.replace("โอนผ่านธนาคาร", "โอนเงิน")}
+              </span>
+              <h2 className="card-value">{baht(r.total)}</h2>
+              <span className="card-note">{r.count} บิล</span>
+            </div>
+            <div className="card-icon-box bg-gray-light">
+              {r.isCash ? <FiDollarSign size={24} /> : <FiCreditCard size={24} />}
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* ===== ORDER TABLE (ตัดคอลัมน์สถานะออก) ===== */}
-      <table className="co-table">
-        <thead>
-          <tr>
-            <th>เลขที่คำสั่งซื้อ</th>
-            <th>วันที่-เวลา</th>
-            <th>ลูกค้า</th>
-            <th>โทรศัพท์</th>
-            <th>จำนวนสินค้า</th>
-            <th>ยอดรวม</th>
-            <th>การชำระ</th>
-            <th>การจัดการ</th>
-          </tr>
-        </thead>
+      <div className="pos-filters pos-filters-bar">
+        <div className="pos-search">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6" />
+            <path d="M13.5 13.5L17 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+          <input placeholder="ค้นหาเลขบิล / ชื่อลูกค้า / เบอร์โทร..."
+            value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+        </div>
 
-        <tbody>
-          {filteredOrders.map((o) => (
-            <tr key={o.id}>
-              <td>{o.id}</td>
-              <td>{o.datetime}</td>
-              <td>{o.customer}</td>
-              <td>{o.phone}</td>
-              <td>{o.items} รายการ</td>
-              <td>฿{o.total.toLocaleString()}</td>
-              <td>{o.payMethod}</td>
-              <td>
-                <button
-                  className="co-detail-btn"
-                  onClick={() => setSelectedOrder(o)}
-                >
-                  รายละเอียด
-                </button>
-              </td>
-            </tr>
+        <Select value={payFilter} onChange={(e) => { setPayFilter(e.target.value); setPage(1); }}>
+          <option value="all">ทุกวิธีชำระ</option>
+          {payments.map((p) => (
+            <option key={p.id_payment} value={p.id_payment}>{p.Payment_type}</option>
           ))}
-        </tbody>
-      </table>
+        </Select>
 
-      {/* ===== DETAIL MODAL (เอาบรรทัดสถานะออก) ===== */}
-      {selectedOrder && (
-        <div
-          className="co-modal-overlay"
-          onClick={() => setSelectedOrder(null)}
-        >
-          <div className="co-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>รายละเอียดคำสั่งซื้อ</h3>
-            <p>
-              <b>เลขที่คำสั่งซื้อ:</b> {selectedOrder.id}
-            </p>
-            <p>
-              <b>วันที่-เวลา:</b> {selectedOrder.datetime}
-            </p>
-            <p>
-              <b>ลูกค้า:</b> {selectedOrder.customer}
-            </p>
-            <p>
-              <b>เบอร์โทร:</b> {selectedOrder.phone}
-            </p>
-            <p>
-              <b>จำนวนสินค้า:</b> {selectedOrder.items}
-            </p>
-            <p>
-              <b>ยอดรวม:</b>{" "}
-              ฿{selectedOrder.total.toLocaleString()}
-            </p>
-            <p>
-              <b>การชำระ:</b> {selectedOrder.payMethod}
-            </p>
+        <input type="date" value={dateFilter}
+          onChange={(e) => { setDateFilter(e.target.value); setPage(1); }} />
 
-            <button
-              className="co-close-btn"
-              onClick={() => setSelectedOrder(null)}
-            >
-              ปิด
-            </button>
+        {(search || payFilter !== "all" || dateFilter) && (
+          <button className="pos-clear" onClick={resetFilters}>ล้างตัวกรอง ✕</button>
+        )}
+
+        <span className="pos-count">
+          {filtered.length} บิล · {baht(filteredSales)}
+        </span>
+      </div>
+
+      {loading ? (
+        <p className="pos-empty">กำลังโหลดบิล...</p>
+      ) : pageItems.length === 0 ? (
+        <p className="pos-empty">ไม่พบบิลที่ตรงกับเงื่อนไข</p>
+      ) : (
+        <div className="pos-list">
+          <div className="pos-list-head">
+            <span>เลขบิล</span>
+            <span>ลูกค้า</span>
+            <span>วันเวลา</span>
+            <span>วิธีชำระ</span>
+            <span className="pos-c">จำนวน</span>
+            <span className="pos-r">ส่วนลด</span>
+            <span className="pos-r">ยอดชำระแล้ว</span>
+            <span className="pos-c">จัดการ</span>
           </div>
+
+          {pageItems.map((b) => {
+            const tMoney = tailoringMoneyOf(b);
+            return (
+              <article className="pos-row" key={b.idBill}>
+                <span className="pos-row-no" onClick={() => openOrder(b.idBill)}>{b.Bill_details}</span>
+                <span className="pos-row-cust">
+                  {b.customer_name || b.customer_phone
+                    ? <>{b.customer_name || "—"}{b.customer_phone && <i>{b.customer_phone}</i>}</>
+                    : <em>ไม่ระบุ</em>}
+                </span>
+                <span className="pos-row-date">{formatDateTime(b.created_at)}</span>
+                <span className="pos-row-pay">{payName(b.Payment_idPayment)}</span>
+                <span className="pos-c pos-row-items">
+                  {itemCountOf(b.idBill)} ชิ้น
+                  {tailoringOf(b.idBill).length > 0 && (
+                    <i className="pos-row-tailoring-badge">+{tailoringOf(b.idBill).length} ใบสั่งตัด</i>
+                  )}
+                </span>
+                <span className="pos-r pos-row-disc">
+                  {Number(b.discount_amount) > 0
+                    ? `− ${baht(b.discount_amount)}`
+                    : <span className="pos-row-none">—</span>}
+                </span>
+                <span className="pos-r pos-row-total">
+                  <span className="pos-row-total-amt">{baht(tMoney ? tMoney.paid : b.totalAmount)}</span>
+                  {tMoney && (
+                    <i className="pos-row-total-note">
+                      <span>ราคาเต็ม {baht(tMoney.full)}</span>
+                      {tMoney.outstanding > 0
+                        ? <b>ค้างชำระ {baht(tMoney.outstanding)}</b>
+                        : <b className="paid">ชำระครบแล้ว</b>}
+                    </i>
+                  )}
+                </span>
+                <span className="pos-c pos-row-act">
+                  <button className="pos-icon" title="ดูรายละเอียด" onClick={() => openOrder(b.idBill)}>
+                    <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
+                      <ellipse cx="10" cy="10" rx="8" ry="5" stroke="currentColor" strokeWidth="1.6" />
+                      <circle cx="10" cy="10" r="2.5" fill="currentColor" />
+                    </svg>
+                  </button>
+                  <button className="pos-icon del" title="ยกเลิกบิล" onClick={() => handleCancel(b)}>
+                    <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
+                      <path d="M5 7h10l-1 9H6L5 7z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                      <path d="M3 7h14M8 7V5h4v2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </span>
+              </article>
+            );
+          })}
         </div>
       )}
+
+      {totalPages > 1 && (
+        <div className="pos-pager">
+          <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>‹ ก่อนหน้า</button>
+          <div className="pos-dots">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+              <button key={n} className={n === page ? "active" : ""} onClick={() => setPage(n)}>{n}</button>
+            ))}
+          </div>
+          <button disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>ถัดไป ›</button>
+        </div>
+      )}
+
     </div>
   );
 }

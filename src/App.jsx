@@ -1,27 +1,43 @@
-// src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import { useAuth } from "./context/AuthContext";
 
-// ---------- SUPERADMIN PAGES ----------
 import Dashboard from "./superadmin/Dashboard";
-import Products from "./superadmin/Products";
+import Products from "./superadmin/Product";
 import Orders from "./superadmin/Orders";
 import Promotions from "./superadmin/Promotions";
 import FabricCalculator from "./superadmin/FabricCalculator";
+import OutfitFormulas from "./superadmin/OutfitFormulas";
+import SetPrice from "./superadmin/SetPrice";
 import Logs from "./superadmin/Logs";
+import Fabric from "./superadmin/Fabric";
+import FabricDetail from "./superadmin/FabricDetail";
+import Manageusers from "./superadmin/Manageusers";
+import EditFabric from "./superadmin/EditFabric";
+import RecordFabricUsage from "./superadmin/RecordFabricUsage";
+import AddFabric from "./superadmin/AddFabric";
+import Supplier from "./superadmin/Supplier";
+import AddSupplier from "./superadmin/AddSupplier";
+import EditSupplier from "./superadmin/EditSupplier";
+import SupplierDetail from "./superadmin/SupplierDetail";
+import AddOrders from "./superadmin/AddOrders";
+import OrderDetail from "./superadmin/OrderDetail";
+import EditOrders from "./superadmin/EditOrders";
+import TailoringOrders from "./admin/TailoringOrders";
+import AddTailoringOrders from "./admin/AddTailoringOrders";
+import TailoringOrderDetail from "./admin/TailoringOrderDetail";
+import TailoringCalendar from "./admin/TailoringCalendar";
+import CustomerOrderDetail from "./admin/OrderDetail";
 
-// ---------- STAFF PAGES ----------
+
 import StaffNewOrder from "./admin/NewOrder";
-import SearchProducts from "./admin/SearchProducts";
 import StaffCheckOrders from "./admin/CheckOrders";
 import SalesReport from "./admin/SalesReport";
 
-// ---------- AUTH ----------
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
-// ✅ helper: อ่าน role ให้ชัวร์ (รองรับทั้ง context + localStorage)
+import "./styles/match-fabric.css";
 function getRoleFromStorage() {
   try {
     const u = JSON.parse(localStorage.getItem("user") || "null");
@@ -31,19 +47,14 @@ function getRoleFromStorage() {
   }
 }
 
-// ✅ Route guard
 function PrivateRoute({ children, allowedRoles }) {
   const { user } = useAuth();
   const role = (user?.role || getRoleFromStorage() || "").toLowerCase();
 
-  // ยังไม่ login
   if (!role) return <Navigate to="/login" replace />;
 
-  // มีการกำหนด allowedRoles แล้ว role ไม่ผ่าน
   if (allowedRoles && !allowedRoles.map((r) => r.toLowerCase()).includes(role)) {
-    // staff ถูกกันจาก superadmin -> ส่งไปหน้า staff
     if (role === "staff") return <Navigate to="/staff/neworder" replace />;
-    // อื่น ๆ ส่งไป login
     return <Navigate to="/login" replace />;
   }
 
@@ -53,11 +64,9 @@ function PrivateRoute({ children, allowedRoles }) {
 export default function App() {
   return (
     <Routes>
-      {/* ---------- PUBLIC ---------- */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* ---------- PROTECTED LAYOUT ---------- */}
       <Route
         path="/"
         element={
@@ -66,11 +75,9 @@ export default function App() {
           </PrivateRoute>
         }
       >
-        {/* ✅ หน้าแรกของ "/" ให้เป็น Dashboard (ตามเดิม) */}
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
 
-        {/* ---------- SUPERADMIN ONLY ---------- */}
         <Route
           path="products"
           element={
@@ -79,11 +86,117 @@ export default function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="Fabric"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <Fabric />
+            </PrivateRoute>
+          }
+        />
+
+       <Route
+          path="Fabric/detail/:id"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <FabricDetail />
+            </PrivateRoute>
+          }
+        />
+
+         <Route
+          path="Fabric/edit/:id"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <EditFabric />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="Fabric/usage-record/:id"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <RecordFabricUsage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="Fabric/add"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <AddFabric />
+            </PrivateRoute>
+          }
+        />
+
+         <Route
+          path="Supplier"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <Supplier />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="Supplier/add/"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <AddSupplier />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="Supplier/edit/:id"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <EditSupplier />
+            </PrivateRoute>
+          }
+        />
+
+         <Route
+          path="Supplier/detail/:id"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <SupplierDetail />
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="orders"
           element={
             <PrivateRoute allowedRoles={["superadmin"]}>
               <Orders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="orders/add"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <AddOrders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="orders/detail/:id"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <OrderDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="orders/edit/:id"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <EditOrders />
             </PrivateRoute>
           }
         />
@@ -103,6 +216,34 @@ export default function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="outfit-formulas"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <OutfitFormulas />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="set-price"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <SetPrice />
+            </PrivateRoute>
+          }
+        />
+
+         <Route
+          path="manageusers"
+          element={
+            <PrivateRoute allowedRoles={["superadmin"]}>
+              <Manageusers />
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="logs"
           element={
@@ -112,20 +253,11 @@ export default function App() {
           }
         />
 
-        {/* ---------- STAFF + SUPERADMIN ---------- */}
         <Route
           path="staff/neworder"
           element={
             <PrivateRoute allowedRoles={["superadmin", "staff"]}>
               <StaffNewOrder />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="staff/search-products"
-          element={
-            <PrivateRoute allowedRoles={["superadmin", "staff"]}>
-              <SearchProducts />
             </PrivateRoute>
           }
         />
@@ -145,9 +277,48 @@ export default function App() {
             </PrivateRoute>
           }
         />
+         <Route
+          path="staff/tailoringorders"
+          element={
+            <PrivateRoute allowedRoles={["superadmin", "staff"]}>
+              <TailoringOrders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="staff/tailoringcalendar"
+          element={
+            <PrivateRoute allowedRoles={["superadmin", "staff"]}>
+              <TailoringCalendar />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="Order/add"
+          element={
+            <PrivateRoute allowedRoles={["superadmin", "staff"]}>
+              <AddTailoringOrders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="staff/order/:billId"
+          element={
+            <PrivateRoute allowedRoles={["superadmin", "staff"]}>
+              <CustomerOrderDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="Order/detail/:id"
+          element={
+            <PrivateRoute allowedRoles={["superadmin", "staff"]}>
+              <TailoringOrderDetail />
+            </PrivateRoute>
+          }
+        />
       </Route>
 
-      {/* ---------- FALLBACK ---------- */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

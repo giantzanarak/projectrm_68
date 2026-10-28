@@ -1,567 +1,517 @@
-// src/superadmin/FabricCalculator.jsx
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { API_BASE } from "../api/http";
+import {
+  OUTFITS,
+  STD,
+  measureField,
+  CORE_MEASURE_KEYS,
+  EXTRA_MEASURE_KEYS,
+  ADDON_PRESETS,
+  addonTotal,
+  round2,
+  money,
+} from "../utils/tailorCalc";
+import { getOutfits, toOutfitMap } from "../api/outfitApi";
+import { MeasureInput, UnitToggle } from "../components/MeasureUnit";
+import { useMeasureUnit, cmToUnit, unitLabelOf, metersToCm, cmToMeters, CM_PER_INCH } from "../utils/measureUnit";
 import "../styles/fabricCalc.css";
 
+const API = `${API_BASE}/api/fabric-calculator`;
+
+/* แถวชิ้นส่วน: ชื่อ + เมตร (rollId ว่าง = ใช้ผ้าหลักของชุด) */
+const partRow = (name = "") => ({ name, meters: "", rollId: "", otherFabric: false });
+
+
 export default function FabricCalculator() {
-  const [activeTab, setActiveTab] = useState("calc");
+  const navigate = useNavigate();
+  /* ── แบบชุด (จากฐานข้อมูล ถ้าโหลดไม่ได้ใช้แบบในโค้ด) ── */
+  const [outfitMap, setOutfitMap] = useState(OUTFITS);
+  const outfitNames = useMemo(() => Object.keys(outfitMap), [outfitMap]);
 
-  const productTypes = [
-    "ทุกประเภท",
-    "ชุดไทยผู้หญิง",
-    "ชุดไทยผู้ชาย",
-    "ผ้าซิ่น / ผ้าถุง",
-    "เสื้อ",
-    "กางเกง",
-    "ผ้าพันคอ",
-    "ผ้าคลุมไหล่",
-  ];
+  /* พิมพ์ชื่อแบบชุดได้ทันที — ตรงกับแบบที่มีก็ใช้ชิ้นส่วนของแบบนั้น ไม่ตรง = ชุดใหม่ */
+  const [outfitText, setOutfitText] = useState("");
+  const outfitName = outfitText.trim();
+  const isKnown = Boolean(outfitMap[outfitName]);
+  const isNew = Boolean(outfitName) && !isKnown;
+  const knownParts = useMemo(() => outfitMap[outfitName]?.parts || [], [outfitName, outfitMap]);
 
-  // เพิ่ม pricePerMeter = ราคาผ้าต่อเมตร
-  const fabricOptions = [
-    {
-      id: "F01",
-      name: "ผ้าไหมมัดหมี่ หน้ากว้าง 1.20 ม.",
-      width: 1.2,
-      pricePerMeter: 650,
-    },
-    {
-      id: "F02",
-      name: "ผ้าไหมพื้น หน้ากว้าง 1.50 ม.",
-      width: 1.5,
-      pricePerMeter: 580,
-    },
-    {
-      id: "F03",
-      name: "ผ้าฝ้ายทอมือ หน้ากว้าง 1.10 ม.",
-      width: 1.1,
-      pricePerMeter: 250,
-    },
-    {
-      id: "F04",
-      name: "ผ้าฝ้ายลายดอก หน้ากว้าง 1.50 ม.",
-      width: 1.5,
-      pricePerMeter: 280,
-    },
-  ];
+  /* ── หน่วยทั้งหน้า: ปุ่มซม./นิ้ว ใช้ร่วมกับหน้าตัดชุด
+     ค่าเก็บจริงไม่เปลี่ยน — วัดตัวเก็บเป็นซม. ผ้าเก็บเป็นเมตร แปลงแค่ตอนแสดง/กรอก ── */
+  const [measureUnit, setMeasureUnit] = useMeasureUnit();
+  const unitLabel = unitLabelOf(measureUnit);
+  const cmPerUnit = measureUnit === "in" ? CM_PER_INCH : 1;
+  /* ความยาวผ้า (เมตร) → "250 ซม." / "98.43 นิ้ว" */
+  const fmtLen = (m) =>
+    `${Number(cmToUnit(metersToCm(Number(m) || 0), measureUnit)).toLocaleString("th-TH", { maximumFractionDigits: 2 })} ${unitLabel}`;
+  /* ราคาต่อเมตร → ราคาต่อหน่วยที่เลือก */
+  const priceText = (perMeter) => `${money((Number(perMeter) || 0) * cmPerUnit / 100).replace(".00", "")}/${unitLabel}`;
 
-  const sizeOptions = ["Free size", "XS", "S", "M", "L", "XL"];
+  const [measure, setMeasure] = useState({});
+  const [extraMeasures, setExtraMeasures] = useState([]);   // [{ key, label, value }]
 
-  const [productType, setProductType] = useState("ทุกประเภท");
-  const [fabricId, setFabricId] = useState("");
-  const [size, setSize] = useState("Free size");
-  const [quantity, setQuantity] = useState(1);
+  /* ── ผ้า: ผ้าหลักของชุด + ชิ้นส่วน (เมตร) ── */
+  const [mainRollId, setMainRollId] = useState("");
+  const [parts, setParts] = useState([partRow("ทั้งชุด")]);
 
-  const [fabricSource, setFabricSource] = useState("store"); // store | customer
-  const [customerWidth, setCustomerWidth] = useState("");
-  const [customerLength, setCustomerLength] = useState("");
+  const [addons, setAddons] = useState([]);
+  const [note, setNote] = useState("");
 
-  // ช่องใหม่สำหรับคิดเงินลูกค้า
-  const [laborCost, setLaborCost] = useState(200);     // ค่าแรงตัดเย็บต่อชิ้น
-  const [profitPercent, setProfitPercent] = useState(30); // กำไรที่ต้องการ (%)
+  /* ── ระบบ ── */
+  const [rolls, setRolls] = useState([]);
+  const [history, setHistory] = useState([]);
 
-  const [result, setResult] = useState(null);
+  useEffect(() => { loadAll(); }, []);
 
-  const usageTable = {
-    "ชุดไทยผู้หญิง": { XS: 2.2, S: 2.3, M: 2.4, L: 2.6, XL: 2.8, "Free size": 2.5 },
-    "ชุดไทยผู้ชาย": { XS: 2.0, S: 2.1, M: 2.2, L: 2.3, XL: 2.4, "Free size": 2.2 },
-    "ผ้าซิ่น / ผ้าถุง": { XS: 1.8, S: 1.9, M: 2.0, L: 2.1, XL: 2.2, "Free size": 2.0 },
-    เสื้อ: { XS: 1.2, S: 1.3, M: 1.4, L: 1.5, XL: 1.6, "Free size": 1.4 },
-    กางเกง: { XS: 1.3, S: 1.4, M: 1.5, L: 1.6, XL: 1.7, "Free size": 1.5 },
-    ผ้าพันคอ: { "Free size": 0.8 },
-    ผ้าคลุมไหล่: { "Free size": 1.2 },
+  const loadAll = async () => {
+    try {
+      const [list, r, h] = await Promise.all([
+        getOutfits().catch(() => []),
+        axios.get(`${API}/rolls`).then((x) => x.data || []).catch(() => []),
+        axios.get(`${API}/history`).then((x) => x.data || []).catch(() => []),
+      ]);
+      setRolls(r);
+      setHistory(h);
+      if (list.length) setOutfitMap(toOutfitMap(list));
+    } catch { /* ใช้ค่าเริ่มต้น */ }
   };
 
-  const getUsagePerPiece = () => {
-    const table = usageTable[productType];
-    if (!table) return 2;
-    return table[size] ?? table["Free size"] ?? 2;
+  /* เปลี่ยนแบบชุด → ชิ้นส่วนตามแบบนั้น / ชุดใหม่เริ่มที่ช่องว่าง 1 ชิ้น
+     ระหว่างพิมพ์ชื่อชุดใหม่ไม่ล้างชิ้นส่วนที่เขียนไว้ */
+  const partsKey = isKnown ? `known:${outfitName}` : "new";
+  useEffect(() => {
+    setParts(isKnown
+      ? (knownParts.length ? knownParts : ["ทั้งชุด"]).map((n) => partRow(n))
+      : [partRow("")]);
+  }, [partsKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const setMeasureField = (k, v) => setMeasure((p) => ({ ...p, [k]: v }));
+
+  /* จุดวัดเสริม: เลือกจากรายการ → เพิ่มทันที */
+  const addExtra = (key) => {
+    if (!key) return;
+    setExtraMeasures((p) => (key !== "__other" && p.some((x) => x.key === key)
+      ? p
+      : [...p, key === "__other"
+        ? { key: "", label: "", value: "" }
+        : { key, label: measureField(key).label, value: "" }]));
   };
+  const setExtra = (i, field, v) =>
+    setExtraMeasures((p) => p.map((x, idx) => (idx === i ? { ...x, [field]: v } : x)));
+  const delExtra = (i) => setExtraMeasures((p) => p.filter((_, idx) => idx !== i));
+  const unusedExtras = EXTRA_MEASURE_KEYS.filter((k) => !extraMeasures.some((x) => x.key === k));
 
-  const handleCalculate = () => {
-    const qty = Number(quantity) || 0;
-    if (qty <= 0) {
-      alert("กรุณากรอกจำนวนที่ต้องการผลิตให้ถูกต้อง");
-      return;
-    }
+  const setPart = (i, patch) => setParts((p) => p.map((x, idx) => (idx === i ? { ...x, ...patch } : x)));
+  const addPart = () => setParts((p) => [...p, partRow("")]);
+  const delPart = (i) => setParts((p) => (p.length > 1 ? p.filter((_, idx) => idx !== i) : p));
 
-    const perPiece = getUsagePerPiece();
-    const wastePercent = 10;
-    const baseNeed = perPiece * qty;
-    const totalNeed = baseNeed * (1 + wastePercent / 100);
-
-    const selectedFabric =
-      fabricOptions.find((f) => f.id === fabricId) || null;
-
-    // ---------- ต้นทุนผ้า ----------
-    let pricePerMeter = 0;
-    let totalFabricCost = 0;
-    let fabricCostPerPiece = 0;
-
-    if (fabricSource === "store" && selectedFabric) {
-      pricePerMeter = Number(selectedFabric.pricePerMeter || 0);
-      totalFabricCost = totalNeed * pricePerMeter;
-      fabricCostPerPiece = qty > 0 ? totalFabricCost / qty : 0;
-    }
-
-    // ---------- ลูกค้านำผ้ามาเอง: เช็คว่าพอไหม ----------
-    let customerTotal = null;
-    let enough = null;
-    let remain = null;
-
-    if (fabricSource === "customer") {
-      const w = Number(customerWidth) || 0;
-      const l = Number(customerLength) || 0;
-
-      if (w > 0 && l > 0) {
-        customerTotal = l;
-        enough = customerTotal >= totalNeed;
-        remain = customerTotal - totalNeed;
+  /* ── อุปกรณ์เสริม ── */
+  const addAddon = (name) => {
+    if (!name) return;
+    const preset = ADDON_PRESETS.find((a) => a.name === name);
+    setAddons((p) => {
+      /* กดรายการเดิมซ้ำ = เพิ่มจำนวนอีก 1 แทนการเพิ่มแถวซ้ำ */
+      if (preset && p.some((a) => a.name === preset.name)) {
+        return p.map((a) => (a.name === preset.name ? { ...a, qty: (Number(a.qty) || 0) + 1 } : a));
       }
-    }
+      return [...p, preset ? { ...preset, qty: 1 } : { name: "", qty: 1, price: 0, unit: "ชิ้น" }];
+    });
+  };
+  const setAddon = (i, key, v) =>
+    setAddons((p) => p.map((a, idx) => (idx === i ? { ...a, [key]: v } : a)));
+  const delAddon = (i) => setAddons((p) => p.filter((_, idx) => idx !== i));
 
-    // ---------- คำนวณเงินที่ลูกค้าต้องจ่าย ----------
-    const laborCostNum = Number(laborCost) || 0;
-    const profitPct = Number(profitPercent) || 0;
+  /* ── ต้นทุน: เมตร × ราคาต่อเมตร (1 ชุด) ── */
+  const rollById = useMemo(() => {
+    const m = {};
+    rolls.forEach((r) => { m[String(r.roll_id)] = r; });
+    return m;
+  }, [rolls]);
 
-    const totalLaborCost = laborCostNum * qty;
+  /* ม้วนผ้าจัดกลุ่มตามประเภทผ้า ให้เลือกง่าย */
+  const rollGroups = useMemo(() => {
+    const g = {};
+    rolls.forEach((r) => { (g[r.type_name || "อื่น ๆ"] = g[r.type_name || "อื่น ๆ"] || []).push(r); });
+    return Object.entries(g);
+  }, [rolls]);
 
-    // ต้นทุนต่อชิ้น = ผ้าต่อชิ้น + ค่าแรง (ผ้าต่อชิ้นอาจเป็น 0 ถ้าลูกค้านำผ้ามาเอง)
-    const costPerPiece = fabricCostPerPiece + laborCostNum;
+  const lines = useMemo(() => parts.map((p) => {
+    const rollId = String(p.otherFabric && p.rollId ? p.rollId : mainRollId);
+    const roll = rollById[rollId] || null;
+    const meters = Math.max(0, Number(p.meters) || 0);
+    const pricePerMeter = Number(roll?.price_per_meter) || 0;
+    return { ...p, rollId, roll, meters, pricePerMeter, cost: round2(meters * pricePerMeter) };
+  }), [parts, mainRollId, rollById]);
 
-    const sellingPricePerPiece = costPerPiece * (1 + profitPct / 100);
-    const totalCustomerPay = sellingPricePerPiece * qty;
+  const filled = lines.filter((l) => l.roll && l.meters > 0);
 
-    const totalCostForShop = totalFabricCost + totalLaborCost;
-    const totalProfit = totalCustomerPay - totalCostForShop;
+  /* ใช้ม้วนเดียวกันหลายชิ้น → รวมเมตรก่อนเทียบกับที่เหลือในม้วน */
+  const shortRolls = useMemo(() => {
+    const used = {};
+    filled.forEach((l) => { used[l.rollId] = (used[l.rollId] || 0) + l.meters; });
+    return Object.entries(used)
+      .map(([id, m]) => ({ roll: rollById[id], need: round2(m), have: Number(rollById[id]?.length_remaining) || 0 }))
+      .filter((x) => x.need > x.have);
+  }, [filled, rollById]);
 
-    setResult({
-      qty,
-      perPiece,
-      wastePercent,
-      baseNeed,
-      totalNeed,
-      fabricSource,
-      selectedFabric,
-      customerTotal,
-      enough,
-      remain,
-      pricePerMeter,
-      totalFabricCost,
-      fabricCostPerPiece,
-      laborCost: laborCostNum,
-      profitPercent: profitPct,
-      totalLaborCost,
-      sellingPricePerPiece,
-      totalCustomerPay,
-      totalProfit,
+  const fabricCost = round2(filled.reduce((s, l) => s + l.cost, 0));
+  const totalMeters = round2(filled.reduce((s, l) => s + l.meters, 0));
+  const addonCost = useMemo(() => addonTotal(addons), [addons]);
+  const cost = round2(fabricCost + addonCost);
+
+  /* ── ตรวจก่อนไปตั้งราคา ── */
+  const missingCore = CORE_MEASURE_KEYS.filter((k) => !(Number(measure[k]) > 0));
+  const namedParts = parts.filter((p) => String(p.name).trim());
+  const problem = !outfitName
+    ? "พิมพ์หรือเลือกแบบชุดก่อน"
+    : isNew && !namedParts.length
+        ? `วัดตัวให้ครบ: ยังขาด ${missingCore.map((k) => measureField(k).label).join(", ")}`
+        : !mainRollId && !lines.some((l) => l.otherFabric && l.rollId)
+          ? "เลือกผ้าที่ใช้"
+          : !filled.length
+            ? "กรอกความยาวผ้าของชิ้นส่วน"
+            : lines.some((l) => l.meters > 0 && !l.roll)
+              ? "เลือกผ้าให้ทุกชิ้นที่กรอกความยาว"
+              : shortRolls.length
+                ? `ผ้าไม่พอ: ${shortRolls.map((s) =>
+                    `${s.roll?.fabric_name || "-"} ต้องใช้ ${fmtLen(s.need)} เหลือ ${fmtLen(s.have)}`).join(", ")}`
+                : null;
+
+  /* ── ค่าวัดตัว → ข้อความเก็บในประวัติ ── */
+  const measureNote = [
+    ...CORE_MEASURE_KEYS.filter((k) => Number(measure[k]) > 0).map((k) => `${measureField(k).label} ${measure[k]} ซม.`),
+    ...extraMeasures.filter((x) => x.label && Number(x.value) > 0).map((x) => `${x.label} ${x.value} ซม.`),
+  ].join(", ");
+
+  const rollName = (r) => r?.fabric_name || r?.type_name || "-";
+  /* ชื่อผ้าสั้น ๆ: ชื่อผ้า · สี · ล็อต — ราคา/ม. · เหลือ */
+  const rollLabel = (r) =>
+    `${rollName(r)}${r.color_name ? ` · ${r.color_name}` : ""}${r.lot_number ? ` · ล็อต ${r.lot_number}` : ""} — ${priceText(r.price_per_meter)} · เหลือ ${fmtLen(r.length_remaining)}`;
+
+  const rollOptions = rollGroups.map(([type, list]) => (
+    <optgroup key={type} label={type}>
+      {list.map((r) => <option key={r.roll_id} value={r.roll_id}>{rollLabel(r)}</option>)}
+    </optgroup>
+  ));
+
+  /* กรอกเสร็จ → ไปหน้าตั้งราคาขาย (ตัดผ้าออกจากคลังจริงที่หน้านั้น) */
+  const goSetPrice = () => {
+    if (problem) return;
+    const partNames = namedParts.map((p) => String(p.name).trim());
+    navigate("/set-price", {
+      state: {
+        job: {
+          outfit: outfitName,
+          isNewOutfit: isNew,
+          parts: partNames,
+          qty: 1,
+          fabricCost,
+          addonPerPiece: round2(addonCost),
+          addons: addons.filter((a) => a.name && Number(a.qty) > 0),
+          totalMeters,
+          measureNote,
+          /* ผ้าที่จะตัดออกจากแต่ละม้วน (เมตร) ให้หน้าตั้งราคาแสดงก่อนยืนยัน */
+          rolls: filled.map((l) => ({
+            rollCode: l.roll.roll_code || `#${l.roll.roll_id}`,
+            fabricName: rollName(l.roll),
+            label: l.name,
+            meters: l.meters,
+            pricePerMeter: l.pricePerMeter,
+            remainingM: Number(l.roll.length_remaining) || 0,
+          })),
+          payload: {
+            product_type: outfitName,
+            qty: 1,
+            note: [note, measureNote].filter(Boolean).join(" | "),
+            extra_cost_per_piece: round2(addonCost),
+            items: filled.map((l) => ({
+              roll_id: Number(l.rollId),
+              meters_per_piece: l.meters,
+              part_name: (String(l.name).trim() || rollName(l.roll)).slice(0, 100),
+            })),
+          },
+        },
+      },
     });
   };
 
+  const measureInput = (k, i) => (
+    <label className="fc-m" key={k}>
+      <span><i>{i + 1}</i>{measureField(k).label}</span>
+      <div className="fc-with-unit">
+        <MeasureInput cm={measure[k] ?? ""} unit={measureUnit}
+          placeholder={cmToUnit(STD[k], measureUnit)}
+          onChange={(v) => setMeasureField(k, v)} />
+        <i>{unitLabel}</i>
+      </div>
+      <small>{measureField(k).hint}</small>
+    </label>
+  );
+
   return (
-    <div className="fabric-page">
-      <div className="fabric-header">
-        <h1 className="page-title">คำนวนผ้า</h1>
-        <p className="page-subtitle">
-          เลือกประเภทสินค้า เลือกผ้าจากคลัง หรือผ้าที่ลูกค้านำมาเอง
-          แล้วให้ระบบคำนวณปริมาณผ้าที่ต้องใช้ ผ้าที่เหลือ และราคาที่ลูกค้าต้องจ่าย
-        </p>
-      </div>
+    <div className="fc-root">
+      {/* ── หัวเรื่อง ── */}
+      <header className="fc-top">
+        <div>
+          <h1 className="fc-title">คำนวณราคาชุด</h1>
+          
+        </div>
+        <UnitToggle unit={measureUnit} onChange={setMeasureUnit} />
+      </header>
 
-      {/* TABS */}
-      <div className="fabric-tabs">
-        <button
-          className={activeTab === "calc" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("calc")}
-        >
-          คำนวณผ้า
-        </button>
-        <button
-          className={activeTab === "summary" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("summary")}
-        >
-          สรุปผลเหลือ
-        </button>
-        <button
-          className={activeTab === "cost" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("cost")}
-        >
-          ต้นทุนผ้า / ไซส์
-        </button>
-      </div>
+      <div className="fc-layout">
+        {/* ═══════ ซ้าย ═══════ */}
+        <div className="fc-card">
 
-      {/* ================= TAB: คำนวณผ้า ================= */}
-      {activeTab === "calc" && (
-        <div className="fabric-card">
-          <div className="fabric-card-header">
-            <div>
-              <h2 className="fabric-card-title">
-                คำนวณปริมาณผ้าที่ต้องใช้จากผ้า
-              </h2>
-              <p className="fabric-card-sub">
-                เลือกประเภทสินค้า ไซส์ จำนวน แหล่งที่มาของผ้า
-                และตั้งค่าแรงตัดเย็บ/กำไร เพื่อให้ระบบคิดราคาที่ลูกค้าต้องจ่ายให้เลย
-              </p>
+          {/* 1 — แบบชุด */}
+          <div className="fc-block">
+            <p className="fc-block-title"><b>1</b> แบบชุด</p>
+            <label className="fc-f">
+              <span>พิมพ์หรือเลือกแบบชุด</span>
+              <input list="fc-outfits" value={outfitText} placeholder="เช่น ชุดไทยจิตรลดา"
+                onChange={(e) => setOutfitText(e.target.value)} />
+              <datalist id="fc-outfits">
+                {outfitNames.map((o) => <option key={o} value={o} />)}
+              </datalist>
+            </label>
+            <p className="fc-parts-line">
+              {!outfitName
+                ? "พิมพ์ชื่อบางส่วนแล้วเลือกจากรายการ หรือพิมพ์ชื่อชุดใหม่ได้เลย"
+                : isNew
+                  }
+            </p>
+          </div>
+
+          {/* 2 — วัดตัว */}
+          <div className="fc-block">
+            <p className="fc-block-title">
+              <b>2</b> วัดตัวลูกค้า
+              
+            </p>
+
+            <div className="fc-measures">
+              {CORE_MEASURE_KEYS.map(measureInput)}
+            </div>
+
+            {/* จุดวัดเสริม — เลือกจากรายการแล้วเพิ่มทันที */}
+            <div className="fc-extra">
+              <label className="fc-f fc-extra-pick">
+                <span>จุดวัดเสริม</span>
+                <select value="" onChange={(e) => addExtra(e.target.value)}>
+                  <option value="">+ เลือกจุดวัดที่จะเพิ่ม...</option>
+                  {unusedExtras.map((k) => <option key={k} value={k}>{measureField(k).label}</option>)}
+                  <option value="__other">+เพิ่มรายการ</option>
+                </select>
+              </label>
+
+              {extraMeasures.map((x, i) => (
+                <div className="fc-extra-row" key={i}>
+                  {x.key ? (
+                    <span className="fc-extra-name">{x.label}</span>
+                  ) : (
+                    <input placeholder="ชื่อจุดวัด เช่น รอบศอก" autoFocus
+                      value={x.label} onChange={(e) => setExtra(i, "label", e.target.value)} />
+                  )}
+                  <div className="fc-extra-val">
+                    <MeasureInput cm={x.value} unit={measureUnit} autoFocus={Boolean(x.key)}
+                      placeholder={x.key ? cmToUnit(STD[x.key] ?? 0, measureUnit) : "0"}
+                      onChange={(v) => setExtra(i, "value", v)} />
+                    <i>{unitLabel}</i>
+                  </div>
+                  <button className="fc-x" title="ลบจุดวัดนี้" onClick={() => delExtra(i)}>✕</button>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* แถวบน: ประเภท / ผ้า / ไซส์ */}
-          <div className="fabric-row">
-            <div className="fabric-field">
-              <label>ประเภทสินค้า</label>
-              <select
-                value={productType}
-                onChange={(e) => setProductType(e.target.value)}
-              >
-                {productTypes.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
+          {/* 3 — ผ้าที่ใช้ */}
+          <div className="fc-block">
+            <p className="fc-block-title">
+              <b>3</b> ผ้าที่ใช้
+            </p>
+
+            <label className="fc-f">
+              <span>ผ้าที่ใช้ตัดชุดนี้</span>
+              <select value={mainRollId} onChange={(e) => setMainRollId(e.target.value)}>
+                <option value="">เลือกผ้า...</option>
+                {rollOptions}
               </select>
-              <p className="field-hint">
-                
-              </p>
+            </label>
+            {rolls.length === 0 && <p className="fc-hint">ยังไม่มีม้วนผ้าในคลังที่ใช้ได้</p>}
+
+            <div className="fc-parts-table">
+              <div className="fc-pt-head">
+                <span>ชิ้นส่วน</span>
+                <span>ความยาว ({unitLabel})</span>
+                <span className="r">ต้นทุน</span>
+              </div>
+              {lines.map((l, i) => (
+                <div className="fc-pt-row" key={i}>
+                  <div className="fc-pt-name">
+                    {isNew ? (
+                      <input placeholder="ชื่อชิ้นส่วน เช่น เสื้อ" value={parts[i].name}
+                        onChange={(e) => setPart(i, { name: e.target.value })} />
+                    ) : (
+                      <b>{l.name}</b>
+                    )}
+                    {l.otherFabric ? (
+                      <select value={parts[i].rollId} onChange={(e) => setPart(i, { rollId: e.target.value })}>
+                        <option value="">เลือกผ้าของชิ้นนี้...</option>
+                        {rollOptions}
+                      </select>
+                    ) : (
+                      <button type="button" className="fc-link fc-pt-switch"
+                        onClick={() => setPart(i, { otherFabric: true })}>
+                        ชิ้นนี้ใช้ผ้าอื่น
+                      </button>
+                    )}
+                  </div>
+                  <div className="fc-extra-val">
+                    <MeasureInput cm={metersToCm(parts[i].meters)} unit={measureUnit} placeholder="0"
+                      onChange={(cm) => setPart(i, { meters: cmToMeters(cm) })} />
+                    <i>{unitLabel}</i>
+                  </div>
+                  <span className="fc-fab-sum">
+                    {l.roll && l.meters > 0 ? money(l.cost) : "—"}
+                    {l.roll && l.meters > 0 && <small>{fmtLen(l.meters)} × {priceText(l.pricePerMeter)}</small>}
+                  </span>
+                  {isNew && parts.length > 1
+                    ? <button className="fc-x" title="ลบชิ้นนี้" onClick={() => delPart(i)}>✕</button>
+                    : <span />}
+                </div>
+              ))}
+            </div>
+            {isNew && <button className="fc-link" onClick={addPart}>+ เพิ่มชิ้นส่วน</button>}
+          </div>
+
+          {/* 4 — อุปกรณ์เสริม */}
+          <div className="fc-block">
+            <p className="fc-block-title">
+              <b>4</b> อุปกรณ์เสริม
+              
+            </p>
+
+            <div className="fc-addon-picks">
+              <div className="fc-addon-chips">
+                {ADDON_PRESETS.map((a) => {
+                  const added = addons.some((x) => x.name === a.name);
+                  return (
+                    <button key={a.name} type="button"
+                      className={`fc-addon-chip ${added ? "added" : ""}`}
+                      onClick={() => addAddon(a.name)}
+                      title={added ? "เพิ่มจำนวนอีก 1" : "เพิ่มรายการนี้"}>
+                      <b>{added ? "✓" : "+"} {a.name}</b>
+                      <small>{money(a.price).replace(".00", "")}/{a.unit}</small>
+                    </button>
+                  );
+                })}
+              </div>
+              <button type="button" className="fc-link" onClick={() => addAddon("__custom")}>
+                + เพิ่มรายการเอง
+              </button>
             </div>
 
-            <div className="fabric-field">
-              <label>เลือกผ้าที่ต้องการคำนวณ (จากคลัง)</label>
-              <select
-                value={fabricId}
-                disabled={fabricSource === "customer"}
-                onChange={(e) => setFabricId(e.target.value)}
-              >
-                <option value="">เลือกผ้า</option>
-                {fabricOptions.map((f) => (
-                  <option key={f.id} value={f.id}>
-                    {f.name} – ฿{f.pricePerMeter.toLocaleString()} / เมตร
-                  </option>
+            {addons.length > 0 && (
+              <div className="fc-addon-table">
+                <div className="fc-addon-head">
+                  <span>รายการ</span>
+                  <span>จำนวน</span>
+                  <span>ราคาต่อหน่วย</span>
+                  <span className="r">รวม</span>
+                  <span />
+                </div>
+                {addons.map((a, i) => (
+                  <div className="fc-addon-row" key={i}>
+                    <input className="fc-addon-name" value={a.name} placeholder="ชื่อรายการ"
+                      onChange={(e) => setAddon(i, "name", e.target.value)} />
+                    <div className="fc-addon-num">
+                      <input type="number" min="0" step={a.unit === "ม." ? "0.1" : "1"} value={a.qty}
+                        onChange={(e) => setAddon(i, "qty", e.target.value)} />
+                      <i>{a.unit}</i>
+                    </div>
+                    <div className="fc-addon-num fc-addon-price">
+                      <i>฿</i>
+                      <input type="number" min="0" value={a.price}
+                        onChange={(e) => setAddon(i, "price", e.target.value)} />
+                    </div>
+                    <span className="fc-addon-sum">
+                      {money((Number(a.qty) || 0) * (Number(a.price) || 0))}
+                    </span>
+                    <button className="fc-x" title="ลบรายการนี้" onClick={() => delAddon(i)}>✕</button>
+                  </div>
                 ))}
-              </select>
-              <p className="field-hint">
-                
-              </p>
-            </div>
-
-            <div className="fabric-field">
-              <label>ไซส์สินค้า</label>
-              <select value={size} onChange={(e) => setSize(e.target.value)}>
-                {sizeOptions.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-              <p className="field-hint">
-                
-              </p>
-            </div>
+                <div className="fc-addon-total">
+                  <span>รวมอุปกรณ์เสริม</span>
+                  <b>{money(addonCost)}</b>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* แถวกลาง: จำนวน / แหล่งผ้า */}
-          <div className="fabric-row">
-            <div className="fabric-field">
-              <label>จำนวนที่ต้องการผลิต (ชิ้น)</label>
-              <input
-                type="number"
-                min="1"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-              />
+        </div>
+
+        {/* ═══════ ขวา: สรุปต้นทุน ═══════ */}
+        <div className="fc-col">
+          <div className="fc-result">
+            <div className="fc-big cost">
+              <span className="fc-big-label">ต้นทุนชุดนี้</span>
+              <span className="fc-big-num">{money(cost)}</span>
+              <span className="fc-big-sub">{outfitName || "ยังไม่ได้เลือกแบบชุด"}{isNew ? " (ชุดใหม่)" : ""}</span>
             </div>
 
-            <div className="fabric-field">
-              <label>แหล่งที่มาของผ้า</label>
-              <div className="fabric-source-row">
-                <label className="radio-pill">
-                  <input
-                    type="radio"
-                    value="store"
-                    checked={fabricSource === "store"}
-                    onChange={(e) => setFabricSource(e.target.value)}
-                  />
-                  <span>ใช้ผ้าจากหน้าร้าน / คลังผ้า</span>
-                </label>
-                <label className="radio-pill">
-                  <input
-                    type="radio"
-                    value="customer"
-                    checked={fabricSource === "customer"}
-                    onChange={(e) => setFabricSource(e.target.value)}
-                  />
-                  <span>ลูกค้านำผ้ามาเอง</span>
-                </label>
-              </div>
-              <p className="field-hint">
-                
-              </p>
+            <div className="fc-costlines">
+              {filled.map((l, i) => (
+                <div key={i}>
+                  <span>{String(l.name).trim() || rollName(l.roll)} {fmtLen(l.meters)}</span>
+                  <span>{money(l.cost)}</span>
+                </div>
+              ))}
+              <div><span>ค่าผ้ารวม ({fmtLen(totalMeters)})</span><span>{money(fabricCost)}</span></div>
+              <div><span>อุปกรณ์เสริม ({addons.length} รายการ)</span><span>{money(addonCost)}</span></div>
+              <div className="sum"><span>ต้นทุนรวม</span><span>{money(cost)}</span></div>
             </div>
-          </div>
 
-          {/* แถวใหม่: ค่าแรง + กำไร */}
-          <div className="fabric-row">
-            <div className="fabric-field">
-              <label>ค่าแรงตัดเย็บต่อชิ้น (บาท)</label>
-              <input
-                type="number"
-                min="0"
-                value={laborCost}
-                onChange={(e) => setLaborCost(e.target.value)}
-              />
-              <p className="field-hint">
-                
-              </p>
+            <div className={`fc-verdict ${problem ? (shortRolls.length ? "bad" : "wait") : "ok"}`}>
+              {problem || `ผ้าพอ — ตัดผ้าออก ${fmtLen(totalMeters)}`}
             </div>
-            <div className="fabric-field">
-              <label>กำไรที่ต้องการ (%)</label>
-              <input
-                type="number"
-                min="0"
-                value={profitPercent}
-                onChange={(e) => setProfitPercent(e.target.value)}
-              />
-              <p className="field-hint">
-                
-              </p>
-            </div>
-          </div>
 
-          {/* ลูกค้านำผ้ามาเอง: กว้าง/ยาว */}
-          {fabricSource === "customer" && (
-            <div className="fabric-row">
-              <div className="fabric-field">
-                <label>ความกว้างผ้าที่ลูกค้านำมา (เมตร)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={customerWidth}
-                  onChange={(e) => setCustomerWidth(e.target.value)}
-                  placeholder="เช่น 1.20"
-                />
-              </div>
-              <div className="fabric-field">
-                <label>ความยาวผ้าที่ลูกค้านำมา (เมตรรวม)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.1"
-                  value={customerLength}
-                  onChange={(e) => setCustomerLength(e.target.value)}
-                  placeholder="เช่น 8"
-                />
-                <p className="field-hint">
-                  ถ้าเป็นม้วน ให้คำนวณความยาวคร่าว ๆ แล้วกรอก (เช่น 1 ม้วน ~ 8 เมตร)
-                </p>
-              </div>
-            </div>
-          )}
-
-          <div className="fabric-footer">
-            <button className="btn-primary" onClick={handleCalculate}>
-              ▶ คำนวณ
+            <label className="fc-f fc-f-note">
+              <span>หมายเหตุ (บันทึกในประวัติ)</span>
+              <input value={note} placeholder="เช่น ออเดอร์คุณสมศรี"
+                onChange={(e) => setNote(e.target.value)} />
+            </label>
+            {/* backend ตรวจผ้าในคลังซ้ำอีกครั้งตอนตัดจริงที่หน้าตั้งราคา */}
+            <button className="fc-btn-gold" onClick={goSetPrice} disabled={Boolean(problem)}>
+              ตั้งราคาขาย →
             </button>
           </div>
 
-          {/* =============== RESULT =============== */}
-          {result && (
-            <div className="fabric-result-card">
-              <h3>สรุปผลการคำนวณ</h3>
-
-              <div className="result-grid">
-                <div>
-                  <p className="result-label">ประเภทสินค้า</p>
-                  <p className="result-value">{productType}</p>
-                </div>
-                <div>
-                  <p className="result-label">ไซส์</p>
-                  <p className="result-value">{size}</p>
-                </div>
-                <div>
-                  <p className="result-label">จำนวนที่ต้องการผลิต</p>
-                  <p className="result-value">{result.qty} ชิ้น</p>
-                </div>
-                <div>
-                  <p className="result-label">ผ้าที่ใช้ต่อ 1 ชิ้น (ประมาณ)</p>
-                  <p className="result-value">
-                    {result.perPiece.toFixed(2)} เมตร
-                  </p>
-                </div>
-              </div>
-
-              <hr className="result-divider" />
-
-              <p className="result-formula-title">รายละเอียดการคำนวณผ้า</p>
-              <ul className="result-formula-list">
-                <li>
-                  ขั้นที่ 1:{" "}
-                  <strong>ผ้าต่อชิ้น × จำนวนชิ้น</strong> =
-                  <strong>
-                    {" "}
-                    {result.perPiece.toFixed(2)} × {result.qty}
-                  </strong>{" "}
-                  ={" "}
-                  <strong>{result.baseNeed.toFixed(2)} เมตร</strong>
-                </li>
-                <li>
-                  ขั้นที่ 2: เผื่อเศษผ้าและการวางผ้า {result.wastePercent}% →{" "}
-                  <strong>
-                    {result.baseNeed.toFixed(2)} × (1 + {result.wastePercent}
-                    /100)
-                  </strong>{" "}
-                  ={" "}
-                  <strong>{result.totalNeed.toFixed(2)} เมตร</strong>
-                </li>
-                {result.fabricSource === "store" && result.selectedFabric && (
-                  <li>
-                    ผ้าที่เลือกใช้:{" "}
-                    <strong>{result.selectedFabric.name}</strong> (ใช้จากคลัง)
-                  </li>
-                )}
-              </ul>
-
-              {/* ----- ต้นทุนผ้า (กรณีใช้ผ้าร้าน) ----- */}
-              {result.fabricSource === "store" &&
-                result.selectedFabric &&
-                result.pricePerMeter > 0 && (
-                  <>
-                    <hr className="result-divider" />
-                    <p className="result-formula-title">
-                      ประมาณต้นทุนค่าวัสดุ (ผ้า)
-                    </p>
-                    <div className="result-price-rows">
-                      <div className="summary-value-row">
-                        <span>ราคาผ้าต่อเมตร</span>
-                        <span>
-                          ฿{result.pricePerMeter.toLocaleString()} / เมตร
-                        </span>
-                      </div>
-                      <div className="summary-value-row">
-                        <span>ผ้าที่ใช้ทั้งหมด</span>
-                        <span>{result.totalNeed.toFixed(2)} เมตร</span>
-                      </div>
-                      <div className="summary-value-row">
-                        <span>ต้นทุนผ้ารวมโดยประมาณ</span>
-                        <span className="blue-text">
-                          ฿
-                          {result.totalFabricCost.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </span>
-                      </div>
-                      <div className="summary-value-row">
-                        <span>ต้นทุนผ้าต่อชิ้น (เฉลี่ย)</span>
-                        <span>
-                          ฿{result.fabricCostPerPiece.toFixed(2)} / ชิ้น
-                        </span>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-              {/* ----- ราคาให้ลูกค้าจ่าย (ทุกกรณี) ----- */}
-              <hr className="result-divider" />
-              <p className="result-formula-title">ราคาที่แนะนำสำหรับลูกค้า</p>
-              <div className="result-price-rows">
-                <div className="summary-value-row">
-                  <span>ค่าแรงตัดเย็บต่อชิ้น</span>
-                  <span>฿{result.laborCost.toLocaleString()} / ชิ้น</span>
-                </div>
-                <div className="summary-value-row">
-                  <span>กำไรที่ต้องการ</span>
-                  <span>{result.profitPercent}%</span>
-                </div>
-                <div className="summary-value-row">
-                  <span>ราคาขายต่อชิ้น (แนะนำ)</span>
-                  <span className="green-text">
-                    ฿{result.sellingPricePerPiece.toFixed(2)}
-                  </span>
-                </div>
-                <div className="summary-value-row">
-                  <span>ยอดรวมที่ลูกค้าต้องจ่าย ({result.qty} ชิ้น)</span>
-                  <span className="blue-text">
-                    ฿
-                    {result.totalCustomerPay.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </span>
-                </div>
-                <div className="summary-value-row">
-                  <span>กำไรโดยประมาณจากออเดอร์นี้</span>
-                  <span className="green-text">
-                    ฿{result.totalProfit.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-
-              {/* ลูกค้านำผ้ามาเอง: แจ้งเตือนเรื่องผ้าพอ/ไม่พอ */}
-              {result.fabricSource === "customer" && (
-                <>
-                  <hr className="result-divider" />
-                  <p className="result-formula-title">
-                    ตรวจสอบผ้าที่ลูกค้านำมา
-                  </p>
-                  {result.customerTotal != null ? (
-                    <>
-                      <p className="result-text">
-                        ลูกค้ามีผ้าทั้งหมดประมาณ{" "}
-                        <strong>
-                          {result.customerTotal.toFixed(2)} เมตร
-                        </strong>{" "}
-                        ระบบประเมินว่าต้องใช้{" "}
-                        <strong>
-                          {result.totalNeed.toFixed(2)} เมตร
-                        </strong>
-                      </p>
-                      <p
-                        className={
-                          result.enough ? "result-ok" : "result-warning"
-                        }
-                      >
-                        {result.enough
-                          ? `✅ ผ้าของลูกค้าเพียงพอ เหลือประมาณ ${Math.abs(
-                              result.remain
-                            ).toFixed(2)} เมตร`
-                          : `⚠️ ผ้าของลูกค้ายังไม่พอ ขาดประมาณ ${Math.abs(
-                              result.remain
-                            ).toFixed(2)} เมตร ควรแนะนำให้เตรียมผ้าเพิ่ม`}
-                      </p>
-                      <p className="result-note">
-                        *กรณีลูกค้านำผ้ามาเอง ราคาที่คำนวณด้านบนจะคิดเฉพาะค่าแรง +
-                        กำไรของร้าน (ไม่มีต้นทุนผ้า)
-                      </p>
-                    </>
+          <details className="fc-history">
+            <summary>ประวัติล่าสุด ({history.length})</summary>
+            <div className="fc-table-wrap">
+              <table className="fc-table">
+                <thead>
+                  <tr><th>แบบชุด</th><th>ต้นทุน</th><th>เวลา</th></tr>
+                </thead>
+                <tbody>
+                  {history.length === 0 ? (
+                    <tr><td colSpan={3} className="fc-table-empty">ยังไม่มีประวัติ</td></tr>
                   ) : (
-                    <p className="result-text">
-                      กรุณากรอกความกว้างและความยาวผ้าที่ลูกค้านำมา
-                      เพื่อให้ระบบช่วยตรวจสอบให้ว่าเพียงพอหรือไม่
-                    </p>
+                    history.map((h) => (
+                      <tr key={h.calc_id}>
+                        <td>{h.product_type}</td>
+                        <td>{money(h.total_cost)}</td>
+                        <td>{String(h.created_at).slice(0, 10)}</td>
+                      </tr>
+                    ))
                   )}
-                </>
-              )}
+                </tbody>
+              </table>
             </div>
-          )}
+          </details>
         </div>
-      )}
-
-      {/* TAB อื่น ๆ */}
-      {activeTab === "summary" && (
-        <div className="fabric-placeholder-card">
-          <p>
-            หน้าสรุปผลเหลือ สามารถใช้แสดงรายการผ้าที่เหลือจากการคำนวณในอนาคต
-          </p>
-        </div>
-      )}
-
-      {activeTab === "cost" && (
-        <div className="fabric-placeholder-card">
-          <p>
-            หน้าต้นทุนผ้า / ไซส์ ใช้คำนวณต้นทุนต่อชุด / ต่อเมตร
-            สามารถต่อยอดมาเชื่อมกับ “รายงานยอดขาย” ได้
-          </p>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

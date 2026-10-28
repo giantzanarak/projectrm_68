@@ -1,0 +1,115 @@
+
+.quick-create-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1100;
+}
+
+.quick-create-modal {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+  font-family: 'Sarabun', sans-serif;
+}
+
+.quick-create-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.quick-create-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.quick-create-close {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.quick-create-body {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quick-create-body label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.quick-create-body input {
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  background: #f8fafc;
+}
+
+.quick-create-body input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.quick-create-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 22px 22px;
+}
+
+.quick-create-submit { min-width: 120px; }
+
+.quick-create-actions .btn-cancel-main,
+.quick-create-actions .btn-submit-main {
+  padding: 11px 20px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.quick-create-actions .btn-cancel-main {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+}
+
+.quick-create-actions .btn-cancel-main:hover { background: #f1f5f9; }
+
+.quick-create-actions .btn-submit-main {
+  border: none;
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.quick-create-actions .btn-submit-main:hover:not(:disabled) { background: #2563eb; }
+.quick-create-actions .btn-submit-main:disabled { opacity: .6; cursor: not-allowed; }

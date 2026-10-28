@@ -1,12 +1,12 @@
-/* ===== โครง sidebar หลัก ===== */
 .sidebar {
-  width: 240px;           /* กำหนดความกว้าง sidebar ชัดเจน */
-  flex-shrink: 0;         /* ไม่ยอมให้บีบ / ขยาย */
-  min-height: 100vh;
+  width: 240px;
+  flex-shrink: 0;
+  height: 100%;
+  position: sticky;
+  top: 0;
   padding: 20px 18px;
   display: flex;
   flex-direction: column;
-  /* ✨ เอา justify-content: space-between ออก เพื่อไม่ให้ดันปุ่มลงล่างจอ */
   border-right: 1px solid #e5e7eb;
   background: #ffffff;
   box-sizing: border-box;
@@ -19,7 +19,6 @@
   flex-direction: column;
 }
 
-/* Label หัวข้อ SUPERADMIN / STAFF */
 .sidebar-section-label {
   font-size: 11px;
   font-weight: 600;
@@ -31,11 +30,10 @@
   padding-left: 4px;
 }
 
-/* ===== เมนูหลัก ===== */
 .menu {
   list-style: none;
   padding: 0;
-  margin: 0 0 12px 0; /* มีระยะห่างก่อนปุ่มออกจากระบบนิดหน่อย */
+  margin: 0 0 12px 0;
 }
 
 .menu li {
@@ -53,30 +51,34 @@
   font-size: 14px;
 }
 
-/* ICON */
 .icon {
   font-size: 18px;
 }
 
-/* ACTIVE MAIN MENU */
 .active > a {
   background: #e8efff;
   color: #2563eb;
 }
 
-/* ===== parent dropdown (รายการ / โหมดพนักงาน) ===== */
-.parent-row {
+.menu-parent {
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
   padding: 10px 12px;
   border-radius: 10px;
   color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.parent-row:hover {
+.menu-parent:hover {
   background: #f3f4f6;
+}
+
+.menu-parent.active {
+  background: #e8efff;
+  color: #2563eb;
 }
 
 .chevron {
@@ -88,53 +90,64 @@
   transform: rotate(180deg);
 }
 
-/* ===== submenu ===== */
 .submenu {
-  padding-left: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 10px;
+  list-style: none;
+  padding-left: 28px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.submenu li {
+  list-style: none;
 }
 
 .submenu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
   color: #6b7280;
-  text-decoration: none;
-  font-size: 13px;
-  padding: 4px 0;
+  transition: all 0.2s ease;
 }
 
 .submenu a:hover {
+  background: #f3f4f6;
   color: #111827;
 }
 
-.sub-active {
+.sub-active,
+.submenu a.active {
+  background: #e8efff;
   color: #2563eb;
   font-weight: 600;
+  position: relative;
 }
 
-/* ===== ปุ่มออกจากระบบ ===== */
-.logout-btn {
-  width: 100%;
+.sub-active::before,
+.submenu a.active::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 6px;
+  height: 70%;
+  width: 3px;
+  background: #2563eb;
+  border-radius: 4px;
+}
+
+.menu-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 10px 12px;
-  background: #e57373;
-  border: none;
   border-radius: 10px;
-  color: white;
-  cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
-  margin-top: 16px;   /* ✨ เว้นห่างจาก “รายงานยอดขาย” นิดเดียว */
+  color: #dc2626;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-.logout-btn:hover {
-  background: #ef4444;
+.menu-logout:hover {
+  background: #fee2e2;
 }
-
-/* guest text */
-.sidebar-guest-hint {
-  font-size: 13px;
-  color: #9ca3af;
-  margin-top: 12px;
-}
-

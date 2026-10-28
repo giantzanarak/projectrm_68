@@ -1,30 +1,37 @@
-/* ============================
-   GLOBAL RESET
-============================ */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* ============================
-   HTML + BODY
-============================ */
 html, body {
   width: 100%;
   height: 100%;
-  background: #f5f6fa;        /* สีพื้นหลังเดียวกับโปรเจกต์ */
+  background: #f5f6fa;
   font-family: 'Sarabun', sans-serif;
-  color: #213547;              /* สีตัวอักษรมาตรฐาน */
-  overflow-x: hidden;          /* กันล้นด้านขวา */
+  color: #213547;
+  overflow-x: hidden;
 }
 
-/* ============================
-   ROOT CONTAINER
-============================ */
 #root {
   width: 100%;
   height: auto;
   min-height: 100vh;
-  display: block;              /* กัน Vite ตั้งค่าเป็น flex */
+  display: block;
+}
+
+/* ช่องวันที่/เวลาทุกหน้า: ใช้ฟอนต์เดียวกับทั้งระบบ (เบราว์เซอร์ตั้งฟอนต์ของตัวเองไว้ให้ช่องพวกนี้) */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"] {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="date"]::-webkit-datetime-edit,
+input[type="time"]::-webkit-datetime-edit,
+input[type="datetime-local"]::-webkit-datetime-edit,
+input[type="month"]::-webkit-datetime-edit {
+  font-family: inherit;
 }

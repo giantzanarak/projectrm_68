@@ -1,4 +1,3 @@
-// src/components/Layout.jsx
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import "../styles/layout.css";
@@ -16,7 +15,6 @@ export default function Layout() {
 
   return (
     <div className="app-layout">
-      {/* ===== NAV/TOPBAR ด้านบนเต็มความกว้าง ===== */}
       <header className="app-topbar">
         <div className="topbar-left">
           <h1 className="app-title">ระบบจัดการร้านผ้าพื้นเมือง</h1>
@@ -35,7 +33,6 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* ===== BODY ด้านล่าง แบ่ง Sidebar ซ้าย / Content ขวา ===== */}
       <div className="app-body">
         <Sidebar />
 

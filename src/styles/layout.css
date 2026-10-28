@@ -1,12 +1,10 @@
-/* ============ โครงหลักทั้งหน้า ============ */
 .app-layout {
   display: flex;
-  flex-direction: column;   /* TOPBAR อยู่ด้านบน */
-  min-height: 100vh;
-  background: #f3f4f6;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f6fa;
 }
 
-/* ============ TOPBAR ============ */
 .app-topbar {
   height: 64px;
   padding: 0 24px;
@@ -61,29 +59,25 @@
   font-weight: 600;
 }
 
-/* ============ ส่วนล่าง: Sidebar + Content ============ */
 .app-body {
   display: flex;
   flex: 1;
-  min-height: 0;           /* กันไม่ให้ overflow แปลก ๆ */
+  min-height: 0;
 }
 
-/* .sidebar ใช้ไฟล์ sidebar.css ที่มีอยู่แล้ว
-   แต่อย่าลืมให้มี width ตายตัว (ถ้ายังไม่มีให้เพิ่มด้านล่างนี้) */
 .sidebar {
   width: 260px;
   flex-shrink: 0;
 }
 
-/* เนื้อหาด้านขวา */
 .app-main {
   flex: 1;
+  background: #f5f6fa;
   padding: 24px;
   box-sizing: border-box;
   overflow-y: auto;
 }
 
-/* สำหรับหน้าจอเล็ก (ถ้าดูใน iPad / มือถือ) */
 @media (max-width: 900px) {
   .app-body {
     flex-direction: column;
@@ -91,6 +85,8 @@
 
   .sidebar {
     width: 100%;
+    height: auto;
+    position: static;
     border-right: none;
     border-bottom: 1px solid #e5e7eb;
   }

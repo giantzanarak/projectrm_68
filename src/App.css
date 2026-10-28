@@ -1,4 +1,3 @@
-/* RESET DEFAULT - ไม่พัง layout */
 #root {
   width: 100%;
   height: 100%;
@@ -6,7 +5,6 @@
   padding: 0;
 }
 
-/* ป้องกัน layout ล้นขวา */
 * {
   box-sizing: border-box;
 }

@@ -1,12 +1,9 @@
-/* ============================================================
-   HEADER
-============================================================ */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-  position: relative; /* ใช้เป็น parent ของ popup กระดิ่ง */
+  position: relative;
 }
 
 .dash-title {
@@ -27,7 +24,6 @@
   gap: 10px;
 }
 
-/* เดือน */
 .dash-month-select {
   display: flex;
   align-items: center;
@@ -41,7 +37,6 @@
   font-weight: 500;
 }
 
-/* กระดิ่งบนหัว */
 .dash-bell-btn {
   position: relative;
   width: 36px;
@@ -75,7 +70,6 @@
   text-align: center;
 }
 
-/* Popup แจ้งเตือนสต็อก */
 .stock-popup {
   position: absolute;
   top: 52px;
@@ -129,9 +123,6 @@
   color: #92400e;
 }
 
-/* ============================================================
-   SUMMARY CARDS
-============================================================ */
 .dash-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -150,12 +141,6 @@
   transition: 0.18s ease;
 }
 
-.dash-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 14px rgba(0,0,0,0.12);
-}
-
-/* ICON */
 .dash-icon {
   width: 50px;
   height: 50px;
@@ -172,7 +157,6 @@
 .dash-icon.green  { background: #4CAF50; }
 .dash-icon.yellow { background: #FFC107; }
 
-/* TEXT */
 .dash-card-title {
   font-size: 14px;
   color: #6b7280;
@@ -185,7 +169,6 @@
   margin-top: 2px;
 }
 
-/* EXTRA TAGS */
 .dash-extra {
   display: inline-block;
   margin-top: 8px;
@@ -205,9 +188,6 @@
   color: #b91c1c;
 }
 
-/* ============================================================
-   CHART SECTIONS
-============================================================ */
 .chart-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -233,7 +213,6 @@
   height: 260px;
 }
 
-/* FULL BAR */
 .chart-row-full {
   margin-bottom: 26px;
 }
@@ -242,9 +221,6 @@
   width: 100%;
 }
 
-/* ============================================================
-   BOTTOM LIST CARDS
-============================================================ */
 .bottom-row {
   display: grid;
   grid-template-columns: 1.3fr 0.7fr;
@@ -263,7 +239,6 @@
   margin-bottom: 12px;
 }
 
-/* ตารางสินค้าขายดี */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -296,7 +271,6 @@
   background: #f9fafb;
 }
 
-/* การ์ดแจ้งเตือนสต็อกด้านล่าง */
 .stock-card-title {
   display: flex;
   align-items: center;
@@ -323,7 +297,6 @@
   color: #9ca3af;
 }
 
-/* ปุ่มกระดิ่งในการ์ดล่าง */
 .stock-inline-bell {
   position: relative;
   border-radius: 999px;
@@ -356,7 +329,6 @@
   text-align: center;
 }
 
-/* รายละเอียดสัดส่วนผ้าใต้กราฟ Pie */
 .fabric-summary-list {
   margin-top: 10px;
   font-size: 13px;
@@ -394,9 +366,6 @@
   font-weight: 600;
 }
 
-/* ============================================================
-   RESPONSIVE
-============================================================ */
 @media (max-width: 1100px) {
   .dash-summary-grid {
     grid-template-columns: repeat(2, 1fr);

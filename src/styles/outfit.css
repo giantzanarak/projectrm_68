@@ -1,0 +1,201 @@
+/* ═══════════════════════════════════════════════
+   แบบชุด — รายการแบบชุด + ฟอร์มเพิ่ม/แก้ไข
+   โทนเดียวกับหน้าอื่นในระบบ (เทาเข้ม + น้ำเงิน)
+═══════════════════════════════════════════════ */
+
+.of-root,
+.of-modal {
+  --bg:        #f5f6fa;
+  --surface:   #ffffff;
+  --surface2:  #f8fafc;
+  --border:    #e5e7eb;
+  --border2:   #cbd5e1;
+  --ink:       #0f172a;
+  --ink-mid:   #475569;
+  --ink-soft:  #94a3b8;
+  --dark:      #2563eb;   /* สีเน้น → น้ำเงินหลักของระบบ */
+  --accent:    #2563eb;
+  --accent-bg: #eff6ff;
+  --red:       #dc2626;
+  --r:         20px;
+  --r-sm:      14px;
+}
+
+/* ไม่ตั้งพื้นหลัง/ระยะขอบเอง — ใช้ระยะของ .app-main เหมือนหน้าอื่น */
+.of-root {
+  font-family: 'Sarabun', sans-serif;
+  color: var(--ink);
+}
+
+.of-root *, .of-root *::before, .of-root *::after { box-sizing: border-box; }
+
+/* ── ปุ่ม ── */
+.of-btn-primary {
+  font: inherit; font-size: 14px; font-weight: 700;
+  padding: 12px 20px; border: 0; border-radius: var(--r-sm);
+  /* ปุ่มหลัก — ไล่สีน้ำเงินแบบปุ่มเพิ่มของหน้าอื่น */
+  background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37,99,235,.2); transition: all .2s ease;
+}
+.of-btn-primary:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+.of-btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+
+.of-btn-ghost {
+  font: inherit; font-size: 13.5px; font-weight: 600;
+  padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--r-sm);
+  background: var(--surface); color: var(--ink-mid); cursor: pointer;
+}
+.of-btn-ghost:hover { border-color: var(--border2); color: var(--ink); }
+.of-btn-ghost.danger:hover { border-color: #fecaca; color: var(--red); background: #fef2f2; }
+
+/* ═══════ ตารางแบบชุด — เรียงลงมาแบบหน้าอื่น (หัวเรื่อง/ค้นหา/ตารางมาจาก fabric.css) ═══════ */
+.fabric-main-table.outfit-table { min-width: 640px; }
+
+/* ทับความกว้างคอลัมน์ของตารางม้วนผ้าใน fabric.css */
+.fabric-main-table.outfit-table th:nth-child(n),
+.fabric-main-table.outfit-table td:nth-child(n) { width: auto; min-width: 0; }
+
+.fabric-main-table.outfit-table th:nth-child(1),
+.fabric-main-table.outfit-table td:nth-child(1) { width: 320px; }
+.fabric-main-table.outfit-table th:nth-child(3),
+.fabric-main-table.outfit-table td:nth-child(3) { width: 120px; min-width: 120px; }
+
+/* ชิ้นส่วน / จุดวัดเพิ่มเติมเป็นชิปเรียงต่อกัน */
+.outfit-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.outfit-table .outfit-measure { font-size: 13px; color: var(--ink-mid); line-height: 1.5; }
+
+/* ── หน้าต่างแก้ไข ── */
+.of-backdrop {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 32px 16px; overflow-y: auto;
+  background: rgba(15, 23, 42, .45);
+}
+.of-modal {
+  width: min(860px, 100%);
+  background: var(--surface); border-radius: var(--r);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, .25);
+  font-family: 'Sarabun', sans-serif; color: var(--ink);
+}
+.of-modal *, .of-modal *::before, .of-modal *::after { box-sizing: border-box; }
+
+.of-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px; border-bottom: 1px solid var(--border);
+}
+.of-modal-head h2 { margin: 0; font-size: 19px; font-weight: 700; }
+.of-close {
+  width: 34px; height: 34px; border: 0; border-radius: 50%;
+  background: var(--surface2); color: var(--ink-mid); cursor: pointer; font-size: 14px;
+}
+.of-close:hover { background: var(--border); color: var(--ink); }
+
+.of-modal-body { padding: 8px 24px 4px; }
+
+.of-modal-foot {
+  display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+  padding: 16px 24px; border-top: 1px solid var(--border);
+}
+.of-problem { margin-right: auto; font-size: 13px; color: #b45309; }
+
+/* ═══════════ ฟอร์มแบบชุด (OutfitEditor) ═══════════ */
+.oe-sec { padding: 18px 0; border-bottom: 1px solid var(--border); }
+.oe-h {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  margin: 0 0 12px; font-size: 15px; font-weight: 700;
+}
+.oe-h small { font-size: 12.5px; font-weight: 400; color: var(--ink-soft); }
+
+.oe-field { display: flex; flex-direction: column; gap: 6px; }
+.oe-field > span { font-size: 13px; font-weight: 600; color: var(--ink-mid); }
+
+.oe input, .oe select {
+  width: 100%; font: inherit; font-size: 14px; color: var(--ink);
+  padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); outline: none;
+}
+.oe input:focus, .oe select:focus { border-color: var(--accent); }
+.oe input::placeholder { color: var(--ink-soft); }
+
+/* ช่องตัวเลขที่มีหน่วยต่อท้าย */
+.oe-unit { position: relative; }
+.oe-unit input { padding-right: 44px; text-align: right; }
+.oe-unit i {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  font-style: normal; font-size: 12.5px; color: var(--ink-soft); pointer-events: none;
+}
+
+/* ── ชิ้นส่วนชุด (ชื่อ) ── */
+.oe-part-line { display: grid; grid-template-columns: 26px 1fr 32px; gap: 8px; align-items: center; margin-bottom: 8px; }
+.oe-part-no {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--surface2);
+  font-size: 12px; font-weight: 700; color: var(--ink-mid);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+.oe-del {
+  width: 32px; height: 38px; border: 0; border-radius: 8px;
+  background: transparent; color: var(--ink-soft); cursor: pointer; font-size: 14px;
+}
+.oe-del:hover { background: #fef2f2; color: var(--red); }
+
+.oe-add {
+  margin-top: 10px; font: inherit; font-size: 13.5px; font-weight: 600;
+  padding: 8px 14px; border: 1px dashed var(--border2); border-radius: 8px;
+  background: transparent; color: var(--accent); cursor: pointer;
+}
+.oe-add:hover { background: var(--accent-bg); border-color: var(--accent); }
+
+/* ── จุดวัดเพิ่มเติม ── */
+.oe-extra { display: grid; grid-template-columns: 1fr 130px 32px; gap: 10px; margin-bottom: 8px; }
+.oe-unit-sm input { padding-right: 34px; }
+
+/* ── สรุป ── */
+.oe-summary { padding: 18px 0 20px; display: flex; flex-direction: column; gap: 12px; }
+.oe-summary-row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: baseline; }
+.oe-summary-row > span { font-size: 13px; font-weight: 600; color: var(--ink-mid); }
+.oe-summary-row b { font-size: 18px; }
+.oe-summary-row small { display: block; font-size: 12px; color: var(--ink-soft); }
+.oe-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.oe-tags em {
+  font-style: normal; font-size: 12.5px; padding: 3px 10px; border-radius: 999px;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--ink);
+}
+.oe-tags i { font-style: normal; color: var(--ink-soft); font-size: 13px; }
+
+/* ── SweetAlert ── */
+.of-swal-popup {
+  font-family: 'Sarabun', sans-serif !important;
+  border-radius: 18px !important;
+}
+.of-swal-confirm, .of-swal-danger, .of-swal-cancel {
+  font-family: 'Sarabun', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  border-radius: 9px !important;
+  padding: 11px 24px !important;
+  margin: 0 6px !important;
+  cursor: pointer !important;
+  border: 1px solid transparent !important;
+}
+.of-swal-confirm { background: #2563eb !important; color: #fff !important; }
+.of-swal-danger  { background: #dc2626 !important; color: #fff !important; }
+.of-swal-cancel  { background: transparent !important; border-color: #cbd5e1 !important; color: #64748b !important; }
+
+/* ── จอแคบ ── */
+@media (max-width: 760px) {
+  .oe-extra { grid-template-columns: 1fr 110px 32px; }
+}
+
+/* ═══════ ให้เหมือนหน้าอื่นของระบบ (fabric.css) ═══════
+   ช่องกรอกโฟกัสแล้วขึ้นขอบน้ำเงิน + วงแสงจาง ๆ แบบเดียวกับแถบค้นหาหน้าอื่น */
+.of-root input:focus,
+.of-root select:focus,
+.of-modal input:focus,
+.of-modal select:focus,
+.of-modal textarea:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+  outline: none;
+}

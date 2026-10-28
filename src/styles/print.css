@@ -1,0 +1,88 @@
+@page {
+  size: A4 portrait;
+  margin: 12mm;
+}
+
+@media print {
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  .app-layout,
+  .app-body,
+  .staff-shell,
+  .staff-body {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    background: #fff !important;
+  }
+
+  .app-topbar,
+  .sidebar,
+  .app-sidebar,
+  .app-navbar,
+  .staff-header,
+  .staff-menu,
+  .staff-footer,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-main,
+  .staff-content {
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  [class*="card"],
+  [class*="-page"],
+  [class*="-root"] {
+    box-shadow: none !important;
+  }
+
+  [class*="btn"],
+  [class*="inline-add"],
+  .cal-detail-add,
+  .ato-upload-thumb-add,
+  [class*="modal-close"] {
+    display: none !important;
+  }
+
+  input, select, textarea {
+    border: 0 !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #0f172a !important;
+    padding: 2px 0 !important;
+  }
+
+  input[type="checkbox"], input[type="radio"] {
+    border-bottom: 0 !important;
+  }
+
+  h1, h2, h3, h4 { break-after: avoid; }
+  tr, li { break-inside: avoid; }
+
+  thead { display: table-header-group; }
+  tfoot { display: table-footer-group; }
+
+  [class*="table-wrap"],
+  [class*="-scroll"] {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+}

@@ -1,10 +1,8 @@
-// src/context/AuthContext.jsx
 import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  // โหลด user จาก localStorage ถ้ามี
   const [user, setUser] = useState(() => {
     try {
       const stored = localStorage.getItem("user");
@@ -25,7 +23,6 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("role");
       }
     } catch {
-      // เผื่อ localStorage พังเฉย ๆ ก็ไม่ต้องทำอะไรเพิ่ม
     }
   };
 
@@ -35,7 +32,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("user");
       localStorage.removeItem("role");
     } catch {}
-  };
+  }; 
 
   const value = { user, login, logout };
 
