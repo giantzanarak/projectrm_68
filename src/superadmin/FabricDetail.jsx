@@ -22,7 +22,6 @@ const FabricDetail = () => {
   const [usageLogs, setUsageLogs] = useState([]);
   const [zoomOpen, setZoomOpen]   = useState(false);
   const [unit, setUnit]           = useFabricUnit();
-  // ความยาวม้วนเก็บเป็นเมตร → แสดงตามหน่วยที่เลือก
   const len = (m) => formatLength(metersToCm(m), unit);
 
   useEffect(() => {
@@ -42,7 +41,6 @@ const FabricDetail = () => {
   }, [id]);
 
   if (!roll) return <div>Loading...</div>;
-
 
   const usedLength = Number(roll.initial_length) - Number(roll.remaining_length);
   const deductedTotal = usageLogs
@@ -95,7 +93,6 @@ const FabricDetail = () => {
           </button>
         </div>
       </div>
-
 
       <div className="fabric-unit-bar">
         <span>หน่วยความยาว</span>

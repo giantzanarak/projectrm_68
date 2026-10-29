@@ -20,7 +20,6 @@ html, body {
   display: block;
 }
 
-/* ช่องวันที่/เวลาทุกหน้า: ใช้ฟอนต์เดียวกับทั้งระบบ (เบราว์เซอร์ตั้งฟอนต์ของตัวเองไว้ให้ช่องพวกนี้) */
 input[type="date"],
 input[type="time"],
 input[type="datetime-local"],

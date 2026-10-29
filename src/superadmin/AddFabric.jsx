@@ -33,7 +33,6 @@ import {
   FABRIC_UNITS, widthExample, unitNameOf, cmToMeters, cmToUnit, metersToCm, unitLabelOf, useFabricUnit,
 } from "../utils/measureUnit";
 
-// ช่องตัวเลขแบบพิมพ์เอง: รับแค่ตัวเลขกับจุดทศนิยม 1 จุด ทศนิยมไม่เกิน 2 หลัก
 const toDecimalInput = (raw) => {
   const cleaned = raw.replace(/[^0-9.]/g, "");
   const [whole, ...rest] = cleaned.split(".");
@@ -52,18 +51,15 @@ const AddFabric = () => {
   const location = useLocation();
   const { showAlert, showConfirm } = useDialog();
 
-  // ข้อมูลหลักทั้งระบบ
   const [types, setTypes] = useState([]);
   const [colors, setColors] = useState([]);
   const [patterns, setPatterns] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [storageOptions, setStorageOptions] = useState([]);
 
-  // ผ้าที่ผู้จัดจำหน่ายที่เลือกเคยมี + ค่าที่เพิ่งกด "เพิ่มใหม่" ให้ร้านนี้
   const [supplierFabrics, setSupplierFabrics] = useState([]);
   const [extraIds, setExtraIds] = useState({ type: [], pattern: [], color: [] });
 
-  // กลับมาจากหน้าเพิ่มผู้จัดจำหน่าย → เลือกร้านที่เพิ่งเพิ่มให้เลย
   const [supplierId, setSupplierId] = useState(
     location.state?.newSupplierId ? String(location.state.newSupplierId) : ""
   );
@@ -79,7 +75,6 @@ const AddFabric = () => {
   const [storageLocation, setStorageLocation] = useState("");
   const [saving, setSaving] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
-  // หน้ากว้างเก็บเป็นซม. ความยาวม้วนเก็บเป็นเมตร → แสดง/กรอกตามหน่วยที่เลือก
   const [unit, setUnit] = useFabricUnit();
   const unitLabel = unitLabelOf(unit);
 
@@ -161,7 +156,6 @@ const AddFabric = () => {
 
   useEffect(() => {
     loadData();
-    // คลังที่เคยใช้ — ให้เลือกได้โดยไม่ต้องพิมพ์
     getFabricRolls()
       .then((rolls) => {
         const locations = rolls.map((r) => r.storage_location?.trim()).filter(Boolean);
@@ -170,7 +164,6 @@ const AddFabric = () => {
       .catch(() => {});
   }, []);
 
-  // เปลี่ยนผู้จัดจำหน่าย → ล้างค่าที่เลือก แล้วโหลดผ้าที่ร้านนี้เคยมี
   useEffect(() => {
     setType("");
     setPattern("");
@@ -186,7 +179,6 @@ const AddFabric = () => {
     return () => { cancelled = true; };
   }, [supplierId]);
 
-  // ครบ 4 ช่อง → ถามรหัสถัดไปจาก server (ผ้าเดิมของร้าน = ล็อตถัดไป)
   useEffect(() => {
     setNextCode(null);
     if (!supplierId || !type || !pattern || !color) return;
@@ -200,7 +192,6 @@ const AddFabric = () => {
 
   const masterList = { type: types, pattern: patterns, color: colors };
 
-  // ตัวเลือกของแต่ละช่อง = ค่าที่ร้านนี้เคยมี + ค่าที่เพิ่งเพิ่มให้ร้านนี้
   const optionsFor = (target) => {
     const { idKey } = MASTER[target];
     const ids = new Set([
@@ -219,16 +210,13 @@ const AddFabric = () => {
     return masterList[target].find((item) => String(item[idKey]) === String(id))?.[nameKey] || "";
   };
 
-  // ชื่อผ้า: ผ้าเดิมของร้านใช้ชื่อเดิม / ผ้าใหม่ = ประเภทผ้า + ลวดลาย + สี
   const autoFabricName = useMemo(() => {
     if (nextCode?.fabric_name) return nextCode.fabric_name;
     return [nameOf("type", type), nameOf("pattern", pattern), nameOf("color", color)]
       .filter(Boolean)
       .join("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextCode, type, pattern, color, types, patterns, colors]);
 
-  // ผ้าเดิมที่มีหน้ากว้างอยู่แล้ว → แสดงค่าเดิม ไม่ต้องกรอกซ้ำ (แก้ได้ที่หน้าแก้ไขม้วนผ้า)
   const savedWidth = nextCode?.width_cm;
   const widthLocked = savedWidth != null;
 
@@ -244,7 +232,6 @@ const AddFabric = () => {
       await showAlert("กรุณาเลือก ผู้จัดจำหน่าย ประเภทผ้า ลวดลาย และสี ให้ครบ");
       return;
     }
-    // หน้ากว้างใช้คำนวณว่าผ้าพอตัดชุดไหม → ต้องมีเสมอ (ผ้าเดิมที่มีแล้วใช้ค่าเดิม)
     if (!widthLocked && !(Number(widthCm) > 0)) {
       await showAlert("กรุณากรอกหน้ากว้างของผ้า");
       return;
@@ -314,7 +301,6 @@ const AddFabric = () => {
     if (target === "color") setColor(value);
   };
 
-  // ค่าในระบบที่ร้านนี้ยังไม่เคยมี — กดเลือกได้เลยไม่ต้องพิมพ์
   const quickCreateSuggestions = useMemo(() => {
     if (!quickCreateTarget) return [];
     const { idKey, nameKey } = MASTER[quickCreateTarget];
@@ -322,7 +308,6 @@ const AddFabric = () => {
     return masterList[quickCreateTarget]
       .filter((item) => !used.has(String(item[idKey])))
       .map((item) => ({ id: item[idKey], name: item[nameKey] }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quickCreateTarget, types, patterns, colors, supplierFabrics, extraIds]);
 
   const handleQuickPick = (id) => {
@@ -341,7 +326,6 @@ const AddFabric = () => {
     const target = quickCreateTarget;
     const { idKey, nameKey, label } = MASTER[target];
 
-    // มีชื่อนี้ในระบบแล้ว → เลือกค่าเดิม ไม่สร้างซ้ำ
     const normalizedValue = trimmedValue.toLowerCase();
     const existing = masterList[target].find(
       (item) => item[nameKey]?.trim().toLowerCase() === normalizedValue
@@ -411,7 +395,7 @@ const AddFabric = () => {
               ? "เลือกผู้จัดจำหน่ายก่อน"
               : options.length
                 ? `เลือก${label}`
-                : `ร้านนี้ยังไม่มี${label} — กด "เพิ่มใหม่"`}
+                : `ร้านนี้ยังไม่มี${label}`}
           </option>
           {options.map((item) => (
             <option key={item[idKey]} value={item[idKey]}>

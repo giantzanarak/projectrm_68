@@ -66,7 +66,6 @@ export const MEASUREMENT_FIELDS = {
   traditional: [...SHIRT_FIELDS, ...SKIRT_FIELDS],
 };
 
-// recommendCm = ช่วงที่แนะนำ (ซม.) — แสดงผลผ่าน seamHint() เพื่อให้แปลงเป็นนิ้วได้
 export const SEAM_ALLOWANCE_ROWS = [
   { key: "sideSeamShirt", label: "ตะเข็บข้างเสื้อ", recommendCm: [2.5, 3], perSide: true },
   { key: "centerBackSeam", label: "ตะเข็บกลางหลัง", recommendCm: [3, 4] },
@@ -82,8 +81,6 @@ export const ORDER_STATUSES = ["วัดตัว", "กำลังตัด",
 
 export const PAYMENT_METHODS = ["ชำระด้วยเงินสด", "โอนเงินผ่านธนาคาร"];
 
-
-/* ---------- แบบร่างใบสั่งตัด (เก็บในเครื่อง ไม่รวมรูปภาพ) ---------- */
 const DRAFT_KEY = "tailoringOrderDraft:v1";
 
 const stripPhotos = (items) =>
@@ -92,7 +89,6 @@ const stripPhotos = (items) =>
 const countPhotos = (items) =>
   items.reduce((n, it) => n + it.designImages.length + it.customerFabricPhotos.length, 0);
 
-// เทียบเฉพาะข้อมูลที่ผู้ใช้กรอก (ไม่นับเลขที่ใบสั่งตัด/วันที่สั่งที่ระบบสร้างให้)
 const draftFingerprint = (header, items) =>
   JSON.stringify({
     header: { ...header, orderCode: null, orderDate: null },
@@ -112,11 +108,11 @@ function readDraft() {
 }
 
 function writeDraft(draft) {
-  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch { /* storage full/blocked */ }
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch {  }
 }
 
 function clearDraft() {
-  try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+  try { localStorage.removeItem(DRAFT_KEY); } catch {  }
 }
 
 const maxIdNumber = (ids, pattern) =>
@@ -325,7 +321,6 @@ export default function AddTailoringOrders() {
   const [activeItemId, setActiveItemId] = useState("item1");
   const activeItem = items.find((it) => it.id === activeItemId) || items[0];
 
-  /* ---------- แบบร่าง: เสนอให้กรอกต่อ / บันทึกอัตโนมัติ ---------- */
   const [draftOffer, setDraftOffer] = useState(() => readDraft());
   const initialFingerprint = useRef(null);
   if (initialFingerprint.current === null) {
@@ -333,7 +328,7 @@ export default function AddTailoringOrders() {
   }
 
   useEffect(() => {
-    if (draftOffer) return; // ยังไม่ได้ตัดสินใจ — อย่าเขียนทับแบบร่างเดิม
+    if (draftOffer) return;
     const timer = setTimeout(() => {
       if (draftFingerprint(header, items) === initialFingerprint.current) return;
       writeDraft({

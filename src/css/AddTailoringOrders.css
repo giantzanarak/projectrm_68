@@ -802,18 +802,12 @@
 
 .ato-btn-inline-add:hover { text-decoration: underline; }
 
-/* ======================================================
-   Polish — seam labels, consistent inputs, date fonts
-   ====================================================== */
-
-/* 1. ชื่อจุดในตารางส่วนเผื่อไซซ์: ตัวปกติ 14px */
 .ato-seam-row:not(.ato-seam-head) > span:first-child {
   font-size: 14px;
   font-weight: 400;
   color: #334155;
 }
 
-/* 3. ช่องกรอกทุกช่อง: พื้นขาว มีขอบ สูงเท่ากัน */
 .ato-field input:not([type="checkbox"]):not([type="radio"]),
 .ato-field select,
 .ato-piece-inline input {
@@ -834,7 +828,6 @@
   color: #94a3b8;
 }
 
-/* ช่องที่ระบบเติมให้ / อ่านอย่างเดียว คงพื้นเทาอ่อน */
 .ato-field input:disabled,
 .ato-field input[readonly],
 .ato-field select:disabled {
@@ -850,7 +843,6 @@
   text-align: center;
 }
 
-/* 4. ช่องวันที่/เวลา: ใช้ฟอนต์เดียวกับทั้งหน้า */
 .ato-field input[type="date"],
 .ato-field input[type="time"] {
   font-variant-numeric: tabular-nums;
@@ -861,7 +853,6 @@
   font-family: inherit;
 }
 
-/* 6. ส่วนเลือกม้วนผ้า (อยู่บนสุดของข้อมูลผ้า) — ไม่มีกรอบ */
 .ato-roll-pick {
   margin-bottom: 18px;
 }
@@ -869,10 +860,6 @@
 .ato-roll-pick .ato-grid + .ato-grid {
   margin-top: 12px;
 }
-
-/* ======================================================
-   Summary card
-   ====================================================== */
 
 .ato-summary {
   padding: 24px;
@@ -1062,8 +1049,6 @@
   margin-top: 22px;
 }
 
-/* ---------- Draft banner ---------- */
-
 .ato-draft {
   display: flex;
   align-items: center;
@@ -1156,7 +1141,6 @@
   .ato-draft-actions button { flex: 1; }
 }
 
-/* ช่องตัวเลขทั้งหน้า: พิมพ์อย่างเดียว ไม่มีปุ่มลูกศรขึ้น/ลง */
 .ato-page input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;

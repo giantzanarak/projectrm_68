@@ -63,7 +63,6 @@
   to { opacity: 1; }
 }
 
-/* ปุ่มครอบรูปที่กดเพื่อซูมได้ */
 .zoomable-img {
   display: block;
   width: 100%;

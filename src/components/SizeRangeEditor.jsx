@@ -1,5 +1,3 @@
-/* ฟอร์มช่วงขนาดชุด — ใช้ตอนกด "ตัดเสร็จ" และตอนแก้ขนาดชุดในหน้าสินค้า
-   แต่ละแถว: จุดวัด · ใส่ได้ตั้งแต่ · ถึง (ซม.) */
 import { MEASURE_KEYS, measureField } from "../utils/tailorCalc";
 import { emptyRange } from "../utils/productSizes";
 
@@ -9,7 +7,6 @@ export default function SizeRangeEditor({ value, onChange }) {
   const del = (i) => onChange(rows.filter((_, idx) => idx !== i));
   const add = () => onChange([...rows, emptyRange()]);
 
-  /* เลือกจุดวัดจากรายการ หรือ "อื่น ๆ" แล้วพิมพ์ชื่อเอง */
   const pickKey = (i, key) =>
     set(i, key === "__other"
       ? { field_key: "", field_label: "" }

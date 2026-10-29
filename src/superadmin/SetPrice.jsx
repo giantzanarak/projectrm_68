@@ -19,34 +19,20 @@ const swalTheme = {
   cancelButton: "sp-swal-cancel",
 };
 
-/**
- * ตั้งราคาขาย — ขั้นตอนหลังคำนวณราคาชุดเสร็จ
- *
- * มาจากหน้าคำนวณราคาชุด (ส่งข้ามมาทาง router state)
- * ที่นี่กำหนด: ช่างตัดคนไหน · ราคาขายต่อชุด · เข้าคลังสินค้าไหม
- * บันทึก = ตัดผ้าออกจากคลัง ถ้าตัดเพื่อขาย สินค้าเข้าคลังเป็น "กำลังตัด"
- * แล้วกด ✓ ตัดเสร็จ ในตารางหน้านี้ (เข้าหน้าตรง ๆ) จึงขายได้
- * ไม่มีค่าแรง — ร้านจ่ายช่างเอง ระบบไม่รู้ตัวเลข
- */
 export default function SetPrice() {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  /* ข้อมูลที่ส่งมาจากหน้าคำนวณผ้า */
   const job = state?.job || null;
 
   const [users, setUsers] = useState([]);
   const [tailorId, setTailorId] = useState("");
-  const [sell, setSell] = useState("");        // ราคาขาย ต่อ 1 ชุด
+  const [sell, setSell] = useState("");
   const [saving, setSaving] = useState(false);
-  const [history, setHistory] = useState([]);   /* กรณีเข้าหน้าเปล่ามาดูประวัติ */
-  /* ชุดที่ตัดเสร็จแล้ว → กรอกช่วงขนาด แล้วสินค้าพร้อมขาย */
+  const [history, setHistory] = useState([]);
   const [finishing, setFinishing] = useState(null);
 
-  /* ── เพิ่มเข้าคลังสินค้า: ตัดเพื่อขายหน้าร้าน → สร้างสินค้า "กำลังตัด" ตามจำนวนชุด ── */
   const [categories, setCategories] = useState([]);
-  /* ชื่อสินค้า = ชื่อแบบชุด + เลขล็อตที่ระบบออกให้ · ลวดลาย = ชื่อผ้าที่ใช้ (อัตโนมัติ)
-     ไซส์กรอกตอนกดตัดเสร็จ */
   const pattern = [...new Set((job?.rolls || []).map((r) => r.fabricName).filter((n) => n && n !== "-"))]
     .join(", ").slice(0, 255);
   const [product, setProduct] = useState({ category_id: "" });
@@ -65,25 +51,21 @@ export default function SetPrice() {
     }
   }, [job]);
 
-  /* เข้าหน้านี้ตรง ๆ ไม่มีงานส่งมา แสดงประวัติที่เคยตั้งราคาไว้ */
   function loadHistory() {
     axios.get(`${API}/history`)
       .then((r) => setHistory(r.data || []))
       .catch(() => setHistory([]));
   }
 
-  /* หลายชิ้นใช้ม้วนเดียวกัน → คงเหลือของม้วนต้องหักรวมทุกชิ้น */
   const usedByRoll = {};
   (job?.rolls || []).forEach((r) => { usedByRoll[r.rollCode] = (usedByRoll[r.rollCode] || 0) + (Number(r.meters) || 0); });
 
-  /* ── คำนวณตัวเลขทั้งหมด จากต้นทุนที่ส่งมา + ราคาที่กรอก ── */
   const calc = useMemo(() => {
     const qty = Math.max(1, Number(job?.qty) || 1);
     const fabric = Number(job?.fabricCost) || 0;
     const addonPer = Number(job?.addonPerPiece) || 0;
     const addonTotal = round2(addonPer * qty);
 
-    /* ต้นทุน = ค่าผ้า + อุปกรณ์เสริม */
     const costPer = round2(fabric / qty + addonPer);
     const costTotal = round2(fabric + addonTotal);
 
@@ -136,7 +118,6 @@ export default function SetPrice() {
         ...job.payload,
         tailor_id: tailorId || null,
         sell_price_per_piece: calc.sellPer,
-        /* ทุกชุดที่ตัดเข้าคลังสินค้าเสมอ */
         product: {
           category_id: product.category_id || null,
           pattern,
@@ -165,8 +146,6 @@ export default function SetPrice() {
     } finally { setSaving(false); }
   };
 
-  /* เข้าหน้าตรงไม่ผ่านการคำนวณ — ยังไม่มีตัวเลขคำนวณ
-     แสดงหน้าที่เคยตั้งราคาไว้ ให้เห็นว่าโดยเฉลี่ยตั้งไว้เท่าไหร่ */
   if (!job) {
     return (
       <div className="sp-root">
@@ -269,9 +248,7 @@ export default function SetPrice() {
       </header>
 
       <div className="sp-grid">
-        {/* ── ซ้าย: กรอกข้อมูล ── */}
         <div className="sp-col">
-          {/* ผ้าที่จะตัดออกจากคลัง — ให้เห็นก่อนยืนยัน */}
           <section className="sp-block">
             <p className="sp-block-title">ผ้าที่จะตัดออกจากคลัง</p>
             <div className="sp-fabric">
@@ -291,7 +268,6 @@ export default function SetPrice() {
             {job.measureNote && <p className="sp-fabric-note">ค่าวัด: {job.measureNote}</p>}
           </section>
 
-          {/* 1 — ช่างตัด */}
           <section className="sp-block">
             <p className="sp-block-title"><b>1</b> มอบให้ช่างตัดคนไหนตัดชุดนี้</p>
 
@@ -310,7 +286,6 @@ export default function SetPrice() {
             </label>
           </section>
 
-          {/* 2 — ราคาขาย */}
           <section className="sp-block">
             <p className="sp-block-title"><b>2</b> ตั้งราคาขาย</p>
 
@@ -327,7 +302,6 @@ export default function SetPrice() {
             
           </section>
 
-          {/* 3 — เข้าคลังสินค้า */}
           <section className="sp-block">
             <p className="sp-block-title"><b>3</b> ข้อมูลสินค้า</p>
 
@@ -356,7 +330,6 @@ export default function SetPrice() {
           </section>
         </div>
 
-        {/* ── ขวา: สรุป ── */}
         <div className="sp-col">
           <div className="sp-result">
             <div className="sp-big">

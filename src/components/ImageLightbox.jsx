@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import { FiX } from "react-icons/fi";
 import "../css/ImageLightbox.css";
 
-// แสดงรูปขยายเต็มจอ ปิดได้ด้วยการคลิกพื้นหลัง ปุ่ม X หรือกด Esc
 export default function ImageLightbox({ src, alt, caption, onClose }) {
   useEffect(() => {
     if (!src) return;

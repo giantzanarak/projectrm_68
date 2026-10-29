@@ -451,16 +451,10 @@
   .uod-alt-row > strong { text-align: left; }
 }
 
-/* ======================================================
-   Payment status & summary — total / paid / outstanding
-   ====================================================== */
-
-/* การ์ดสถานะการชำระ: พื้นขาว ตัวเลขเขียว (ครบ) / แดง (ค้าง) */
 .uod-kpi-cell.status.paid .uod-kpi-num { color: var(--green); }
 .uod-kpi-cell.status.owe  .uod-kpi-num { color: var(--red); }
 .uod-kpi-cell.status.owe { border-color: #fecaca; }
 
-/* สรุปยอด */
 .uod-sum-row:last-child { border-bottom: none; }
 
 .uod-sum-main {
@@ -496,13 +490,11 @@
   color: var(--ink-mid);
 }
 
-/* วันที่ยังไม่กำหนด */
 .uod-date strong.muted {
   font-weight: 500;
   color: var(--ink-soft);
 }
 
-/* แถบข้อมูลล่างสุด: หัวข้อบน ค่าล่าง */
 .uod-foot {
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 14px 24px;

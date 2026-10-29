@@ -1,7 +1,3 @@
-/* ป๊อปอัปกรอกช่วงขนาดชุด
-   mode "finish" = ตัดเสร็จ → บันทึกขนาด + สินค้าพร้อมขาย (ใช้ในหน้าตั้งราคาขาย)
-   mode "edit"   = แก้ขนาดชุดทีหลัง (ใช้ในหน้าสินค้า)
-   product ต้องมี { id, name, lot_code, size_ranges?, stock_qty? } */
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
@@ -42,8 +38,6 @@ export default function SizeRangeModal({ product, mode = "finish", onClose, onSa
     }
   };
 
-  /* วาดที่ body — กันสไตล์ของหน้าที่เรียกใช้ (เช่น .sp-root * ที่ล้าง padding) ไหลเข้ามา
-     pp-root ให้ตัวแปรสีของป๊อปอัปสินค้า */
   return createPortal(
     <div className="pp-backdrop pp-root" onClick={onClose}>
       <div className="pp-modal pp-size-modal" onClick={(e) => e.stopPropagation()}>

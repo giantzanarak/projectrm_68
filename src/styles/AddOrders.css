@@ -340,7 +340,6 @@
   text-decoration: underline;
 }
 
-/* ช่องผ้าที่สั่งซื้อ: dropdown + ปุ่มเพิ่มใหม่ใต้ช่อง */
 .create-orders-item-row,
 .edit-orders-item-row {
   align-items: start;
@@ -365,7 +364,6 @@
   text-decoration: none;
 }
 
-/* popup เพิ่มผ้าที่สั่งซื้อ */
 .order-fabric-field {
   display: flex;
   flex-direction: column;

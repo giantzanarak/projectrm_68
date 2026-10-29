@@ -17,15 +17,12 @@ const swalTheme = {
 };
 const swalDanger = { ...swalTheme, confirmButton: "of-swal-danger" };
 
-/* แบบชุด = ชื่อชุด + ชิ้นส่วนชุด
-   หน้าคำนวณราคาชุดขึ้นแถวผ้าตามชิ้นส่วน · จุดวัดตัวเหมือนกันทุกชุด (ไม่ต้องตั้งที่นี่)
-   ไม่มีสูตรผ้า/ค่าแรงแล้ว */
 export default function OutfitFormulas() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  const [editing, setEditing] = useState(null);   // null = ปิดฟอร์ม, {} = เพิ่มใหม่
+  const [editing, setEditing] = useState(null);
   const [draft, setDraft] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -125,11 +122,8 @@ export default function OutfitFormulas() {
   };
 
   return (
-    /* โครงเดียวกับหน้าอื่นของระบบ (หน้าบันทึก / สินค้า) — ใช้คลาสจาก fabric.css + logs.css
-       .of-root เหลือไว้ให้ตัวแปรสีของฟอร์มเพิ่ม/แก้ไข */
     <div className="fabric-container of-root">
 
-      {/* ── HEADER ── */}
       <div className="fabric-header">
         <div className="header-left">
           <h2 className="fabric-title">แบบชุด</h2>
@@ -140,7 +134,6 @@ export default function OutfitFormulas() {
         </button>
       </div>
 
-      {/* ── FILTER BAR ── */}
       <div className="fabric-filter-section">
         <div className="search-wrapper">
           <FiSearch className="search-icon" />
@@ -154,7 +147,6 @@ export default function OutfitFormulas() {
         <span className="log-result-count">พบ {filtered.length} แบบ</span>
       </div>
 
-      {/* ── TABLE ── */}
       <div className="fabric-table-container">
         <table className="fabric-main-table outfit-table">
           <thead>

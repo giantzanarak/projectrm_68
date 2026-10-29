@@ -11,7 +11,6 @@ import "../styles/fabric.css";
 import "../styles/logs.css";
 import Select from "../components/Select";
 
-/* value = รหัส module ที่เก็บในฐานข้อมูล (คั่น comma ได้ เพราะข้อมูลเก่าใช้ชื่อต่างกัน) */
 const MODULE_OPTIONS = [
   { value: "all",         label: "ทุกส่วนของระบบ" },
   { value: "users,login", label: "ผู้ใช้งาน" },
@@ -72,7 +71,6 @@ const StatusBadge = ({ status }) => {
   return <span className={`log-status-badge ${s.cls}`}>{s.label}</span>;
 };
 
-/* เลขหน้าที่จะแสดง: หน้าแรก หน้าสุดท้าย และรอบ ๆ หน้าปัจจุบัน (log มีได้หลายร้อยหน้า) */
 const pageWindow = (page, totalPages) => {
   const pages = new Set([1, totalPages]);
   for (let p = page - 2; p <= page + 2; p++) if (p >= 1 && p <= totalPages) pages.add(p);
@@ -93,7 +91,6 @@ export default function Logs() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState("");
 
-  /* หน่วงการค้นหา 300ms ไม่ให้ยิง API ทุกครั้งที่พิมพ์ 1 ตัว */
   useEffect(() => {
     const t = setTimeout(() => {
       setQuery(searchTerm.trim());

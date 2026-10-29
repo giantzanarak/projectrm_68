@@ -5,10 +5,6 @@ import { useDialog } from "../context/DialogContext";
 import "../styles/quickCreate.css";
 import Select from "./Select";
 
-// ช่อง "ผ้าที่สั่งซื้อ" ในใบสั่งซื้อ
-//   - เลือกผ้าที่ร้านนี้เคยมี → value.fabricId
-//   - กด "เพิ่มใหม่" แล้วเลือก ประเภทผ้า/ลวดลาย/สี → value.spec (ยังไม่สร้างผ้า จะสร้างตอนตรวจรับ)
-
 const FIELDS = [
   { key: "type", idKey: "type_id", nameKey: "type_name", label: "ประเภทผ้า" },
   { key: "pattern", idKey: "category_id", nameKey: "category_name", label: "ลวดลาย" },
@@ -40,7 +36,6 @@ function NewFabricModal({ masters, onReloadMasters, onClose, onConfirm }) {
 
   const previewName = FIELDS.map(nameOf).join("");
 
-  // ค่าที่พิมพ์ใหม่: มีชื่อนี้ในระบบแล้วใช้ของเดิม ไม่มีค่อยสร้าง
   const resolveId = async (field) => {
     if (picked[field.key] !== NEW_OPTION) return Number(picked[field.key]);
 
@@ -187,7 +182,6 @@ export default function OrderFabricPicker({
     onChange({ fabricId: next, fabricName: fabric?.fabric_name || "", spec: null });
   };
 
-  // สเปกที่เลือกตรงกับผ้าที่ร้านนี้มีอยู่แล้ว → ใช้ผ้าเดิม
   const handleNewFabric = (spec) => {
     setModalOpen(false);
     const existing = supplierFabrics.find((f) => sameSpec(f, spec));

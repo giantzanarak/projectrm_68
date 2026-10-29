@@ -71,7 +71,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [loadedAt, setLoadedAt] = useState(null);
 
-  // silent = โหลดเบื้องหลัง ไม่แสดงสถานะกำลังโหลด (ใช้กับรีเฟรชอัตโนมัติ)
   const load = useCallback(async ({ silent = false } = {}) => {
     if (!silent) setLoading(true);
     const [bills, details, products, orders, rolls] = await Promise.allSettled([
@@ -93,7 +92,6 @@ export default function Dashboard() {
 
   useEffect(() => { load(); }, [load]);
 
-  // รีเฟรชอัตโนมัติทุก 5 นาที และทันทีเมื่อกลับมาที่แท็บนี้ — ข้ามวันแล้ววันที่/ตัวเลขเปลี่ยนเอง
   useEffect(() => {
     const timer = setInterval(() => load({ silent: true }), AUTO_REFRESH_MS);
     const onVisible = () => {
@@ -110,7 +108,6 @@ export default function Dashboard() {
   const monthPrefix = todayKey.slice(0, 7);
   const yesterdayKey = dayKey(new Date(Date.now() - 86400000));
 
-  /* ---------- sales ---------- */
   const sales = useMemo(() => {
     const byDay = {};
     data.bills.forEach((b) => {
@@ -174,7 +171,6 @@ export default function Dashboard() {
     },
   }), []);
 
-  /* ---------- tailoring ---------- */
   const tailoring = useMemo(() => {
     const active = data.orders.filter((o) => !orderIsFinished(o));
     const withMoney = data.orders.map((o) => ({ o, ...orderMoney(o) }));
@@ -209,7 +205,6 @@ export default function Dashboard() {
     };
   }, [data.orders, todayKey]);
 
-  /* ---------- best sellers this month ---------- */
   const bestSellers = useMemo(() => {
     const nameOf = (id) => data.products.find((p) => String(p.id) === String(id))?.name;
     const map = {};
@@ -225,7 +220,6 @@ export default function Dashboard() {
     return Object.values(map).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
   }, [data.details, data.products, sales.monthBillIds]);
 
-  /* ---------- fabric stock ---------- */
   const fabric = useMemo(() => {
     const low = data.rolls
       .map((r) => ({ r, left: Number(r.remaining_length) || 0 }))

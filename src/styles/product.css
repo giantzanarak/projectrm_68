@@ -1,10 +1,4 @@
-/* ═══════════════════════════════════════════════════════
-   PRODUCT PAGE — โครงหน้าเดียวกับหน้าอื่นของระบบ (หน้าบันทึก / ม้วนผ้า)
-   หัวเรื่อง / การ์ดสรุป / แถบค้นหา / ตาราง / เปลี่ยนหน้า มาจาก fabric.css + logs.css + listPage.css
-   ไฟล์นี้เก็บเฉพาะส่วนที่มีแค่หน้าสินค้า: คอลัมน์ ฟอร์มเพิ่ม/แก้ไข และหน้าดูรายละเอียด
-═══════════════════════════════════════════════════════ */
 
-/* ตัวแปรสีของฟอร์มและหน้าดูรายละเอียด */
 .pp-root {
   --bg:          #f5f6fa;
   --surface:     #ffffff;
@@ -34,13 +28,11 @@
   --transition:  .2s cubic-bezier(.4,0,.2,1);
 }
 
-/* รีเซ็ตระยะเฉพาะในป๊อปอัป — ไม่ทับระยะของการ์ด/ตารางที่มาจาก fabric.css */
 .pp-backdrop,
 .pp-backdrop *,
 .pp-backdrop *::before,
 .pp-backdrop *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ═══════ ตาราง — ความกว้างคอลัมน์ (ทับค่าของตารางม้วนผ้าใน fabric.css) ═══════ */
 .fabric-main-table.products-table { min-width: 1080px; }
 
 .fabric-main-table.products-table th:nth-child(n),
@@ -61,7 +53,6 @@
 .fabric-main-table.products-table th:nth-child(8),
 .fabric-main-table.products-table td:nth-child(8) { width: 150px; min-width: 150px; }
 
-/* รูปย่อกดดูรายละเอียดได้ */
 .pp-thumb-btn {
   padding: 0;
   border: none;
@@ -69,11 +60,9 @@
   cursor: pointer;
 }
 
-/* สินค้าที่ขายไม่ได้ (ไม่พร้อมขาย / ขายหมด) — สีจางลง */
 .products-table tbody tr.is-off .fabric-thumb { opacity: .55; }
 .products-table tbody tr.is-off .table-link { color: #64748b; }
 
-/* จุดสถานะ */
 .pp-dot {
   width: 7px;
   height: 7px;
@@ -99,7 +88,6 @@
 .pp-row-profit.pos { color: var(--green); }
 .pp-row-profit.neg { color: var(--red); }
 
-/* ป้ายสถานะในหน้าดูรายละเอียด */
 .pp-badge {
   display: inline-flex;
   align-items: center;
@@ -123,7 +111,6 @@
   border: 1px solid rgba(220,38,38,.25);
 }
 
-/* ─── MODAL BACKDROP ─── */
 .pp-backdrop {
   position: fixed;
   inset: 0;
@@ -142,7 +129,6 @@
   to   { opacity: 1; }
 }
 
-/* ─── ADD/EDIT MODAL ─── */
 .pp-modal {
   position: relative;
   background: var(--surface);
@@ -172,7 +158,6 @@
   border-bottom: 1px solid #f1f5f9;
 }
 
-/* หัวป๊อปอัปพื้นขาว ตัวหนังสือเข้ม เหมือนป๊อปอัปหน้าอื่นของระบบ */
 .pp-modal-eyebrow {
   font-size: 13px;
   font-weight: 500;
@@ -216,7 +201,6 @@
   gap: 20px;
 }
 
-/* Upload Zone */
 .pp-upload-zone {
   border: 2px dashed var(--border2);
   border-radius: var(--r);
@@ -255,7 +239,6 @@
 .pp-upload-placeholder p { font-size: 14px; font-weight: 500; }
 .pp-upload-placeholder small { font-size: 12px; }
 
-/* Form Grid */
 .pp-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -358,7 +341,6 @@
   filter: brightness(1.12);
 }
 
-/* ปุ่มแก้ไขในหน้ามัลดูรายละเอียด */
 .pp-btn-edit {
   display: inline-flex;
   align-items: center;
@@ -381,7 +363,6 @@
   border-color: var(--gold);
 }
 
-/* ─── VIEW MODAL ─── */
 .pp-view-modal {
   max-width: 560px;
   padding: 0;
@@ -515,32 +496,27 @@
 .pp-view-actions { display: flex; gap: 10px; }
 .pp-view-edit { flex: 1; }
 
-/* ─── SCROLLBAR ─── */
 .pp-modal::-webkit-scrollbar { width: 6px; }
 .pp-modal::-webkit-scrollbar-track { background: transparent; }
 .pp-modal::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
 
-/* ═══════ RESPONSIVE ═══════ */
 @media (max-width: 560px) {
   .pp-form-grid { grid-template-columns: 1fr; }
   .pp-span-2 { grid-column: span 1; }
 }
 
-/* ข้อความใต้ช่องจำนวนในคลัง */
 .pp-field-hint {
   font-size: 12px;
   line-height: 1.5;
   color: var(--ink-soft);
 }
 
-/* เตือนในฟอร์ม: จำนวนในคลังเป็น 0 (สถานะจริงเป็น "ขายหมด") */
 .pp-field-warn {
   font-size: 12px;
   line-height: 1.5;
   color: #b91c1c;
 }
 
-/* ═══════ แหล่งที่มาของสินค้า (ร้านตัดเอง / รับมาขาย) ═══════ */
 .pp-header-actions {
   display: flex;
   gap: 10px;
@@ -565,8 +541,6 @@
 }
 .pp-btn-outline:hover { background: #f1f5f9; }
 
-
-/* คำอธิบายบนฟอร์ม */
 .pp-source-note {
   margin-bottom: 16px !important;
   padding: 10px 14px !important;
@@ -584,7 +558,6 @@
   cursor: not-allowed;
 }
 
-/* ═══════ ช่วงขนาดชุด (ตัดเสร็จ / แก้ขนาดชุด) ═══════ */
 .pp-modal.pp-size-modal { max-width: 640px; }
 
 .szr { display: flex; flex-direction: column; gap: 8px; }
@@ -643,7 +616,6 @@
   cursor: pointer;
 }
 
-/* ขนาดชุดในหน้ารายละเอียด */
 .pp-size-list { display: flex; flex-direction: column; gap: 4px; }
 .pp-size-list em { display: block; font-style: normal; font-size: 12px; color: var(--ink-mid); }
 

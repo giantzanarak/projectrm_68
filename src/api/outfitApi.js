@@ -23,10 +23,8 @@ export async function deleteOutfit(formulaId) {
   return res.data;
 }
 
-/* ชิ้นส่วนชุดจาก backend → ชื่อ (เสื้อ / ผ้าถุง / สไบ) */
 export const partNamesOf = (f) => (f.parts || []).map((p) => p.part_name).filter(Boolean);
 
-/* แบบชุด = ชื่อ + ชิ้นส่วนชุด (ชื่อ) — จุดวัดตัวเหมือนกันทุกชุด ไม่ส่งไป (backend คงค่าเดิม) */
 function toPayload(draft) {
   return {
     outfitName: draft.outfitName,
@@ -38,7 +36,6 @@ function toPayload(draft) {
   };
 }
 
-/* แปลงข้อมูลดิบจาก backend ให้เป็น { ชื่อแบบชุด: { parts } } ที่หน้าคำนวณราคาชุดใช้ */
 export function toOutfitMap(list) {
   const map = {};
   (list || []).forEach((f) => {

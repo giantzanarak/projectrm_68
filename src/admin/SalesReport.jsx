@@ -16,8 +16,6 @@ import "../css/SalesReport.css";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-/* ---------- date helpers ---------- */
-
 const dayKey = (d) => {
   if (!d) return "";
   const dt = d instanceof Date ? d : new Date(d);
@@ -79,8 +77,6 @@ const pct = (part, whole) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
 
 const paymentGroup = (text) => (/สด/.test(text || "") ? "เงินสด" : "โอนผ่านธนาคาร/QR");
 
-/* ---------- small pieces ---------- */
-
 const Change = ({ now, before }) => {
   if (!before && !now) return <span className="sr-change flat">—</span>;
   if (!before) return <span className="sr-change up">ใหม่ในช่วงนี้</span>;
@@ -129,8 +125,6 @@ const BarList = ({ rows, total, empty }) =>
     </ul>
   );
 
-/* ---------- page ---------- */
-
 export default function SalesReport() {
   const navigate = useNavigate();
   const [period, setPeriod] = useState("month");
@@ -161,7 +155,6 @@ export default function SalesReport() {
     return { from: addDays(range.from, -n), to: addDays(range.from, -1) };
   }, [range]);
 
-  /* Normalise every money event to { key, ... } once */
   const events = useMemo(() => {
     const productById = new Map(raw.products.map((p) => [String(p.id), p]));
     const payName = (id) =>
@@ -237,7 +230,6 @@ export default function SalesReport() {
     const prevCosted = prevBills.filter((b) => b.costKnown);
     const prevProfit = sum(prevCosted, (b) => b.itemsNet - b.cost);
 
-    // by payment method
     const payMap = {};
     bills.forEach((b) => {
       payMap[b.payment] = payMap[b.payment] || { value: 0, count: 0 };
@@ -256,7 +248,6 @@ export default function SalesReport() {
       }))
       .sort((a, b) => b.value - a.value);
 
-    // by employee (bills only)
     const empMap = {};
     bills.forEach((b) => {
       empMap[b.employee] = empMap[b.employee] || { value: 0, count: 0 };
@@ -267,7 +258,6 @@ export default function SalesReport() {
       .map(([label, v]) => ({ label, value: v.value, note: `${v.count} บิล`, color: "#8b5cf6" }))
       .sort((a, b) => b.value - a.value);
 
-    // top products
     const prodMap = {};
     bills.forEach((b) =>
       b.lines.forEach((d) => {
@@ -281,7 +271,6 @@ export default function SalesReport() {
     const products = Object.values(prodMap).sort((a, b) => b.revenue - a.revenue);
     const productsTotal = sum(products, (p) => p.revenue);
 
-    // chart buckets: per day, or per month when the range is long
     const days = spanDays(range.from, range.to);
     const monthly = days > 62;
     const bucketOf = (key) => (monthly ? key.slice(0, 7) : key);

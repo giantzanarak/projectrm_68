@@ -20,7 +20,6 @@ export function UnitToggle({ unit, onChange, units = MEASURE_UNITS }) {
   );
 }
 
-// ระหว่างพิมพ์ใช้ข้อความที่ผู้ใช้พิมพ์เอง ไม่งั้นการปัดเศษตอนแปลงหน่วยจะกลืน "12." หรือ "12.50"
 export function MeasureInput({ cm, unit, onChange, ...rest }) {
   const [draft, setDraft] = useState(null);
   return (

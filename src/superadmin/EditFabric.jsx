@@ -79,11 +79,9 @@ const EditFabric = () => {
   const [removeExistingImage, setRemoveExistingImage] = useState(false);
   const [codePreview, setCodePreview] = useState(null);
   const [zoomOpen, setZoomOpen] = useState(false);
-  // หน้ากว้างเก็บเป็นซม. ความยาวม้วนเก็บเป็นเมตร → แสดง/กรอกตามหน่วยที่เลือก
   const [unit, setUnit] = useFabricUnit();
   const unitLabel = unitLabelOf(unit);
 
-  // ผ้าที่ผู้จัดจำหน่ายที่เลือกเคยมี + ค่าที่เพิ่งกด "เพิ่มใหม่" ให้ร้านนี้ (เหมือนหน้าเพิ่มม้วนผ้า)
   const [supplierFabrics, setSupplierFabrics] = useState([]);
   const [extraIds, setExtraIds] = useState({ type: [], pattern: [], color: [] });
   const [quickCreateTarget, setQuickCreateTarget] = useState(null);
@@ -122,7 +120,6 @@ const EditFabric = () => {
         setPurchaseDate(formatDateForInput(rollData.purchase_date));
         setImagePreview(getFabricImageUrl(rollData.image_path));
 
-        // กลับมาจากหน้าเพิ่มผู้จัดจำหน่าย → เลือกร้านที่เพิ่งเพิ่ม (เฉพาะม้วนที่ยังเปลี่ยนสเปกได้)
         const newSupplierId = location.state?.newSupplierId;
         if (newSupplierId && Number(rollData.is_used) !== 1 && !rollData.po_item_id) {
           setSupplierId(String(newSupplierId));
@@ -138,10 +135,8 @@ const EditFabric = () => {
     };
 
     loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // โหลดผ้าที่ผู้จัดจำหน่ายที่เลือกเคยมี — ใช้กรองตัวเลือก ประเภท/ลวดลาย/สี
   useEffect(() => {
     setSupplierFabrics([]);
     if (!supplierId) return;
@@ -158,8 +153,6 @@ const EditFabric = () => {
     };
   }, [quickCreateImagePreview]);
 
-  // ร้าน/ประเภท/ลวดลาย/สี เปลี่ยนได้เฉพาะม้วนที่ยังไม่เริ่มใช้ และไม่ได้รับเข้าจากใบสั่งซื้อ
-  // (backend ตรวจซ้ำอีกชั้น — PUT /fabricrolls/:id)
   const specLockReason = !roll
     ? null
     : Number(roll.is_used) === 1
@@ -175,7 +168,6 @@ const EditFabric = () => {
       pattern !== String(roll.category_id || "") ||
       color !== String(roll.color_id || ""));
 
-  // ตัวอย่างรหัสม้วนใหม่ เมื่อเปลี่ยนสเปก (รหัสจริงออกตอนบันทึก)
   useEffect(() => {
     if (!specChanged || !supplierId || !type || !pattern || !color) {
       setCodePreview(null);
@@ -199,7 +191,6 @@ const EditFabric = () => {
     setExtraIds({ type: [], pattern: [], color: [] });
   };
 
-  // เปลี่ยนร้าน → ล้าง ประเภท/ลวดลาย/สี ให้เลือกใหม่จากของร้านนั้น (กลับมาร้านเดิม = ค่าเดิมของม้วน)
   const changeSupplier = (value) => {
     if (value === String(roll.supplier_id || "")) {
       resetSpec();
@@ -219,7 +210,6 @@ const EditFabric = () => {
     ? { type: roll.type_id, pattern: roll.category_id, color: roll.color_id }
     : {};
 
-  // ตัวเลือกของแต่ละช่อง = ค่าที่ร้านนี้เคยมี + ค่าที่เพิ่งเพิ่มให้ร้านนี้ (+ ค่าเดิมของม้วน ถ้ายังเป็นร้านเดิม)
   const optionsFor = (target) => {
     const { idKey } = MASTER[target];
     const ids = new Set([
@@ -258,7 +248,6 @@ const EditFabric = () => {
     clearQuickCreateImage();
   };
 
-  // ค่าในระบบที่ร้านนี้ยังไม่เคยมี — กดเลือกได้เลยไม่ต้องพิมพ์
   const quickCreateSuggestions = useMemo(() => {
     if (!quickCreateTarget) return [];
     const { idKey, nameKey } = MASTER[quickCreateTarget];
@@ -266,7 +255,6 @@ const EditFabric = () => {
     return masterList[quickCreateTarget]
       .filter((item) => !used.has(String(item[idKey])))
       .map((item) => ({ id: item[idKey], name: item[nameKey] }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quickCreateTarget, types, patterns, colors, supplierFabrics, extraIds, supplierId, type, pattern, color]);
 
   const handleQuickCreate = async () => {
@@ -279,7 +267,6 @@ const EditFabric = () => {
     const target = quickCreateTarget;
     const { idKey, nameKey, label } = MASTER[target];
 
-    // มีชื่อนี้ในระบบแล้ว → เลือกค่าเดิม ไม่สร้างซ้ำ
     const existing = masterList[target].find(
       (item) => item[nameKey]?.trim().toLowerCase() === trimmedValue.toLowerCase()
     );
@@ -530,8 +517,6 @@ const EditFabric = () => {
               </div>
             </div>
 
-            {/* ร้าน + ประเภท + ลวดลาย + สี คือตัวผ้าแบบนี้ (ใช้ร่วมกันทุกม้วน และเป็นที่มาของรหัสผ้า)
-                ม้วนที่ยังไม่เริ่มใช้ → เปลี่ยนได้ ระบบย้ายม้วนไปผ้าแบบใหม่และออกรหัสใหม่ให้ */}
             {canEditSpec ? (
               <>
                 <div className="input-group">
@@ -579,7 +564,7 @@ const EditFabric = () => {
                             ? "เลือกผู้จัดจำหน่ายก่อน"
                             : options.length
                               ? `เลือก${label}`
-                              : `ร้านนี้ยังไม่มี${label} — กด "เพิ่มใหม่"`}
+                              : `ร้านนี้ยังไม่มี${label}`}
                         </option>
                         {options.map((item) => (
                           <option key={item[idKey]} value={String(item[idKey])}>{item[nameKey]}</option>

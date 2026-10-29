@@ -318,7 +318,6 @@
   margin-right: 4px;
 }
 
-/* ช่องกรอก/ปุ่ม ใช้ฟอนต์เดียวกับทั้งระบบ (เบราว์เซอร์ไม่ส่งต่อฟอนต์ให้เอง) */
 .usage-page-container input,
 .usage-page-container select,
 .usage-page-container textarea,

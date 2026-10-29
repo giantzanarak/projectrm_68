@@ -31,7 +31,6 @@ export default function OrderDetail() {
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-  // รับครั้งนี้: จำนวนม้วน + ความยาวแต่ละม้วน (ค่าเริ่มต้น = เมตร/ม้วน ในใบสั่งซื้อ)
   const [receiveQty, setReceiveQty] = useState({});
   const [lengths, setLengths] = useState({});
   const [storageLocation, setStorageLocation] = useState("");
@@ -64,7 +63,6 @@ export default function OrderDetail() {
     setLengths({});
   }, [order]);
 
-  // คลังที่เคยใช้ — ให้เลือกได้โดยไม่ต้องพิมพ์
   useEffect(() => {
     getFabricRolls()
       .then((rolls) => {

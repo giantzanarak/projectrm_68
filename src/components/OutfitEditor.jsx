@@ -1,6 +1,3 @@
-/* ฟอร์มเพิ่ม/แก้ไขแบบชุด
-   แบบชุดบอก: ชื่อชุด + ชิ้นส่วนชุด (ใช้เป็นแถวผ้าในหน้าคำนวณราคาชุด และส่วนประกอบของสินค้า)
-   จุดวัดตัวเหมือนกันทุกชุด (ล็อกไว้ในหน้าคำนวณราคาชุด) จึงไม่ต้องตั้งที่นี่ */
 export default function OutfitEditor({ value, onChange }) {
   const draft = value;
   const set = (patch) => onChange({ ...draft, ...patch });
@@ -13,7 +10,6 @@ export default function OutfitEditor({ value, onChange }) {
 
   return (
     <div className="oe">
-      {/* 1 — ข้อมูลแบบชุด */}
       <section className="oe-sec">
         <h3 className="oe-h">ข้อมูลแบบชุด</h3>
         <label className="oe-field">
@@ -23,7 +19,6 @@ export default function OutfitEditor({ value, onChange }) {
         </label>
       </section>
 
-      {/* 2 — ชิ้นส่วนชุด */}
       <section className="oe-sec">
         <h3 className="oe-h">
           ชิ้นส่วนชุด
@@ -40,7 +35,6 @@ export default function OutfitEditor({ value, onChange }) {
         <button type="button" className="oe-add" onClick={addPart}>+ เพิ่มชิ้นส่วน</button>
       </section>
 
-      {/* สรุป */}
       <section className="oe-summary">
         <div className="oe-summary-row">
           <span>ส่วนประกอบ</span>

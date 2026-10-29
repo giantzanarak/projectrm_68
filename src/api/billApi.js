@@ -26,10 +26,8 @@ export async function getProducts() {
     pattern: p.pattern || "",
     lotCode: p.lot_code || "",
     status: p.status || "พร้อมขาย",
-    /* ขนาดชุด: ใส่ได้ตั้งแต่–ถึง (กรอกตอนตัดเสร็จ) */
     size: p.size || "",
     sizeRanges: p.size_ranges || [],
-    /* คงเหลือ = ชุดที่ตัดไว้ + จำนวนที่รับเข้าเอง − ที่ขายไปแล้ว (สินค้าทุกตัวมีจำนวนจำกัด) */
     stockQty: Number(p.stock_qty) || 0,
   }));
 }
@@ -47,10 +45,8 @@ export async function getEmployees() {
   }));
 }
 
-/* ── โปรโมชั่นที่เปิดใช้งานอยู่ ── */
 export async function getPromotions() {
   const res = await axios.get(`${API}/promotion`);
-  /* backend บอกมาแล้วว่าใช้ได้จริงตอนนี้ไหม (เปิดอยู่ + ถึงเวลาแล้ว + ยังไม่หมดเวลา + สิทธิ์ยังเหลือ) */
   return (res.data || []).filter((p) =>
     p.is_usable !== undefined ? p.is_usable : Number(p.is_active) === 1
   );
@@ -80,7 +76,6 @@ export async function createBill({
     Bill_details: billNo,
     User_link: userId,
     customer_name: customerName || null,
-    /* หน้าจอใส่ขีด (0XX-XXX-XXXX) แต่คอลัมน์รับตัวเลข 10 หลัก */
     customer_phone: phoneDigits(customerPhone) || null,
     Payment_idPayment: paymentId,
     totalAmount,
@@ -89,7 +84,6 @@ export async function createBill({
   });
 
   const idBill = billRes.data.idBill;
-  /* backend อาจเลื่อนเลขบิลถ้าเลขนี้ถูกใช้ไปแล้ว (เช่น เลขของบิลที่ยกเลิก) — ใช้เลขที่บันทึกจริง */
   const savedBillNo = billRes.data.Bill_details || billNo;
 
   const results = await Promise.allSettled(

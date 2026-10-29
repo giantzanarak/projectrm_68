@@ -611,7 +611,6 @@
   .tod-measure-edit .tod-measure-row { grid-template-columns: 1.4fr 1fr 1fr 1fr 28px; }
 }
 
-/* ── รูปภาพร่าง/แบบแนบ: เปลี่ยนรูป / ลบรูป ── */
 .tod-thumb-editable {
   position: relative;
   width: 100px;
@@ -686,18 +685,12 @@
   }
 }
 
-/* ======================================================
-   Weight & layout polish
-   ====================================================== */
-
-/* 3. หัวช่องกรอก: หนาปานกลาง สีเทาเข้ม — ต่างจากหัวข้อส่วน (700) */
 .tod-field label {
   font-weight: 500;
   color: #475569;
   line-height: 1.4;
 }
 
-/* 4. แถววันนัด: ช่องกรอกทุกช่องสูงเท่ากัน หัวช่องอยู่ระดับเดียวกัน */
 .tod-appt-row {
   align-items: end;
 }
@@ -724,13 +717,11 @@
   height: 42px;
 }
 
-/* 5. ตารางขนาดตัว: คอลัมน์ชื่อจุดวัดแคบลง 3 คอลัมน์ตัวเลขเท่ากัน */
 .tod-measure-edit .tod-measure-row {
   grid-template-columns: minmax(110px, 0.9fr) repeat(3, minmax(0, 1fr)) 30px;
   column-gap: 14px;
 }
 
-/* 1. ชื่อจุดวัด: ตัวปกติ ให้ตัวเลขในช่องเด่นแทน */
 .tod-measure-label {
   font-weight: 400;
   color: #334155;
@@ -744,7 +735,6 @@
   font-weight: 500;
 }
 
-/* 2. ส่วนเผื่อไซซ์: ค่า 0 เป็นสีเทาตัวปกติ ค่าจริงหนาสีเข้ม */
 .tod-info-row strong {
   font-weight: 600;
 }
@@ -754,12 +744,10 @@
   color: #94a3b8;
 }
 
-/* 6. ปุ่มบันทึกลอย: เว้นที่ด้านล่างให้เลื่อนเนื้อหาพ้นปุ่มได้ */
 .tod-page {
   padding-bottom: 140px;
 }
 
-/* 7. ข้อความว่างกับปุ่มเพิ่ม: เว้นระยะ */
 .tod-hint + .tod-btn-add,
 .tod-hint + .tod-thumb-grid + .tod-btn-add {
   margin-top: 14px;
@@ -781,7 +769,6 @@
   }
 }
 
-/* ระยะห่างระหว่างการ์ดทุกใบเท่ากัน 20px */
 .tod-page > .tod-header,
 .tod-page > .tod-card,
 .tod-page > .tod-appt-bar,

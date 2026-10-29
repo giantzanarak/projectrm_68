@@ -19,7 +19,6 @@ import OrderFabricPicker from "../components/OrderFabricPicker";
 import "../styles/AddOrders.css";
 import Select from "../components/Select";
 
-// fabricId = ผ้าที่ร้านนี้มีแล้ว / spec = ผ้าใหม่ (ประเภท ลวดลาย สี) ที่จะสร้างตอนตรวจรับ
 const createEmptyItem = (index = Date.now()) => ({
   item_id: index,
   fabricId: "",
@@ -100,7 +99,6 @@ export default function EditOrders() {
     loadOrderData();
   }, [orderCode]);
 
-  // ผ้าที่ร้านที่เลือกเคยมี
   const supplierId = form?.supplierId;
   useEffect(() => {
     setSupplierFabrics([]);
@@ -113,14 +111,12 @@ export default function EditOrders() {
     return () => { cancelled = true; };
   }, [supplierId]);
 
-  // รับของแล้ว → เปลี่ยนร้านไม่ได้ (ม้วนผ้าผูกกับร้านเดิมไปแล้ว)
   const hasReceived = !!form?.items.some((item) => Number(item.receivedRollQty) > 0);
 
   const updateForm = (e) => {
     const { name, value } = e.target;
     setForm((prev) => {
       if (name !== "supplierId" || value === prev.supplierId) return { ...prev, [name]: value };
-      // ผ้าในรายการเป็นของร้านเดิม → เปลี่ยนร้านแล้วต้องเลือกผ้าใหม่
       return {
         ...prev,
         supplierId: value,
@@ -294,7 +290,6 @@ export default function EditOrders() {
       );
 
       for (const item of cleanedItems) {
-        // จำนวนที่รับแล้วเปลี่ยนได้จากหน้าตรวจรับเท่านั้น
         const payload = {
           po_id: order.po_id,
           ...(item.fabricId

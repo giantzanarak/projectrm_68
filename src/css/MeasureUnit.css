@@ -6,7 +6,6 @@
   margin-bottom: 14px;
 }
 
-/* หัวข้อเดิมของแต่ละหน้ามี margin-bottom ของตัวเอง — ให้แถบนี้คุมระยะแทน */
 .measure-titlebar > :first-child {
   margin: 0;
 }

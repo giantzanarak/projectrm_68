@@ -1,8 +1,6 @@
 import { FiImage, FiX } from "react-icons/fi";
 import "../styles/AddFabric.css";
 
-// โมดัล "เพิ่มใหม่" ของ ประเภทผ้า / ลวดลาย / สี — ใช้ในหน้าเพิ่มม้วนผ้าและแก้ไขม้วนผ้า
-// suggestions = ค่าที่มีในระบบแล้วแต่ร้านนี้ยังไม่เคยมี (กดเลือกได้เลย)
 export default function FabricQuickCreateModal({
   title,
   label,

@@ -20,45 +20,35 @@ import "../styles/fabricCalc.css";
 
 const API = `${API_BASE}/api/fabric-calculator`;
 
-/* แถวชิ้นส่วน: ชื่อ + เมตร (rollId ว่าง = ใช้ผ้าหลักของชุด) */
 const partRow = (name = "") => ({ name, meters: "", rollId: "", otherFabric: false });
-
 
 export default function FabricCalculator() {
   const navigate = useNavigate();
-  /* ── แบบชุด (จากฐานข้อมูล ถ้าโหลดไม่ได้ใช้แบบในโค้ด) ── */
   const [outfitMap, setOutfitMap] = useState(OUTFITS);
   const outfitNames = useMemo(() => Object.keys(outfitMap), [outfitMap]);
 
-  /* พิมพ์ชื่อแบบชุดได้ทันที — ตรงกับแบบที่มีก็ใช้ชิ้นส่วนของแบบนั้น ไม่ตรง = ชุดใหม่ */
   const [outfitText, setOutfitText] = useState("");
   const outfitName = outfitText.trim();
   const isKnown = Boolean(outfitMap[outfitName]);
   const isNew = Boolean(outfitName) && !isKnown;
   const knownParts = useMemo(() => outfitMap[outfitName]?.parts || [], [outfitName, outfitMap]);
 
-  /* ── หน่วยทั้งหน้า: ปุ่มซม./นิ้ว ใช้ร่วมกับหน้าตัดชุด
-     ค่าเก็บจริงไม่เปลี่ยน — วัดตัวเก็บเป็นซม. ผ้าเก็บเป็นเมตร แปลงแค่ตอนแสดง/กรอก ── */
   const [measureUnit, setMeasureUnit] = useMeasureUnit();
   const unitLabel = unitLabelOf(measureUnit);
   const cmPerUnit = measureUnit === "in" ? CM_PER_INCH : 1;
-  /* ความยาวผ้า (เมตร) → "250 ซม." / "98.43 นิ้ว" */
   const fmtLen = (m) =>
     `${Number(cmToUnit(metersToCm(Number(m) || 0), measureUnit)).toLocaleString("th-TH", { maximumFractionDigits: 2 })} ${unitLabel}`;
-  /* ราคาต่อเมตร → ราคาต่อหน่วยที่เลือก */
   const priceText = (perMeter) => `${money((Number(perMeter) || 0) * cmPerUnit / 100).replace(".00", "")}/${unitLabel}`;
 
   const [measure, setMeasure] = useState({});
-  const [extraMeasures, setExtraMeasures] = useState([]);   // [{ key, label, value }]
+  const [extraMeasures, setExtraMeasures] = useState([]);
 
-  /* ── ผ้า: ผ้าหลักของชุด + ชิ้นส่วน (เมตร) ── */
   const [mainRollId, setMainRollId] = useState("");
   const [parts, setParts] = useState([partRow("ทั้งชุด")]);
 
   const [addons, setAddons] = useState([]);
   const [note, setNote] = useState("");
 
-  /* ── ระบบ ── */
   const [rolls, setRolls] = useState([]);
   const [history, setHistory] = useState([]);
 
@@ -74,21 +64,18 @@ export default function FabricCalculator() {
       setRolls(r);
       setHistory(h);
       if (list.length) setOutfitMap(toOutfitMap(list));
-    } catch { /* ใช้ค่าเริ่มต้น */ }
+    } catch {  }
   };
 
-  /* เปลี่ยนแบบชุด → ชิ้นส่วนตามแบบนั้น / ชุดใหม่เริ่มที่ช่องว่าง 1 ชิ้น
-     ระหว่างพิมพ์ชื่อชุดใหม่ไม่ล้างชิ้นส่วนที่เขียนไว้ */
   const partsKey = isKnown ? `known:${outfitName}` : "new";
   useEffect(() => {
     setParts(isKnown
       ? (knownParts.length ? knownParts : ["ทั้งชุด"]).map((n) => partRow(n))
       : [partRow("")]);
-  }, [partsKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [partsKey]);
 
   const setMeasureField = (k, v) => setMeasure((p) => ({ ...p, [k]: v }));
 
-  /* จุดวัดเสริม: เลือกจากรายการ → เพิ่มทันที */
   const addExtra = (key) => {
     if (!key) return;
     setExtraMeasures((p) => (key !== "__other" && p.some((x) => x.key === key)
@@ -106,12 +93,10 @@ export default function FabricCalculator() {
   const addPart = () => setParts((p) => [...p, partRow("")]);
   const delPart = (i) => setParts((p) => (p.length > 1 ? p.filter((_, idx) => idx !== i) : p));
 
-  /* ── อุปกรณ์เสริม ── */
   const addAddon = (name) => {
     if (!name) return;
     const preset = ADDON_PRESETS.find((a) => a.name === name);
     setAddons((p) => {
-      /* กดรายการเดิมซ้ำ = เพิ่มจำนวนอีก 1 แทนการเพิ่มแถวซ้ำ */
       if (preset && p.some((a) => a.name === preset.name)) {
         return p.map((a) => (a.name === preset.name ? { ...a, qty: (Number(a.qty) || 0) + 1 } : a));
       }
@@ -122,14 +107,12 @@ export default function FabricCalculator() {
     setAddons((p) => p.map((a, idx) => (idx === i ? { ...a, [key]: v } : a)));
   const delAddon = (i) => setAddons((p) => p.filter((_, idx) => idx !== i));
 
-  /* ── ต้นทุน: เมตร × ราคาต่อเมตร (1 ชุด) ── */
   const rollById = useMemo(() => {
     const m = {};
     rolls.forEach((r) => { m[String(r.roll_id)] = r; });
     return m;
   }, [rolls]);
 
-  /* ม้วนผ้าจัดกลุ่มตามประเภทผ้า ให้เลือกง่าย */
   const rollGroups = useMemo(() => {
     const g = {};
     rolls.forEach((r) => { (g[r.type_name || "อื่น ๆ"] = g[r.type_name || "อื่น ๆ"] || []).push(r); });
@@ -146,7 +129,6 @@ export default function FabricCalculator() {
 
   const filled = lines.filter((l) => l.roll && l.meters > 0);
 
-  /* ใช้ม้วนเดียวกันหลายชิ้น → รวมเมตรก่อนเทียบกับที่เหลือในม้วน */
   const shortRolls = useMemo(() => {
     const used = {};
     filled.forEach((l) => { used[l.rollId] = (used[l.rollId] || 0) + l.meters; });
@@ -160,7 +142,6 @@ export default function FabricCalculator() {
   const addonCost = useMemo(() => addonTotal(addons), [addons]);
   const cost = round2(fabricCost + addonCost);
 
-  /* ── ตรวจก่อนไปตั้งราคา ── */
   const missingCore = CORE_MEASURE_KEYS.filter((k) => !(Number(measure[k]) > 0));
   const namedParts = parts.filter((p) => String(p.name).trim());
   const problem = !outfitName
@@ -178,14 +159,12 @@ export default function FabricCalculator() {
                     `${s.roll?.fabric_name || "-"} ต้องใช้ ${fmtLen(s.need)} เหลือ ${fmtLen(s.have)}`).join(", ")}`
                 : null;
 
-  /* ── ค่าวัดตัว → ข้อความเก็บในประวัติ ── */
   const measureNote = [
     ...CORE_MEASURE_KEYS.filter((k) => Number(measure[k]) > 0).map((k) => `${measureField(k).label} ${measure[k]} ซม.`),
     ...extraMeasures.filter((x) => x.label && Number(x.value) > 0).map((x) => `${x.label} ${x.value} ซม.`),
   ].join(", ");
 
   const rollName = (r) => r?.fabric_name || r?.type_name || "-";
-  /* ชื่อผ้าสั้น ๆ: ชื่อผ้า · สี · ล็อต — ราคา/ม. · เหลือ */
   const rollLabel = (r) =>
     `${rollName(r)}${r.color_name ? ` · ${r.color_name}` : ""}${r.lot_number ? ` · ล็อต ${r.lot_number}` : ""} — ${priceText(r.price_per_meter)} · เหลือ ${fmtLen(r.length_remaining)}`;
 
@@ -195,7 +174,6 @@ export default function FabricCalculator() {
     </optgroup>
   ));
 
-  /* กรอกเสร็จ → ไปหน้าตั้งราคาขาย (ตัดผ้าออกจากคลังจริงที่หน้านั้น) */
   const goSetPrice = () => {
     if (problem) return;
     const partNames = namedParts.map((p) => String(p.name).trim());
@@ -211,7 +189,6 @@ export default function FabricCalculator() {
           addons: addons.filter((a) => a.name && Number(a.qty) > 0),
           totalMeters,
           measureNote,
-          /* ผ้าที่จะตัดออกจากแต่ละม้วน (เมตร) ให้หน้าตั้งราคาแสดงก่อนยืนยัน */
           rolls: filled.map((l) => ({
             rollCode: l.roll.roll_code || `#${l.roll.roll_id}`,
             fabricName: rollName(l.roll),
@@ -251,7 +228,6 @@ export default function FabricCalculator() {
 
   return (
     <div className="fc-root">
-      {/* ── หัวเรื่อง ── */}
       <header className="fc-top">
         <div>
           <h1 className="fc-title">คำนวณราคาชุด</h1>
@@ -261,10 +237,8 @@ export default function FabricCalculator() {
       </header>
 
       <div className="fc-layout">
-        {/* ═══════ ซ้าย ═══════ */}
         <div className="fc-card">
 
-          {/* 1 — แบบชุด */}
           <div className="fc-block">
             <p className="fc-block-title"><b>1</b> แบบชุด</p>
             <label className="fc-f">
@@ -283,7 +257,6 @@ export default function FabricCalculator() {
             </p>
           </div>
 
-          {/* 2 — วัดตัว */}
           <div className="fc-block">
             <p className="fc-block-title">
               <b>2</b> วัดตัวลูกค้า
@@ -294,7 +267,6 @@ export default function FabricCalculator() {
               {CORE_MEASURE_KEYS.map(measureInput)}
             </div>
 
-            {/* จุดวัดเสริม — เลือกจากรายการแล้วเพิ่มทันที */}
             <div className="fc-extra">
               <label className="fc-f fc-extra-pick">
                 <span>จุดวัดเสริม</span>
@@ -325,7 +297,6 @@ export default function FabricCalculator() {
             </div>
           </div>
 
-          {/* 3 — ผ้าที่ใช้ */}
           <div className="fc-block">
             <p className="fc-block-title">
               <b>3</b> ผ้าที่ใช้
@@ -385,7 +356,6 @@ export default function FabricCalculator() {
             {isNew && <button className="fc-link" onClick={addPart}>+ เพิ่มชิ้นส่วน</button>}
           </div>
 
-          {/* 4 — อุปกรณ์เสริม */}
           <div className="fc-block">
             <p className="fc-block-title">
               <b>4</b> อุปกรณ์เสริม
@@ -451,7 +421,6 @@ export default function FabricCalculator() {
 
         </div>
 
-        {/* ═══════ ขวา: สรุปต้นทุน ═══════ */}
         <div className="fc-col">
           <div className="fc-result">
             <div className="fc-big cost">
@@ -481,7 +450,6 @@ export default function FabricCalculator() {
               <input value={note} placeholder="เช่น ออเดอร์คุณสมศรี"
                 onChange={(e) => setNote(e.target.value)} />
             </label>
-            {/* backend ตรวจผ้าในคลังซ้ำอีกครั้งตอนตัดจริงที่หน้าตั้งราคา */}
             <button className="fc-btn-gold" onClick={goSetPrice} disabled={Boolean(problem)}>
               ตั้งราคาขาย →
             </button>

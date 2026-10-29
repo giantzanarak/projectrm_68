@@ -86,7 +86,6 @@ export async function getFabricUsageByRoll(roll_id) {
   }
 }
 
-// ประวัติการใช้ผ้าของม้วน รวมทุกแหล่ง: บันทึกการใช้ / คำนวณต้นทุนชุด / ใบสั่งตัดที่เลือกม้วนนี้
 export async function getFabricUsageHistory(roll_id) {
   const response = await axios.get(`${api}/fabricusage/roll/${roll_id}/history`);
   return response.data;
@@ -111,13 +110,11 @@ export async function addFabricRoll(data) {
   }
 }
 
-// ผ้าที่ผู้จัดจำหน่ายรายนี้เคยมี (ประเภท/ลวดลาย/สี ที่ร้านนี้เคยขาย)
 export async function getSupplierFabrics(supplier_id) {
   const response = await axios.get(`${api}/fabricrolls/supplier-fabrics/${supplier_id}`);
   return response.data;
 }
 
-// ตัวอย่างรหัสผ้า/ล็อต/ม้วน ถัดไป — รหัสจริงออกตอนบันทึก
 export async function getNextRollCode({ supplier_id, type_id, category_id, color_id }) {
   const response = await axios.get(`${api}/fabricrolls/next-code`, {
     params: { supplier_id, type_id, category_id, color_id },
@@ -125,7 +122,6 @@ export async function getNextRollCode({ supplier_id, type_id, category_id, color
   return response.data;
 }
 
-// รับม้วนผ้าเข้าคลัง: หา/สร้างผ้าของร้าน + ออกรหัสล็อต/ม้วนให้อัตโนมัติ
 export async function receiveFabricRoll(formData) {
   const response = await axios.post(`${api}/fabricrolls/receive`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -552,7 +548,6 @@ function mapPurchaseOrderDetail(order, items = []) {
       item_id: item.item_id,
       fabricId: item.fabric_id ? String(item.fabric_id) : "",
       fabricCode: item.fabric_code || "",
-      // ผ้าใหม่ที่ยังไม่ได้ตรวจรับ: มีแต่สเปก ยังไม่มี fabric_id
       spec: !item.fabric_id && item.type_id
         ? {
             type_id: item.type_id,
@@ -693,8 +688,6 @@ export async function deletePurchaseOrderItem(id) {
   }
 }
 
-// ตรวจรับสินค้า: สร้างผ้า (ถ้ายังไม่มี) + ม้วนผ้าเข้าคลังให้อัตโนมัติ
-// data = { storage_location, items: [{ item_id, receive_qty, lengths: [...] }] }
 export async function receivePurchaseOrder(poId, data) {
   const response = await axios.post(`${api}/purchase_orders/${poId}/receive`, data, {
     headers: { "Content-Type": "application/json" },

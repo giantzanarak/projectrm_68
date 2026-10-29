@@ -1,7 +1,4 @@
-/* ---------- Select (แทน native <select> ทั้งระบบ — สไตล์เดียวกับตัวกรองหน้าม้วนผ้า) ---------- */
 
-/* wrapper รับ className เดิมของแต่ละหน้า (เพื่อคงความกว้าง/ตำแหน่ง)
-   แต่ล้างกรอบ/พื้นหลังที่เคยใช้กับ <select> ออก ให้ปุ่มด้านในเป็นตัวกำหนดหน้าตา */
 .ui-select.ui-select {
   position: relative;
   display: block;
@@ -74,7 +71,6 @@
   color: #3b82f6;
 }
 
-/* input ซ่อนไว้รองรับ required/name ของฟอร์ม — วางทับปุ่มให้ทูลทิป validation ชี้ถูกที่ */
 .ui-select .ui-select-native {
   position: absolute;
   inset: 0;

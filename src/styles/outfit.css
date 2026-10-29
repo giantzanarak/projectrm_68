@@ -1,7 +1,3 @@
-/* ═══════════════════════════════════════════════
-   แบบชุด — รายการแบบชุด + ฟอร์มเพิ่ม/แก้ไข
-   โทนเดียวกับหน้าอื่นในระบบ (เทาเข้ม + น้ำเงิน)
-═══════════════════════════════════════════════ */
 
 .of-root,
 .of-modal {
@@ -13,7 +9,7 @@
   --ink:       #0f172a;
   --ink-mid:   #475569;
   --ink-soft:  #94a3b8;
-  --dark:      #2563eb;   /* สีเน้น → น้ำเงินหลักของระบบ */
+  --dark:      #2563eb;
   --accent:    #2563eb;
   --accent-bg: #eff6ff;
   --red:       #dc2626;
@@ -21,7 +17,6 @@
   --r-sm:      14px;
 }
 
-/* ไม่ตั้งพื้นหลัง/ระยะขอบเอง — ใช้ระยะของ .app-main เหมือนหน้าอื่น */
 .of-root {
   font-family: 'Sarabun', sans-serif;
   color: var(--ink);
@@ -29,11 +24,9 @@
 
 .of-root *, .of-root *::before, .of-root *::after { box-sizing: border-box; }
 
-/* ── ปุ่ม ── */
 .of-btn-primary {
   font: inherit; font-size: 14px; font-weight: 700;
   padding: 12px 20px; border: 0; border-radius: var(--r-sm);
-  /* ปุ่มหลัก — ไล่สีน้ำเงินแบบปุ่มเพิ่มของหน้าอื่น */
   background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; cursor: pointer;
   box-shadow: 0 4px 12px rgba(37,99,235,.2); transition: all .2s ease;
 }
@@ -48,10 +41,8 @@
 .of-btn-ghost:hover { border-color: var(--border2); color: var(--ink); }
 .of-btn-ghost.danger:hover { border-color: #fecaca; color: var(--red); background: #fef2f2; }
 
-/* ═══════ ตารางแบบชุด — เรียงลงมาแบบหน้าอื่น (หัวเรื่อง/ค้นหา/ตารางมาจาก fabric.css) ═══════ */
 .fabric-main-table.outfit-table { min-width: 640px; }
 
-/* ทับความกว้างคอลัมน์ของตารางม้วนผ้าใน fabric.css */
 .fabric-main-table.outfit-table th:nth-child(n),
 .fabric-main-table.outfit-table td:nth-child(n) { width: auto; min-width: 0; }
 
@@ -60,12 +51,10 @@
 .fabric-main-table.outfit-table th:nth-child(3),
 .fabric-main-table.outfit-table td:nth-child(3) { width: 120px; min-width: 120px; }
 
-/* ชิ้นส่วน / จุดวัดเพิ่มเติมเป็นชิปเรียงต่อกัน */
 .outfit-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .outfit-table .outfit-measure { font-size: 13px; color: var(--ink-mid); line-height: 1.5; }
 
-/* ── หน้าต่างแก้ไข ── */
 .of-backdrop {
   position: fixed; inset: 0; z-index: 1000;
   display: flex; align-items: flex-start; justify-content: center;
@@ -99,7 +88,6 @@
 }
 .of-problem { margin-right: auto; font-size: 13px; color: #b45309; }
 
-/* ═══════════ ฟอร์มแบบชุด (OutfitEditor) ═══════════ */
 .oe-sec { padding: 18px 0; border-bottom: 1px solid var(--border); }
 .oe-h {
   display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
@@ -118,7 +106,6 @@
 .oe input:focus, .oe select:focus { border-color: var(--accent); }
 .oe input::placeholder { color: var(--ink-soft); }
 
-/* ช่องตัวเลขที่มีหน่วยต่อท้าย */
 .oe-unit { position: relative; }
 .oe-unit input { padding-right: 44px; text-align: right; }
 .oe-unit i {
@@ -126,7 +113,6 @@
   font-style: normal; font-size: 12.5px; color: var(--ink-soft); pointer-events: none;
 }
 
-/* ── ชิ้นส่วนชุด (ชื่อ) ── */
 .oe-part-line { display: grid; grid-template-columns: 26px 1fr 32px; gap: 8px; align-items: center; margin-bottom: 8px; }
 .oe-part-no {
   width: 24px; height: 24px; border-radius: 50%; background: var(--surface2);
@@ -147,11 +133,9 @@
 }
 .oe-add:hover { background: var(--accent-bg); border-color: var(--accent); }
 
-/* ── จุดวัดเพิ่มเติม ── */
 .oe-extra { display: grid; grid-template-columns: 1fr 130px 32px; gap: 10px; margin-bottom: 8px; }
 .oe-unit-sm input { padding-right: 34px; }
 
-/* ── สรุป ── */
 .oe-summary { padding: 18px 0 20px; display: flex; flex-direction: column; gap: 12px; }
 .oe-summary-row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: baseline; }
 .oe-summary-row > span { font-size: 13px; font-weight: 600; color: var(--ink-mid); }
@@ -164,7 +148,6 @@
 }
 .oe-tags i { font-style: normal; color: var(--ink-soft); font-size: 13px; }
 
-/* ── SweetAlert ── */
 .of-swal-popup {
   font-family: 'Sarabun', sans-serif !important;
   border-radius: 18px !important;
@@ -183,13 +166,10 @@
 .of-swal-danger  { background: #dc2626 !important; color: #fff !important; }
 .of-swal-cancel  { background: transparent !important; border-color: #cbd5e1 !important; color: #64748b !important; }
 
-/* ── จอแคบ ── */
 @media (max-width: 760px) {
   .oe-extra { grid-template-columns: 1fr 110px 32px; }
 }
 
-/* ═══════ ให้เหมือนหน้าอื่นของระบบ (fabric.css) ═══════
-   ช่องกรอกโฟกัสแล้วขึ้นขอบน้ำเงิน + วงแสงจาง ๆ แบบเดียวกับแถบค้นหาหน้าอื่น */
 .of-root input:focus,
 .of-root select:focus,
 .of-modal input:focus,

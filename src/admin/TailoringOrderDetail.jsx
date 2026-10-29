@@ -22,7 +22,6 @@ import { useMeasureUnit, unitLabelOf, formatLength } from "../utils/measureUnit"
 import "../css/TailoringOrderDetail.css";
 import Select from "../components/Select";
 
-
 const APPOINTMENT_PURPOSES = ["ลองชุด", "วัดตัวเพิ่ม", "แก้ไขงาน", "รับชุด", "อื่น ๆ"];
 
 const baht = (n) => `฿${(Number(n) || 0).toLocaleString("th-TH")}`;
@@ -44,7 +43,6 @@ const ImageThumb = ({ src, alt }) => {
   );
 };
 
-/* รูปที่แก้ไขได้ — เปลี่ยนรูปใหม่ทับรูปเดิม หรือลบทิ้งได้ */
 const EditableThumb = ({ src, alt, disabled, onReplace, onDelete }) => (
   <div className="tod-thumb-editable">
     <ImageThumb src={src} alt={alt} />

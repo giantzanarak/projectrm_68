@@ -381,17 +381,16 @@
 
 .to-table { table-layout: fixed; }
 
-/* Column widths — fixed px for icon columns, % for content */
-.to-table th:nth-child(1), .to-table td:nth-child(1) { width: 11.5%; }   /* เลขออเดอร์ */
-.to-table th:nth-child(2), .to-table td:nth-child(2) { width: 14.5%; }   /* เลขบิล */
-.to-table th:nth-child(3), .to-table td:nth-child(3) { width: 9.5%; }   /* ลูกค้า */
-.to-table th:nth-child(4), .to-table td:nth-child(4) { width: 9.5%; }   /* เบอร์โทร */
-.to-table th:nth-child(5), .to-table td:nth-child(5) { width: 8.5%; }    /* สถานะ */
-.to-table th:nth-child(6), .to-table td:nth-child(6) { width: 8.5%; }   /* วันนัดถัดไป */
-.to-table th:nth-child(7), .to-table td:nth-child(7) { width: 9.5%; }   /* กำหนดส่ง */
-.to-table th:nth-child(8), .to-table td:nth-child(8) { width: 10%; }   /* ยอดค้างชำระ */
-.to-table th:nth-child(9), .to-table td:nth-child(9) { width: 56px; }  /* พิมพ์ */
-.to-table th:nth-child(10), .to-table td:nth-child(10) { width: 144px; } /* จัดการ */
+.to-table th:nth-child(1), .to-table td:nth-child(1) { width: 11.5%; }
+.to-table th:nth-child(2), .to-table td:nth-child(2) { width: 14.5%; }
+.to-table th:nth-child(3), .to-table td:nth-child(3) { width: 9.5%; }
+.to-table th:nth-child(4), .to-table td:nth-child(4) { width: 9.5%; }
+.to-table th:nth-child(5), .to-table td:nth-child(5) { width: 8.5%; }
+.to-table th:nth-child(6), .to-table td:nth-child(6) { width: 8.5%; }
+.to-table th:nth-child(7), .to-table td:nth-child(7) { width: 9.5%; }
+.to-table th:nth-child(8), .to-table td:nth-child(8) { width: 10%; }
+.to-table th:nth-child(9), .to-table td:nth-child(9) { width: 56px; }
+.to-table th:nth-child(10), .to-table td:nth-child(10) { width: 144px; }
 
 .to-table th { padding: 14px 12px; }
 .to-table td { padding: 16px 12px; line-height: 1.45; }
@@ -766,12 +765,10 @@ html body .to-table .to-btn-collect.is-early:hover {
   background: #fef2f2;
 }
 
-/* ลูกค้า: หนาปานกลาง (ตรงกับหน้าประวัติการขาย) */
 .to-table td.text-bold {
   font-weight: 500;
 }
 
-/* กำหนดส่ง: ตัวปกติ ไม่หนา */
 .to-table td.text-overdue,
 .to-table .to-overdue-tag {
   font-weight: 400;

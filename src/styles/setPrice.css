@@ -1,7 +1,3 @@
-/* ═══════════════════════════════════════════════════════
-   SET PRICE — หน้าตั้งราคาขาย (ต่อจากหน้าคำนวณผ้า)
-   โทนเดียวกับหน้าอื่นของระบบ (fabric.css) และหน้าคำนวณผ้า
-═══════════════════════════════════════════════════════ */
 
 .sp-root {
   --bg:        #f5f6fa;
@@ -12,7 +8,6 @@
   --ink:       #0f172a;
   --ink-mid:   #64748b;
   --ink-soft:  #94a3b8;
-  /* สีเน้น (เดิมเทาเข้ม) → น้ำเงินหลักของระบบ */
   --dark:      #2563eb;
   --dark-lt:   #1d4ed8;
   --gold:      #3b82f6;
@@ -26,7 +21,6 @@
   --r-sm:      14px;
   --tr:        .18s ease;
 
-  /* ไม่ตั้งพื้นหลัง/ระยะขอบเอง — ใช้ระยะของ .app-main เหมือนหน้าอื่น */
   font-family: 'Sarabun', sans-serif;
   color: var(--ink);
 }
@@ -35,7 +29,6 @@
 .sp-root *::before,
 .sp-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── หัวเรื่อง ── */
 .sp-top { margin-bottom: 28px; }
 
 .sp-back {
@@ -65,7 +58,6 @@
 
 .sp-sub { margin-top: 6px; font-size: 14px; color: #6b7280; }
 
-/* ── โครงสองคอลัมน์ ── */
 .sp-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 380px;
@@ -75,7 +67,6 @@
 
 .sp-col { min-width: 0; }
 
-/* ── บล็อกทั่วไป ── */
 .sp-block {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -103,7 +94,6 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  /* โทนขาว-ฟ้าอ่อน ไม่ใช้พื้นทึบ */
   background: #eff6ff;
   color: #2563eb;
   font-family: 'Sarabun', sans-serif;
@@ -111,7 +101,6 @@
   font-weight: 700;
 }
 
-/* ── ฟอร์ม ── */
 .sp-f { display: block; margin-bottom: 18px; }
 .sp-f:last-child { margin-bottom: 0; }
 
@@ -187,7 +176,6 @@
 .sp-num-lg input { font-size: 22px; }
 .sp-num-lg i { font-size: 18px; }
 
-/* ── ปุ่มตั้งราคาตาม % กำไร ── */
 .sp-markup {
   display: flex;
   align-items: center;
@@ -219,7 +207,6 @@
   background: rgba(59,130,246, .07);
 }
 
-/* ── บล็อกสรุปด้านขวา ── */
 .sp-result {
   position: sticky;
   top: 20px;
@@ -235,7 +222,6 @@
   padding: 20px 16px;
   margin-bottom: 18px;
   border-radius: var(--r-sm);
-  /* การ์ดขาวขอบบาง ตัวเลขสีน้ำเงิน (ไม่ใช้พื้นทึบ) */
   background: #fff;
   border: 1px solid var(--border);
   color: #2563eb;
@@ -259,7 +245,6 @@
 
 .sp-big-sub { display: block; margin-top: 6px; font-size: 12.5px; color: var(--ink-soft); }
 
-/* ── รายการต้นทุน ── */
 .sp-rows { margin-bottom: 18px; }
 
 .sp-row {
@@ -286,7 +271,6 @@
 
 .sp-row-sub { font-size: 12.5px; color: var(--ink-soft); border-bottom: 0; padding-top: 2px; }
 
-/* ── กำไร/ขาดทุน ── */
 .sp-profit {
   padding: 16px 18px;
   border-radius: var(--r-sm);
@@ -318,7 +302,6 @@
 
 .sp-profit-sub { margin-top: 5px; font-size: 12px; color: var(--ink-soft); }
 
-/* ── ปุ่มบันทึก ── */
 .sp-btn-gold {
   width: 100%;
   padding: 15px;
@@ -326,7 +309,6 @@
   font-size: 15px;
   font-weight: 700;
   color: #fff;
-  /* ปุ่มหลัก — ไล่สีน้ำเงินแบบปุ่มเพิ่มของหน้าอื่น */
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   border: 0;
   border-radius: var(--r-sm);
@@ -346,7 +328,6 @@
 
 .sp-hint { margin-top: 10px; text-align: center; font-size: 12px; color: var(--ink-soft); }
 
-/* ── เข้าหน้านี้โดยยังไม่มีข้อมูลจากการคำนวณ ── */
 .sp-empty {
   max-width: 460px;
   margin: 80px auto;
@@ -362,7 +343,6 @@
 .sp-empty p { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 22px; line-height: 1.7; }
 .sp-empty .sp-btn-gold { width: auto; padding: 12px 26px; }
 
-/* ── SweetAlert ── */
 .sp-swal-popup { font-family: 'Sarabun', sans-serif !important; border-radius: 14px !important; }
 
 .sp-swal-confirm,
@@ -380,7 +360,6 @@
 .sp-swal-confirm { background: var(--gold, #3b82f6); color: #fff; }
 .sp-swal-cancel  { background: #f1f5f9; color: #64748b; }
 
-/* ── หน้าเริ่มต้น (ยังไม่มาจากหน้าคำนวณ) ── */
 .sp-start {
   display: flex;
   align-items: center;
@@ -408,7 +387,6 @@
 .sp-start-text p { font-size: 13.5px; line-height: 1.7; color: var(--ink-soft); }
 .sp-start .sp-btn-gold { width: auto; padding: 13px 26px; flex-shrink: 0; }
 
-/* ── ตารางประวัติที่เคยตั้งไว้ ── */
 .sp-table-wrap { overflow-x: auto; }
 
 .sp-table {
@@ -445,7 +423,6 @@
 .sp-none { font-size: 13.5px; color: var(--ink-soft); padding: 8px 0; }
 .sp-none-i { color: var(--ink-soft); font-style: italic; }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 1000px) {
   .sp-grid { grid-template-columns: 1fr; }
   .sp-result { position: static; }
@@ -456,7 +433,6 @@
   .sp-big-num { font-size: 30px; }
 }
 
-/* ── ผ้าที่จะตัดออกจากคลัง ── */
 .sp-fabric { display: flex; flex-direction: column; border: 1px solid var(--border, #e2e8f0); border-radius: 9px; }
 .sp-fabric-row {
   display: flex; justify-content: space-between; gap: 12px;
@@ -467,7 +443,6 @@
 .sp-fabric-row .r { text-align: right; white-space: nowrap; }
 .sp-fabric-note { margin: 8px 0 0; font-size: 12.5px; color: var(--ink-mid, #64748b); }
 
-/* ── เพิ่มเข้าคลังสินค้า ── */
 .sp-check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; cursor: pointer; }
 .sp-check input { width: 18px; height: 18px; margin-top: 2px; accent-color: #2563eb; }
 .sp-check em { display: block; font-style: normal; font-size: 12.5px; color: var(--ink-mid, #64748b); margin-top: 2px; }
@@ -475,8 +450,6 @@
 .sp-f > input:focus, .sp-f select:focus { border-color: var(--border2, #94a3b8); }
 @media (max-width: 640px) { .sp-product { grid-template-columns: 1fr; } }
 
-/* ═══════ ให้เหมือนหน้าอื่นของระบบ (fabric.css) ═══════
-   ช่องกรอกโฟกัสแล้วขึ้นขอบน้ำเงิน + วงแสงจาง ๆ แบบเดียวกับแถบค้นหาหน้าอื่น */
 .sp-root input:focus,
 .sp-root select:focus,
 .sp-root textarea:focus {
@@ -485,7 +458,6 @@
   outline: none;
 }
 
-/* ชื่อสินค้าที่ระบบตั้งให้ (ชื่อแบบชุด + เลขล็อต) */
 .sp-auto-name {
   margin: 0;
   padding: 10px 12px;
@@ -497,10 +469,8 @@
 }
 .sp-auto-name em { display: block; margin-top: 2px; font-style: normal; font-size: 12.5px; color: #64748b; }
 
-/* ทุกชุดที่ตัดเข้าคลังสินค้าเสมอ */
 .sp-stock-note { margin: 0 0 12px; font-size: 13px; color: #64748b; }
 
-/* ประวัติ: เลขล็อต + สถานะ + ปุ่มตัดเสร็จ */
 .sp-lot { display: block; margin-top: 2px; font-size: 12px; color: #94a3b8; }
 .sp-status {
   display: inline-flex; padding: 3px 10px; border-radius: 999px;

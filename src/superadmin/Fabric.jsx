@@ -181,7 +181,6 @@ export default function Fabric() {
   };
 
   const handleDelete = async (roll) => {
-    // ม้วนสุดท้ายของผ้าแบบนี้ → ผ้าจะถูกซ่อนจากตัวเลือกด้วย (ซื้อสเปกเดิมอีกครั้ง ระบบเอากลับมาเอง)
     const isLastRoll = !rolls.some(
       (item) => item.fabric_id === roll.fabric_id && item.roll_id !== roll.roll_id
     );

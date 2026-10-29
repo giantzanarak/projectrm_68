@@ -13,7 +13,6 @@ const AddSupplier = () => {
     const location = useLocation();
     const fileInputRef = useRef(null);
 
-    // เปิดมาจากหน้าอื่น (เช่น เพิ่มใบสั่งซื้อ / เพิ่มม้วนผ้า) → บันทึกหรือยกเลิกแล้วกลับไปหน้านั้น
     const returnTo = location.state?.returnTo;
     const returnState = location.state?.returnState || {};
     const goBack = (newSupplierId) => {
@@ -59,7 +58,6 @@ const AddSupplier = () => {
             const resolved = await geocodeAddress(address);
             setCoords(resolved);
         } catch {
-            // หาพิกัดจากที่อยู่ไม่เจอ — ปักหมุดบนแผนที่เองได้
         }
     };
 

@@ -18,7 +18,6 @@ import OrderFabricPicker from "../components/OrderFabricPicker";
 import "../styles/AddOrders.css";
 import Select from "../components/Select";
 
-// fabricId = ผ้าที่ร้านนี้มีแล้ว / spec = ผ้าใหม่ (ประเภท ลวดลาย สี) ที่จะสร้างตอนตรวจรับ
 const createEmptyItem = (index = Date.now()) => ({
   item_id: index,
   fabricId: "",
@@ -36,7 +35,6 @@ const formatDateInput = (date = new Date()) => {
   return `${year}-${month}-${day}`;
 };
 
-// ผ้าในรายการเป็นของร้านเดิม → เปลี่ยนร้านแล้วต้องเลือกผ้าใหม่
 const withSupplier = (form, supplierId) =>
   supplierId === form.supplierId
     ? form
@@ -59,7 +57,6 @@ export default function AddOrders() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // กลับมาจากหน้าเพิ่มผู้จัดจำหน่าย → คืนค่าที่กรอกไว้ + เลือกร้านที่เพิ่งเพิ่ม
   const [form, setForm] = useState(() => {
     const draft = location.state?.draftForm;
     const newSupplierId = location.state?.newSupplierId;
@@ -116,7 +113,6 @@ export default function AddOrders() {
     loadDependencies();
   }, []);
 
-  // ผ้าที่ร้านที่เลือกเคยมี
   useEffect(() => {
     setSupplierFabrics([]);
     if (!form.supplierId) return;

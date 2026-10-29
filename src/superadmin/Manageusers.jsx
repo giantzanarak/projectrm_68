@@ -62,7 +62,6 @@ const UserModal = ({ user, onClose, onSaved }) => {
   const [previewUrl, setPreviewUrl]   = useState(getAvatarSrc(user));
   const [removeImage, setRemoveImage] = useState(false);
 
-  // รูปตัวอย่างที่เลือกจากเครื่อง (blob:) — คืนหน่วยความจำตอนเปลี่ยนรูป/ลบรูป/ออกจากหน้า
   const blobUrlRef = useRef(null);
   const setBlobPreview = (url) => {
     if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);

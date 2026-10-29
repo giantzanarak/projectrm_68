@@ -14,27 +14,17 @@ import "../styles/logs.css";
 import "../styles/listPage.css";
 import "../styles/product.css";
 
-/* ═══════════════════════════════════════════════════════════
-   จัดการสินค้า — สินค้ามี 2 แหล่ง
-   - ร้านตัดเอง (made): เพิ่มจากหน้านี้ไม่ได้ ต้องคำนวณราคาชุด → ตั้งราคา → ตัดผ้า
-     เข้ามาเป็น "กำลังตัด" กด "ตัดเสร็จ" ที่หน้าตั้งราคาขายแล้วจึงขายได้
-     ต้นทุนและจำนวนมาจากการตัด แก้จากหน้านี้ไม่ได้
-   - รับมาขาย (resale): เพิ่มจากหน้านี้ ระบุว่ารับมาจากที่ไหน จำนวนที่รับเข้า
-═══════════════════════════════════════════════════════════ */
 export default function ProductPage() {
   const API = `${API_BASE}/api/products`;
   const IMAGE_URL = IMAGE_BASE;
   const navigate = useNavigate();
 
-  /* หมวดหมู่จากตาราง product_category (โหลดไม่ได้ใช้รายการนี้) */
   const [categoryOptions, setCategoryOptions] = useState([
     "ชุดผ้าไหม", "ชุดไทยประยุกต์", "ผ้าฝ้าย", "ผ้าพันคอ",
   ]);
 
-  /* สถานะที่ตั้งเองได้ในฟอร์ม — "ขายหมด" ระบบคิดเองจากคงเหลือ, "กำลังตัด" เปลี่ยนด้วยปุ่มตัดเสร็จ */
   const statusOptions = ["พร้อมขาย", "ไม่พร้อมขาย"];
 
-  /* สถานะขายจริง (กฎเดียวกับหน้าเปิดบิล) — ชุดที่ตัดไว้ขายครบแล้วเป็น "ขายหมด" แม้ตั้งพร้อมขายไว้ */
   const saleStatus = (p) => saleStatusOf(p.status, p.stock_qty);
   const isMade = (p) => p?.source === "made";
 
@@ -60,7 +50,7 @@ export default function ProductPage() {
     cost: "",
     category: "",
     status: "พร้อมขาย",
-    stock_qty: "1",   // จำนวนที่รับเข้า (สินค้ารับมาขาย)
+    stock_qty: "1",
     supplier_name: "",
     description: "",
     image: null,
@@ -68,7 +58,6 @@ export default function ProductPage() {
 
   const [form, setForm] = useState(initialForm);
 
-  /* สินค้าที่กำลังแก้ไข — ใช้บอกจำนวนที่ขายไปแล้วใต้ช่องจำนวนในคลัง */
   const editingProduct = editId ? products.find((p) => p.id === editId) : null;
   const editingMade = isMade(editingProduct);
   const [imagePreview, setImagePreview] = useState(null);
@@ -98,7 +87,6 @@ export default function ProductPage() {
   };
 
   const totalValue = useMemo(() => {
-    /* มูลค่าของที่อยู่ในคลังจริง = ราคาขาย × คงเหลือ (เดิมรวมแค่ราคาป้าย ไม่สนจำนวน) */
     return products.reduce((sum, p) => sum + Number(p.price || 0) * (Number(p.stock_qty) || 0), 0);
   }, [products]);
 
@@ -106,14 +94,12 @@ export default function ProductPage() {
     return products.filter((p) => saleStatus(p) === "พร้อมขาย").length;
   }, [products]);
 
-  /* ชุดที่ตัดผ้าออกแล้วแต่ยังตัดไม่เสร็จ — ยังขายไม่ได้ */
   const totalCutting = useMemo(() => {
     return products.filter((p) => p.status === STATUS_CUTTING).length;
   }, [products]);
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
-      /* ค้นหาจากชื่อ / ลาย / ประเภท / เลขล็อต (เช่น 29_001) */
       const term = search.trim().toLowerCase();
       const matchSearch = !term ||
         p.name?.toLowerCase().includes(term) ||
@@ -200,7 +186,6 @@ export default function ProductPage() {
       return;
     }
 
-    /* ชุดที่ร้านตัดเอง: ต้นทุน/จำนวน/แหล่งที่มา มาจากการตัด ไม่ส่งไป (backend ก็ไม่รับ) */
     const skip = editingMade ? ["cost", "stock_qty", "supplier_name"] : [];
     const data = new FormData();
     Object.keys(form).forEach((key) => {
@@ -288,12 +273,10 @@ export default function ProductPage() {
     }
   };
 
-  /* แก้ช่วงขนาดชุด (กดตัดเสร็จ + กรอกขนาดครั้งแรก ทำที่หน้าตั้งราคาขาย) */
   const [sizeEdit, setSizeEdit] = useState(null);
 
   const profit = Number(form.price || 0) - Number(form.cost || 0);
 
-  /* สีป้ายสถานะ — ใช้ป้ายชุดเดียวกับหน้าบันทึก (logs.css) */
   const STATUS_BADGE = {
     "พร้อมขาย": "log-badge-success",
     [STATUS_CUTTING]: "log-badge-warning",
@@ -302,11 +285,8 @@ export default function ProductPage() {
   };
 
   return (
-    /* โครงเดียวกับหน้าอื่นของระบบ (หน้าบันทึก / ม้วนผ้า) — ใช้คลาสจาก fabric.css + logs.css
-       .pp-root เหลือไว้ให้ตัวแปรสีของฟอร์ม/หน้าดูรายละเอียด */
     <div className="fabric-container pp-root">
 
-      {/* ── HEADER ── */}
       <div className="fabric-header">
         <div className="header-left">
           <h2 className="fabric-title">จัดการสินค้า</h2>
@@ -322,7 +302,6 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* ── SUMMARY CARDS ── */}
       <div className="summary-container-logs">
         <div className="summary-card">
           <div className="card-content">
@@ -357,7 +336,6 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* ── FILTER BAR ── */}
       <div className="fabric-filter-section">
         <div className="search-wrapper">
           <FiSearch className="search-icon" />
@@ -411,7 +389,6 @@ export default function ProductPage() {
         <span className="log-result-count">พบ {filtered.length} รายการ</span>
       </div>
 
-      {/* ── TABLE ── */}
       <div className="fabric-table-container">
         <table className="fabric-main-table products-table">
           <thead>
@@ -436,7 +413,6 @@ export default function ProductPage() {
                 const profitVal = price - cost;
                 const profitPct = cost > 0 ? Math.round((profitVal / cost) * 100) : 0;
                 const status = saleStatus(p);
-                /* ใต้ชื่อแสดงแค่เลขล็อต — รายละเอียดอื่นดูในหน้ารายละเอียด */
                 const subText = p.lot_code ? `ล็อต ${p.lot_code}` : "";
 
                 return (
@@ -488,7 +464,6 @@ export default function ProductPage() {
           </tbody>
         </table>
 
-        {/* ── PAGINATION ── */}
         {totalPages > 1 && (
           <div className="table-pagination">
             <span>หน้า {currentPage} / {totalPages}</span>
@@ -503,7 +478,6 @@ export default function ProductPage() {
         )}
       </div>
 
-      {/* ── ADD / EDIT MODAL ── */}
       {showModal && (
         <div className="pp-backdrop" onClick={closeModal}>
           <div className="pp-modal" onClick={(e) => e.stopPropagation()}>
@@ -526,7 +500,6 @@ export default function ProductPage() {
                     : "เพิ่มได้เฉพาะสินค้าที่รับมาขายจากที่อื่น"}
               </p>
 
-              {/* Image Upload */}
               <div className="pp-upload-zone" onClick={() => document.getElementById("pp-file-input").click()}>
                 {imagePreview ? (
                   <img src={imagePreview} alt="preview" className="pp-upload-preview" />
@@ -618,7 +591,6 @@ export default function ProductPage() {
                   </select>
                 </div>
 
-                {/* เพิ่มสินค้ารับมาขาย = พร้อมขายเลย · แก้เป็นไม่พร้อมขายได้ตอนแก้ไข */}
                 {editId && <div className="pp-field">
                   <label>สถานะ</label>
                   {form.status === STATUS_CUTTING ? (
@@ -675,7 +647,6 @@ export default function ProductPage() {
         </div>
       )}
 
-      {/* ── VIEW MODAL ── */}
       {viewModal && selected && (
         <div className="pp-backdrop" onClick={() => setViewModal(false)}>
           <div className="pp-modal pp-view-modal" onClick={(e) => e.stopPropagation()}>
@@ -770,7 +741,6 @@ export default function ProductPage() {
         </div>
       )}
 
-      {/* ── แก้ขนาดชุด ── */}
       {sizeEdit && (
         <SizeRangeModal product={sizeEdit} mode="edit"
           onClose={() => setSizeEdit(null)} onSaved={fetchProducts} />

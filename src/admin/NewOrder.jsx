@@ -59,7 +59,6 @@ export default function NewOrder() {
 
   const [paymentId, setPaymentId] = useState("");
   const [employeeId, setEmployeeId] = useState("");
-  /* ส่วนลดเป็นช่องเดียว: ปกติกรอกเป็นบาท — กดใช้โปรฯ แล้วช่องจะเปลี่ยนเป็นตัวเลือกโปรโมชั่น */
   const [usePromo, setUsePromo] = useState(false);
   const [promoId, setPromoId] = useState("");
   const [manualDiscount, setManualDiscount] = useState("");
@@ -97,7 +96,6 @@ export default function NewOrder() {
     }
   };
 
-  /* สินค้าขายหมดไม่ต้องโชว์ในหน้าเปิดบิล */
   const inStock = useMemo(
     () => products.filter((p) => saleStatusOf(p.status, p.stockQty) !== "ขายหมด"),
     [products]
@@ -122,12 +120,10 @@ export default function NewOrder() {
     [inStock, search, categoryFilter]
   );
 
-  /* แบ่งหน้าละ 12 รายการ — เปลี่ยนคำค้น/ประเภทแล้วกลับไปหน้าแรก */
   useEffect(() => { setPage(1); }, [search, categoryFilter]);
   const totalPages = Math.max(1, Math.ceil(sellable.length / PAGE_SIZE));
   const curPage = Math.min(page, totalPages);
   const pageItems = sellable.slice((curPage - 1) * PAGE_SIZE, curPage * PAGE_SIZE);
-  /* แสดงเลขหน้ารอบหน้าปัจจุบันไม่เกิน 5 ปุ่ม */
   const pageStart = Math.max(1, Math.min(curPage - 2, totalPages - 4));
   const pageNums = Array.from({ length: Math.min(5, totalPages) }, (_, i) => pageStart + i);
 
@@ -142,7 +138,6 @@ export default function NewOrder() {
       });
       return;
     }
-    /* ขายเกินของที่เหลือในคลังไม่ได้ */
     const inCart = cart.find((c) => c.id === p.id)?.qty || 0;
     if (p.stockQty !== null && inCart >= p.stockQty) {
       Swal.fire({
@@ -163,7 +158,6 @@ export default function NewOrder() {
     });
   };
 
-  /* จำนวนในบิลต้องไม่เกินของที่เหลือ */
   const setQty = (id, qty) =>
     setCart((prev) => prev
       .map((c) => {
@@ -176,7 +170,6 @@ export default function NewOrder() {
 
   const removeItem = (id) => setCart((prev) => prev.filter((c) => c.id !== id));
 
-  /* สลับช่องส่วนลด: บาท ↔ โปรโมชั่น — ใช้ได้ทีละแบบ */
   const toggleDiscountMode = () => {
     setUsePromo((v) => !v);
     setPromoId("");
@@ -193,7 +186,6 @@ export default function NewOrder() {
   const bill = useMemo(() => {
     const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
     const promoDiscount = toInt(subtotal * promoPercent / 100);
-    /* ลดเองได้ไม่เกินยอดที่เหลือหลังหักโปรฯ */
     const manual = Math.min(Math.max(0, toInt(manualDiscount)), subtotal - promoDiscount);
     const discount = promoDiscount + manual;
     const total = Math.max(0, subtotal - discount);
@@ -340,7 +332,6 @@ export default function NewOrder() {
         });
       }
 
-      /* โหลดสินค้าใหม่ด้วย ให้จำนวนคงเหลือลดตามที่ขายไป */
       const [bills, freshProducts] = await Promise.all([getBills(), getProducts()]);
       setProducts(freshProducts);
       setBillNo(nextBillNo(bills));

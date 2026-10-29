@@ -337,7 +337,6 @@
   background: #f8fafc;
 }
 
-/* แถบเลือกหน่วยความยาว (ม. / ซม.) */
 .fabric-unit-bar {
   display: flex;
   align-items: center;
@@ -348,7 +347,6 @@
   color: #64748b;
 }
 
-/* ---------- ประวัติการใช้ผ้า (รวมทุกแหล่ง) ---------- */
 .usage-table-card h4 + .usage-sub {
   margin: -12px 0 16px;
   font-size: 12.5px;

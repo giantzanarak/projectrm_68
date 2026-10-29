@@ -354,7 +354,6 @@
   color: #64748b;
 }
 
-/* ตัวอย่างรหัสม้วนใหม่ เมื่อเปลี่ยนผู้จัดจำหน่าย/ประเภท/ลวดลาย/สี */
 .spec-change-preview {
   grid-column: 1 / -1;
   position: relative;

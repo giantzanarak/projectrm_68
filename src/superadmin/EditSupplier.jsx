@@ -60,7 +60,6 @@ const EditSupplier = () => {
         fetchData();
     }, [id]);
 
-    // รูปตัวอย่างที่เลือกจากเครื่อง (blob:) — คืนหน่วยความจำตอนเปลี่ยนรูป/ลบรูป/ออกจากหน้า
     const blobUrlRef = useRef(null);
     const setBlobPreview = (url) => {
         if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);
@@ -85,7 +84,6 @@ const EditSupplier = () => {
             const resolved = await geocodeAddress(address);
             setCoords(resolved);
         } catch {
-            // หาพิกัดจากที่อยู่ไม่เจอ — ปักหมุดบนแผนที่เองได้
         }
     };
 

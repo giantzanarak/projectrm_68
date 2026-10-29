@@ -271,7 +271,6 @@ export default function OrderDetail() {
       { pieces: 0, alterations: 0, deposit: 0, finalPaid: 0 }
     );
 
-    // ยอดในบิล = สินค้า (หลังส่วนลด) + มัดจำใบสั่งตัด ซึ่งลูกค้าจ่ายแล้วตอนเปิดบิล
     const billed = Number(bill?.totalAmount) || 0;
     const total = productsSubtotal - discount + t.pieces + t.alterations;
     const paid = billed + t.finalPaid;

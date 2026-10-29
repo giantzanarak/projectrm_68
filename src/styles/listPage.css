@@ -1,20 +1,12 @@
-/* ═══════════════════════════════════════════════════════════
-   LIST PAGE — ส่วนเสริมของหน้ารายการที่ใช้โครง fabric.css + logs.css
-   (หัวเรื่อง → การ์ดสรุป 4 ใบ → แถบค้นหา → ตาราง → เปลี่ยนหน้า)
-   ใช้ร่วมกันในหน้าประวัติการขาย และหน้าโปรโมชั่น
-═══════════════════════════════════════════════════════════ */
 
-/* ปุ่มเพิ่มในหัวเรื่อง — ขยายตามข้อความ (ของเดิมกว้างตายตัว 120px) */
 .add-roll-btn.page-add-btn { width: auto; white-space: nowrap; }
 
-/* ข้อความรองใต้ตัวเลขในการ์ดสรุป */
 .summary-card .card-note {
   margin-top: -6px;
   font-size: 12.5px;
   color: #94a3b8;
 }
 
-/* ปุ่มล้างตัวกรอง */
 .filter-clear-btn {
   padding: 11px 16px;
   border: 1px solid #e2e8f0;
@@ -32,13 +24,11 @@
 
 .fabric-filter-section .log-result-count { margin-left: auto; }
 
-/* ── ตาราง ── */
 .fabric-main-table .c { text-align: center; }
 .fabric-main-table .r { text-align: right; }
 .fabric-main-table .font-bold { font-weight: 700; }
 .fabric-main-table .text-muted { color: #94a3b8; }
 
-/* ข้อความบรรทัดที่สองในเซลล์ */
 .fabric-main-table .cell-sub {
   display: block;
   font-size: 12px;
@@ -48,7 +38,6 @@
 
 .fabric-main-table .cell-accent { color: #3b82f6; font-weight: 600; }
 
-/* ลิงก์ในตาราง (เลขบิล / รหัสโปรฯ) */
 .table-link {
   padding: 0;
   border: none;

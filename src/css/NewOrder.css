@@ -305,7 +305,6 @@
   -webkit-box-orient: vertical;
 }
 
-/* ขนาดชุด — ใส่ได้ตั้งแต่–ถึง (ไว้ตอบลูกค้าว่าควรใส่ตัวไหน) */
 .pos-item-size {
   padding: 2px 10px 0;
   font-size: 11.5px;
@@ -1039,7 +1038,6 @@
   border-bottom-style: dotted !important;
 }
 
-/* ปุ่มด้านบน (สร้างคำสั่งตัดชุด / ดูบิลทั้งหมด) — แบบเดียวกับปุ่ม "เพิ่มม้วนผ้า" */
 html body .pos-btn-primary {
   display: inline-flex;
   align-items: center;
@@ -1063,7 +1061,6 @@ html body .pos-btn-primary:hover {
   box-shadow: 0 6px 16px rgba(59, 130, 246, .28);
 }
 
-/* สรุปยอด: ราคาทั้งหมด / ยอดชำระ / ยอดค้างชำระ */
 .pos-sum-main {
   display: flex;
   flex-direction: column;
@@ -1091,17 +1088,11 @@ html body .pos-btn-primary:hover {
 .pos-sum-line.owe span:last-child  { color: #dc2626; }
 .pos-sum-line.owe.zero span:last-child { color: var(--ink-soft); }
 
-/* ======================================================
-   Polish — labels, product cards, inputs, cash, save
-   ====================================================== */
-
-/* 1. หัวช่องกรอก: หนาปานกลาง สีเทาเข้ม */
 .pos-f > span {
   font-weight: 500;
   color: #475569;
 }
 
-/* 3. การ์ดที่เลือก: ขอบฟ้า + แสงจาง แทนขอบดำ */
 .pos-item.picked {
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, .18);
@@ -1115,12 +1106,10 @@ html body .pos-item.picked:hover {
   background: #2563eb;
 }
 
-/* 4. ชื่อสินค้าจองไว้ 2 บรรทัด ราคาเรียงตรงกันทุกการ์ด */
 .pos-item-name {
   min-height: calc(13px * 1.35 * 2);
 }
 
-/* 5. ช่องกรอกทุกช่องเป็นแบบเดียวกัน: พื้นขาว มีขอบ */
 .pos-f select,
 .pos-f input {
   height: 44px;
@@ -1142,7 +1131,6 @@ html body .pos-item.picked:hover {
   color: #94a3b8;
 }
 
-/* 6. ล้างตะกร้า: เทา → แดงเมื่อชี้ */
 .pos-link-danger {
   color: #94a3b8;
   font-weight: 500;
@@ -1152,7 +1140,6 @@ html body .pos-item.picked:hover {
   color: #dc2626;
 }
 
-/* 7. ยังไม่ได้กรอกเงิน: สีเทาเป็นกลาง */
 .pos-change.idle {
   background: #f1f5f9;
   color: #475569;
@@ -1162,7 +1149,6 @@ html body .pos-item.picked:hover {
   color: #0f172a;
 }
 
-/* 8. ปุ่มบันทึกตอนกดไม่ได้: อ่านออก */
 html body .pos-btn-save:disabled {
   background: #e2e8f0;
   color: #64748b;
@@ -1174,10 +1160,6 @@ html body .pos-btn-save:disabled {
   margin-top: 10px;
   color: #64748b;
 }
-
-/* ======================================================
-   Receipt popup — one card: success bar / receipt / actions
-   ====================================================== */
 
 .pos-receipt-wrap {
   max-width: 420px;
@@ -1218,12 +1200,10 @@ html body .pos-btn-save:disabled {
   padding: 24px 26px 20px;
 }
 
-/* 3. วันเวลา */
 .pos-receipt-head p:last-child {
   font-variant-numeric: tabular-nums;
 }
 
-/* ใบสั่งตัดในใบเสร็จ: ราคาเต็ม / ค้างชำระ / กำหนดรับชุด */
 .pos-receipt-tailor td {
   vertical-align: top;
 }
@@ -1245,7 +1225,6 @@ html body .pos-btn-save:disabled {
   color: #dc2626;
 }
 
-/* 2. เส้นเหนือยอดสุทธิ: เส้นประเหมือนเส้นอื่น */
 .pos-receipt-sum .grand {
   border-top: 1px dashed #bbb;
 }
@@ -1259,7 +1238,6 @@ html body .pos-btn-save:disabled {
   font-weight: 600;
 }
 
-/* 4. ข้อมูลลูกค้า/การชำระ: ซ้าย-ขวา */
 .pos-receipt-foot {
   display: flex;
   flex-direction: column;
@@ -1292,7 +1270,6 @@ html body .pos-btn-save:disabled {
   font-size: 12.5px;
 }
 
-/* 5. แถบปุ่มด้านล่างของกล่อง */
 .pos-receipt-actions {
   justify-content: flex-end;
   gap: 8px;
@@ -1347,7 +1324,6 @@ html body .pos-btn-save:disabled {
   .pos-receipt-actions .pos-receipt-btn { flex: 1; justify-content: center; }
 }
 
-/* ช่องส่วนลด: หัวช่องมีปุ่มสลับ บาท ↔ โปรโมชั่น อยู่ขวา */
 .pos-f-head {
   display: flex;
   align-items: center;
@@ -1363,7 +1339,6 @@ html body .pos-btn-save:disabled {
 
 .pos-f-head .pos-link { padding: 0; }
 
-/* แบ่งหน้ารายการสินค้า */
 .pos-grid + .pos-pager { margin-top: 16px; }
 .pos-pager > button { padding: 7px 14px; font-size: 13px; }
 .pos-dots button { width: 32px; height: 32px; font-size: 13px; }
