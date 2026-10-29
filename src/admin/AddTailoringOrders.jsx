@@ -777,8 +777,7 @@ export default function AddTailoringOrders() {
                   <UnitToggle unit={measureUnit} onChange={setMeasureUnit} />
                 </div>
                 <p className="ato-card-desc">
-                  แต่ละชุดเผื่อ/ขยายได้ไม่เท่ากัน — กรอก "ปัจจุบัน" เสมอ ส่วน "เล็กสุดที่เอาเข้าได้" และ "ใหญ่สุดที่ขยายได้" กรอกเฉพาะจุดที่รู้ค่าจริง
-                  {measureUnit === "in" && " (ระบบบันทึกเป็นซม. ให้อัตโนมัติ: 1 นิ้ว = 2.54 ซม.)"}
+                  แต่ละชุดเผื่อ/ขยายได้ไม่เท่ากัน
                 </p>
                 <div className="ato-measure-table">
                   <div className="ato-measure-row ato-measure-head">

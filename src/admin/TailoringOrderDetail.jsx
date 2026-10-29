@@ -593,10 +593,6 @@ export default function TailoringOrderDetail() {
                     <h4>ขนาดตัว{activeGarment ? ` (${activeGarment.label})` : ""}</h4>
                     <UnitToggle unit={measureUnit} onChange={setMeasureUnit} />
                   </div>
-                  <p className="tod-hint">
-                    แก้ไขได้ทุกช่อง — "ปัจจุบัน" คือขนาดจริงตอนนี้ ส่วนเล็กสุด/ใหญ่สุดคือช่วงที่เผื่อไว้แก้ได้
-                    {measureUnit === "in" && " (ระบบบันทึกเป็นซม. ให้อัตโนมัติ: 1 นิ้ว = 2.54 ซม.)"}
-                  </p>
                   <div className="tod-measure-table tod-measure-edit">
                     <div className="tod-measure-row tod-measure-head">
                       <span>จุดวัด</span>
