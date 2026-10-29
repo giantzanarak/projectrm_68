@@ -821,7 +821,7 @@ export default function AddTailoringOrders() {
             <h3 className="ato-card-title">ข้อมูลผ้า</h3>
             <p className="ato-card-desc">
               {activeItem.fabricSource === "customer"
-                ? "อธิบายลักษณะผ้าที่ลูกค้านำมาให้ (ส่วนจำนวนผืน/ความยาวที่วัดจริง กรอกด้านล่างในหัวข้อผ้าของลูกค้า)"
+                ? "อธิบายลักษณะผ้าที่ลูกค้านำมาให้"
                 : "เลือกม้วนผ้าจากสต็อกก่อน ระบบจะเติมชื่อผ้า ประเภท สี และลวดลายให้อัตโนมัติ (แก้ไขได้ถ้าไม่ตรง)"}
             </p>
 
@@ -1104,7 +1104,7 @@ export default function AddTailoringOrders() {
                 <Field label="วันนัดลองตัว" hint="สูทกับชุดพื้นเมืองควรลองอย่างน้อย 1 ครั้ง">
                   <input type="date" min={formatDateInput()} value={header.fittingDate} onChange={(e) => updateHeader("fittingDate", e.target.value)} />
                 </Field>
-                <Field label="เวลานัด" hint="ไม่ระบุก็ได้ — นัดนี้จะไปขึ้นในปฏิทินนัดให้อัตโนมัติ">
+                <Field label="เวลานัด" hint="ไม่ระบุก็ได้">
                   <input
                     type="time"
                     value={header.fittingTime}
